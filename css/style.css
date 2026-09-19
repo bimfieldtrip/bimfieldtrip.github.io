@@ -723,37 +723,84 @@ input[type="number"], select {
 .guide-card:hover { transform: translateY(-3px); border-color: var(--navy-500); box-shadow: var(--shadow-lift); }
 .guide-card__photo {
   aspect-ratio: 4 / 3; display: flex; align-items: center; justify-content: center;
-  background: linear-gradient(140deg, var(--bg-soft), #e7ecf7);
-  color: var(--navy-600); border-bottom: 1px solid var(--line);
-  position: relative; overflow: hidden;
+  background: linear-gradient(140deg, #eef2f9, #dfe6f3);
+  color: #4d63a0; border-bottom: 1px solid var(--line);
+  position: relative; overflow: hidden; isolation: isolate;
 }
-.guide-card__photo svg { width: 34px; height: 34px; opacity: 0.6; position: relative; z-index: 1; }
 .guide-card__photo img { width: 100%; height: 100%; object-fit: cover; display: block; }
-/* v0.7.2 — 실제 사진: 우하단 작은 크레딧 + (선택) 좌상단 AREA VIEW 등 컨텍스트 라벨 */
+
+/* v0.7.3 — 사진이 없는 카드: 의도적으로 디자인된 프리뷰 영역(inline SVG 일러스트 + 옅은 패턴).
+   외부 이미지 파일 없이 CSS/SVG만 사용하며, 전체 hero가 Google 이미지 검색 링크입니다. */
+.guide-card__photo--ph::before { /* 옅은 패턴 레이어 */
+  content: ""; position: absolute; inset: 0; z-index: 0; pointer-events: none;
+  background-image: var(--ph-pattern, none); background-size: var(--ph-size, 18px 18px);
+}
+.guide-card__photo--ph::after { /* 부드러운 빛 번짐 */
+  content: ""; position: absolute; z-index: 0; pointer-events: none;
+  width: 70%; aspect-ratio: 1; right: -18%; top: -34%; border-radius: 50%;
+  background: radial-gradient(circle, rgba(255,255,255,0.75), rgba(255,255,255,0) 68%);
+}
+.guide-card__ph-art { position: relative; z-index: 1; display: block; width: min(52%, 168px); pointer-events: none; transition: transform 0.25s ease; }
+.guide-card__ph-art svg { display: block; width: 100%; height: auto; opacity: 0.92; }
+.guide-card__ph-stamp {
+  position: absolute; left: 10px; bottom: 9px; z-index: 1; pointer-events: none;
+  font-family: var(--font-mono); font-size: 0.56rem; font-weight: 700; letter-spacing: 0.14em;
+  color: currentColor; opacity: 0.55; text-transform: uppercase;
+}
+.guide-card__photo--ph:hover .guide-card__ph-art { transform: translateY(-2px) scale(1.04); }
+
+/* 종류별 톤 — 모두 옅은 muted blue-gray 계열 안에서만 살짝 변주합니다. */
+.guide-card__photo--landmark { background: linear-gradient(160deg, #eaf0fa, #d9e2f2); color: #3f5799;
+  --ph-pattern: linear-gradient(rgba(35,57,122,0.05) 1px, transparent 1px), linear-gradient(90deg, rgba(35,57,122,0.05) 1px, transparent 1px); --ph-size: 22px 22px; }
+.guide-card__photo--area { background: linear-gradient(160deg, #e9f0f4, #d6e2ea); color: #3d5a80;
+  --ph-pattern: radial-gradient(rgba(35,57,122,0.13) 1.4px, transparent 1.5px); --ph-size: 16px 16px; }
+.guide-card__photo--camera { background: linear-gradient(160deg, #edf0f8, #dbdff0); color: #4a5590;
+  --ph-pattern: repeating-linear-gradient(135deg, rgba(35,57,122,0.05) 0 2px, transparent 2px 14px); --ph-size: auto; }
+.guide-card__photo--shop { background: linear-gradient(160deg, #eaeef8, #d8dff0); color: #3b4f92;
+  --ph-pattern: repeating-linear-gradient(45deg, rgba(35,57,122,0.06) 0 6px, transparent 6px 16px); --ph-size: auto; }
+.guide-card__photo--gift { background: linear-gradient(160deg, #eef0f8, #dde0f0); color: #55589a;
+  --ph-pattern: radial-gradient(rgba(72,72,150,0.10) 1.6px, transparent 1.7px); --ph-size: 14px 14px; }
+.guide-card__photo--restaurant { background: linear-gradient(160deg, #eef1f5, #dde4ec); color: #45597f;
+  --ph-pattern: repeating-linear-gradient(90deg, rgba(35,57,122,0.05) 0 2px, transparent 2px 18px); --ph-size: auto; }
+.guide-card__photo--cafe { background: linear-gradient(160deg, #eaf1f3, #d8e5e9); color: #3c6072;
+  --ph-pattern: repeating-linear-gradient(0deg, rgba(35,80,110,0.05) 0 2px, transparent 2px 16px); --ph-size: auto; }
+.guide-card__photo--dessert { background: linear-gradient(160deg, #f0eff7, #e0e0ef); color: #5e5a98;
+  --ph-pattern: radial-gradient(rgba(94,90,152,0.10) 2px, transparent 2.1px); --ph-size: 18px 18px; }
+.guide-card__photo--bar { background: linear-gradient(160deg, #e6ebf5, #d2daec); color: #36478a;
+  --ph-pattern: radial-gradient(rgba(35,57,122,0.10) 1px, transparent 1.1px); --ph-size: 10px 10px; }
+.guide-card__photo--travel { background: linear-gradient(160deg, #eef1f8, #dde3f0); color: #4a5f9a; }
+
+/* 실제 사진(Wikimedia Commons): 우하단 작은 크레딧 + (선택) 좌상단 AREA VIEW 등 컨텍스트 라벨 */
 .guide-card__credit {
-  position: absolute; right: 6px; bottom: 6px; z-index: 2; max-width: calc(100% - 12px);
+  position: absolute; right: 6px; bottom: 6px; z-index: 3; max-width: calc(100% - 12px);
   padding: 2px 7px; border-radius: 999px; background: rgba(10, 18, 40, 0.58); color: rgba(255,255,255,0.92);
   font-family: var(--font-mono); font-size: 0.6rem; line-height: 1.5; letter-spacing: 0.01em;
   white-space: nowrap; overflow: hidden; text-overflow: ellipsis; text-decoration: none;
 }
 a.guide-card__credit:hover { background: rgba(10, 18, 40, 0.82); text-decoration: underline; }
 .guide-card__img-context {
-  position: absolute; left: 8px; top: 8px; z-index: 2; max-width: calc(100% - 16px);
+  position: absolute; left: 8px; top: 8px; z-index: 3; pointer-events: none; max-width: calc(100% - 16px);
   padding: 3px 8px; border-radius: 6px; background: rgba(255,255,255,0.92); color: var(--navy-800);
   font-family: var(--font-mono); font-size: 0.62rem; font-weight: 700; letter-spacing: 0.05em; line-height: 1.4;
   white-space: nowrap; overflow: hidden; text-overflow: ellipsis; box-shadow: 0 1px 4px rgba(10,18,40,0.18);
 }
-/* 카테고리별 placeholder 톤 구분 — 기존 navy/white 팔레트 안에서만 변주합니다. */
-.guide-card__photo--see { background: linear-gradient(140deg, #eef1f9, #dbe2f3); color: var(--navy-700); }
-.guide-card__photo--see::before { content: ""; position: absolute; inset: 0; background-image: radial-gradient(rgba(26,44,92,0.10) 1.5px, transparent 1.5px); background-size: 16px 16px; }
-.guide-card__photo--shop { background: linear-gradient(140deg, #e9edf8, var(--navy-900) 220%); color: var(--navy-800); }
-.guide-card__photo--shop::before { content: ""; position: absolute; inset: 0; background-image: repeating-linear-gradient(45deg, rgba(26,44,92,0.07) 0 8px, transparent 8px 16px); }
-.guide-card__photo--restaurant { background: linear-gradient(140deg, #f3f0e8, #e7ecf7); color: var(--navy-800); }
-.guide-card__photo--restaurant::before { content: ""; position: absolute; inset: 0; background-image: repeating-linear-gradient(90deg, rgba(26,44,92,0.06) 0 2px, transparent 2px 18px); }
-.guide-card__photo--cafe { background: linear-gradient(140deg, #efe7da, #e7ecf7); color: #7a5a2e; }
-.guide-card__photo--dessert { background: linear-gradient(140deg, #f6e9ee, #e7ecf7); color: #a45a75; }
-.guide-card__photo--bar { background: linear-gradient(140deg, var(--navy-900), var(--navy-700)); color: #dfe6f7; }
-.guide-card__photo--bar::before { content: ""; position: absolute; inset: 0; background-image: radial-gradient(rgba(255,255,255,0.08) 1px, transparent 1px); background-size: 10px 10px; }
+
+/* hero 전체를 덮는 Google 이미지 검색 링크 + "PHOTOS ↗" 배지 (카드 전체가 아니라 상단 영역만 클릭) */
+.guide-card__hero-link {
+  position: absolute; inset: 0; z-index: 2; display: block; text-decoration: none; cursor: pointer;
+  -webkit-tap-highlight-color: rgba(72, 99, 181, 0.18);
+}
+.guide-card__hero-link:focus-visible { outline: 3px solid var(--navy-500); outline-offset: -3px; }
+.guide-card__photos-badge {
+  position: absolute; right: 8px; top: 8px; padding: 4px 9px; border-radius: 999px;
+  font-family: var(--font-mono); font-size: 0.6rem; font-weight: 700; letter-spacing: 0.08em; line-height: 1.4;
+  color: var(--navy-800); background: rgba(255,255,255,0.86); border: 1px solid rgba(35,57,122,0.16);
+  box-shadow: 0 1px 4px rgba(10,18,40,0.10); transition: background 0.15s ease, color 0.15s ease;
+}
+.guide-card__hero-link:hover .guide-card__photos-badge { background: var(--navy-800); color: #fff; }
+.guide-card__hero-link:active { background: rgba(35, 57, 122, 0.10); }
+.guide-card__hero-link:active .guide-card__photos-badge { background: var(--navy-800); color: #fff; }
+@media (hover: none) { .guide-card__photos-badge { padding: 5px 10px; } } /* 터치 기기: 조금 더 탭하기 쉬운 크기 */
 .guide-card__body { padding: 15px 16px 16px; display: flex; flex-direction: column; gap: 8px; flex: 1; }
 .guide-card__top { display: flex; justify-content: space-between; align-items: flex-start; gap: 8px; }
 .guide-card__category {

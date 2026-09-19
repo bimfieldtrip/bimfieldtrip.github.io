@@ -1,24 +1,36 @@
-# Shanghai Field Trip Hub — v0.7.3 · Shanghai Guide Images + Hu Gong Guan
+# Shanghai Field Trip Hub — v0.7.4 · Shanghai Guide Photo Search + Illustrations
 
 KAIST BIM Shanghai Field Trip(2026.12.27~12.31)을 위한 **공개 여행 안내 허브**입니다.
 "상하이에서 무엇을 하고, 무엇을 준비하고, 어디를 볼 수 있는가"에만 집중하며, 실제 참가자 운영
 (체크인·버스 탑승·룸 배정·택시팀·정산 등)은 별도의 Private Participant Portal에서 처리합니다.
 
-## 🖼 v0.7.3 — Shanghai Guide 이미지 + Hu Gong Guan (이 라운드에서 바뀐 것)
+## 🔎 v0.7.4 — 사진 없는 카드 정리 + Google 이미지 검색 연결 (Guide만 수정)
 
-Guide의 **이미지 레이어와 EAT 데이터 1건만** 업데이트했습니다. HOME/SCHEDULE/PREP/MY TRIP과 Apps Script 연결은 건드리지 않았습니다.
+- 사진이 없는 모든 카드에 카테고리별 inline SVG 일러스트 placeholder(스카이라인/지도/카메라/쇼핑백/선물상자/
+  접시·포크/컵/케이크/칵테일)와 옅은 패턴 배경을 적용 — 외부 이미지 파일 없음
+- 상단 hero 영역 전체(카드 전체 아님)가 새 탭 Google 이미지 검색으로 연결
+  (`https://www.google.com/search?tbm=isch&q=<encodeURIComponent(query)>`, `target="_blank" rel="noopener noreferrer"`),
+  우상단에 작은 `PHOTOS ↗` 배지
+- `data-guide.js`에 optional 필드 `image_search_query` 추가(56곳 모두 채움). 비어 있으면 `guide.html`이
+  (1) 중국어명 + 上海 → (2) 영문명 + Shanghai 순으로 자동 생성
+- 실제 사진이 있는 카드도 같은 hero 링크를 가지며, 사진 파일이 없거나 로드 실패 시 일러스트 placeholder로 자동 복귀
+- Google 이미지 자체는 다운로드/저장하지 않습니다. Instagram 기능 없음. HOME/SCHEDULE/PREP/MY TRIP/Apps Script 미수정.
+
+## 🖼 v0.7.2 — Shanghai Guide 이미지 레이어 (이 라운드에서 바뀐 것)
+
+Guide의 **이미지 레이어만** 고쳤습니다. Guide 데이터·카드 구조·검색·지도·Apps Script 연결과
+HOME/SCHEDULE/PREP/MY TRIP은 건드리지 않았습니다.
 
 - 재사용 라이선스가 명확한 Wikimedia Commons 랜드마크 8곳(The Louis, The Stage(White Magnolia
   Plaza 외관), Wukang Mansion, 1000 Trees, The Bund, Oriental Pearl, Yu Garden, Jing'an Temple)에
-  외부 Wikimedia 이미지 URL + 정확한 저자/라이선스/Commons file page를 연결. 네트워크 차단 시 기존 placeholder로 자동 복귀
-- `沪公馆·上海菜（外滩豫园店）` 추가: Bund 22 2층. 같은 건물 3층 `李百蟹`와 별도 식당
+  `image` / `image_alt` / `image_source_url` / `image_credit` / `image_license`(+선택 `image_context`)를 연결
 - 카드 사진 우하단에 작은 `Photo: Author · License` 크레딧(누르면 Commons file page가 새 탭). CC0 /
   Public Domain은 라이선스명만 표시. `image_context`가 있으면 좌상단에 라벨 표시
   (The Stage → `WHITE MAGNOLIA PLAZA · EXTERIOR`, 지역 사진이면 `AREA VIEW`)
 - 이미지 파일이 없거나 로드 실패 시 깨진 이미지 대신 기존 category placeholder로 자동 복귀
 - 상업 매장(카페/식당/편집숍/팝마트 등)은 SNS·블로그·검색 이미지를 쓰지 않고 placeholder 유지
-- 현재 v0.7.3 ZIP에는 Wikimedia 사진을 로컬로 복제하지 않고 Commons의 재사용 가능한 이미지 URL을 직접 연결합니다.
-  Wikimedia가 차단되거나 이미지 로드에 실패하면 자동으로 기존 category placeholder가 표시됩니다.
+- 사진 파일은 `assets/guide/`에 두며(웹용 1200~1600px, 가능하면 500KB 이하), 원본 Commons 파일은 수정하지 않고
+  리사이즈한 derivative만 저장합니다. 필요한 파일명은 `assets/guide/README.md` 참고.
 
 v0.7.1은 **v0.7 "Shanghai Guide FINAL"의 QA/보완 라운드**입니다. Shanghai Guide 화면·데이터만
 고쳤고, HOME · SCHEDULE · PREP · MY TRIP과 Apps Script 연결은 이번 라운드에서도 건드리지
@@ -57,7 +69,7 @@ v0.7 "Shanghai Guide FINAL"에서 이미 만들어진 것 (이번 라운드에�
 | 데이터 파일 | `js/data-trip.js` | `js/data-guide.js` (완전 독립) |
 | 성격 | 이번 Field Trip의 **일정** — 날짜·집합시간·방문기관·SAMPLE 저녁식사 | 상하이의 **정보 라이브러리** — 언제든 참고할 수 있는 볼거리/먹거리/쇼핑/기념품 |
 | 상태 표현 | `confirmed`/`candidate`/`tbd`/`demo`/`sample` 배지를 계속 사용 (일정이 아직 확정 전이라는 뜻이므로 의도적으로 유지) | CANDIDATE/후보/SAMPLE/TBD/VERIFY/NOT CONFIRMED 같은 "확정 여부" 표현을 쓰지 않음 |
-| 주요 배열 | `ITINERARY`, `PLACES`, `ORGS`, `SAMPLE_DINNERS`, `FOOD_ITEMS`, `RESTAURANTS`, `SOUVENIR_ITEMS`, `PREP` | `GUIDE_SPOTS`(56곳), `GUIDE_SOUVENIRS`(33개 품목), `GUIDE_RESEARCH_NOTES` + `GUIDE_RESEARCH_NOTES_EXTENDED`(미검증 장소, 화면에 렌더링하지 않음) |
+| 주요 배열 | `ITINERARY`, `PLACES`, `ORGS`, `SAMPLE_DINNERS`, `FOOD_ITEMS`, `RESTAURANTS`, `SOUVENIR_ITEMS`, `PREP` | `GUIDE_SPOTS`(55곳), `GUIDE_SOUVENIRS`(33개 품목), `GUIDE_RESEARCH_NOTES` + `GUIDE_RESEARCH_NOTES_EXTENDED`(미검증 장소, 화면에 렌더링하지 않음) |
 | 화면 | `index.html`, `itinerary.html`, `prep.html` | `guide.html` (SEE/EAT/SHOP/SOUVENIRS/MAP) |
 
 `SOUVENIR_ITEMS[]`(data-trip.js)는 v0.6.1 당시 사용자 위시리스트를 옮겨둔 레거시 배열로, 이제
@@ -183,7 +195,7 @@ GitHub에 저장하지 않는다"는 보안 설명은 사용자 화면이 아니
   TRIP을 거쳐 Private Portal에서만 확인합니다. 각 Day 카드의 방문기관 칩을 누르면 그 기관의 상세
   프로필(`host-orgs/`)로 이동합니다.
 - **SHANGHAI GUIDE**는 이제 SEE/EAT/SHOP/SOUVENIRS/MAP 5탭 구조이며, `js/data-guide.js`의
-  독립 데이터(`GUIDE_SPOTS` 56곳, `GUIDE_SOUVENIRS` 33개 품목)를 사용합니다. 자세한 사용법은 위
+  독립 데이터(`GUIDE_SPOTS` 55곳, `GUIDE_SOUVENIRS` 33개 품목)를 사용합니다. 자세한 사용법은 위
   "🔎 Shanghai Guide 사용법" 참고.
 - **PREP**은 01 BEFORE YOU FLY(기본으로 펼쳐진 체크리스트) 아래로 02 ESSENTIAL APPS / 03
   PAYMENT / 04 CONNECTIVITY / 05 PACKING·POWER / 06 LOCAL TIPS 5개 카테고리가 각각 하나의 큰
@@ -243,9 +255,7 @@ shanghai-field-trip-hub/
 - **v0.6.2**: `my-trip.html`(Private Portal 가기 전 내부 게이트웨이 페이지) 삭제 — MY TRIP이
   모든 지점에서 이 페이지 없이 바로 이동하도록 변경.
 - **v0.7**: Shanghai Guide를 SEE/EAT/SHOP/SOUVENIRS/MAP로 개편, `js/data-guide.js` 신설.
-- **v0.7.1**: FINAL QA — 한국어 aliases, Amap URI, deep link, research notes 보완.
-- **v0.7.2**: 이미지 레이어 구조/placeholder/credit UI 준비.
-- **v0.7.3**: Wikimedia Commons 이미지 8곳 연결 + 沪公馆(外滩豫园店) 추가.
+- **v0.7.1**: 이번 라운드 — 위 상단 변경점 참고. 삭제한 파일 없음.
 
 ## 데이터 수정 방법 (앞으로 정보가 확정될 때마다)
 

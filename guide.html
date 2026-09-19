@@ -67,7 +67,7 @@
   </div>
 </main>
 
-<footer class="site-footer">SHANGHAI FIELD TRIP HUB · v0.7.3 · SHANGHAI GUIDE · IMAGES + HU GONG GUAN</footer>
+<footer class="site-footer">SHANGHAI FIELD TRIP HUB · v0.7.4 · SHANGHAI GUIDE · PHOTO SEARCH + ILLUSTRATIONS</footer>
 <nav class="bottom-nav" data-bottom-nav aria-label="주요 메뉴 (모바일)"></nav>
 
 <script src="js/config.js"></script>
@@ -132,28 +132,133 @@
     return "https://uri.amap.com/search?" + params.toString();
   }
 
-  // ---------- 사진 자리 (실제 사진 없으면 카테고리별로 구분되는 플레이스홀더) ----------
-  // SEE/CAFE/RESTAURANT/DESSERT/SHOP/BAR가 서로 다른 톤(기존 navy/white
-  // 팔레트 내)과 아이콘을 갖도록 구분합니다 — 모든 카드가 똑같아 보이지 않게.
-  const GUIDE_PLACEHOLDER_ICON = {
-    see: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M12 21.5s7-7.3 7-12.3a7 7 0 1 0-14 0c0 5 7 12.3 7 12.3z"/><circle cx="12" cy="9.2" r="2.3"/></svg>',
-    shop: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M6 8.5h12l1 12.5H5L6 8.5z"/><path d="M9 8.5V6.8a3 3 0 0 1 6 0v1.7"/></svg>',
-    restaurant: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M7 2.5v7.5M9.4 2.5v7.5M7 10a2.4 2.4 0 0 1-2.4-2.4V2.5M9.4 10a2.4 2.4 0 0 0 2.4-2.4V2.5M8.2 10v11.5"/><path d="M16.5 2.5c-1.8 0-3 2-3 5s1.2 4.6 3 4.6V21.5"/></svg>',
-    cafe: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M4.5 8.5h13v6a5 5 0 0 1-5 5h-3a5 5 0 0 1-5-5v-6z"/><path d="M17.5 9.5h1.5a2.7 2.7 0 0 1 0 5.4h-1.2"/><path d="M8 4.2c-.6.7-.6 1.3 0 2M11.5 4.2c-.6.7-.6 1.3 0 2"/></svg>',
-    dessert: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M5 11.5h14l-1.4 8.2a1.6 1.6 0 0 1-1.6 1.3H8a1.6 1.6 0 0 1-1.6-1.3L5 11.5z"/><path d="M6.5 11.5a5.5 5.5 0 0 1 11 0"/><path d="M12 3.2v2.4M9 4.4l.6 1.6M15 4.4l-.6 1.6"/></svg>',
-    bar: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M5 4h14l-6 8.4v6.6h3M13 19h-6"/><path d="M10 12.4V19"/></svg>',
+  // ---------- 사진 영역 (v0.7.4) ----------
+  // 모든 카드는 상단 hero(4:3) 영역을 유지합니다. 실제 사진이 있으면 사진을, 없으면
+  // 카테고리별 inline SVG 일러스트 placeholder를 보여주고, hero 영역 전체가
+  // Google 이미지 검색(새 탭)으로 연결됩니다. 이미지는 repo에 저장하지 않습니다.
+  // 일러스트는 외부 파일 없이 inline SVG(stroke=currentColor)로만 그립니다.
+  const PH_SVG = (inner) => `<svg viewBox="0 0 200 150" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false">${inner}</svg>`;
+  const PH_SOFT = 'fill="currentColor" fill-opacity="0.10"';
+  const GUIDE_PLACEHOLDER_ART = {
+    // 볼거리(랜드마크): 스카이라인 + 핀
+    landmark: PH_SVG(`
+      <path d="M18 118H182"/>
+      <rect x="30" y="86" width="22" height="32" rx="2" ${PH_SOFT}/>
+      <rect x="56" y="68" width="20" height="50" rx="2" ${PH_SOFT}/>
+      <path d="M100 118V40"/><circle cx="100" cy="58" r="8" ${PH_SOFT}/><circle cx="100" cy="86" r="5.5" ${PH_SOFT}/><path d="M100 40V30"/>
+      <rect x="124" y="98" width="20" height="20" rx="2" ${PH_SOFT}/>
+      <rect x="148" y="84" width="24" height="34" rx="2" ${PH_SOFT}/>
+      <path d="M154 66s-9-8.5-9-15.5a9 9 0 0 1 18 0c0 7-9 15.5-9 15.5z" stroke-width="2"/><circle cx="154" cy="50.5" r="3"/>
+      <path d="M36 44h10M41 39v10M170 30h8M174 26v8" stroke-width="1.6" opacity="0.6"/>`),
+    // 지역/거리: 접이식 지도 + 경로
+    area: PH_SVG(`
+      <path d="M38 42l40-12 44 12 40-12v82l-40 12-44-12-40 12z" ${PH_SOFT}/>
+      <path d="M78 30v82M122 42v82"/>
+      <path d="M50 96c14-26 30-4 46-20s24-22 46-30" stroke-dasharray="3 6" stroke-width="2"/>
+      <circle cx="50" cy="98" r="4"/>
+      <path d="M144 66s-9-8.5-9-15.5a9 9 0 0 1 18 0c0 7-9 15.5-9 15.5z" ${PH_SOFT}/><circle cx="144" cy="50.5" r="3"/>`),
+    // 체험/포토스팟: 카메라
+    camera: PH_SVG(`
+      <rect x="44" y="52" width="112" height="70" rx="12" ${PH_SOFT}/>
+      <path d="M78 52l7-12h30l7 12"/>
+      <circle cx="100" cy="87" r="22"/><circle cx="100" cy="87" r="11"/>
+      <circle cx="140" cy="68" r="3"/>
+      <path d="M162 34h10M167 29v10M28 40h8M32 36v8" stroke-width="1.6" opacity="0.6"/>`),
+    // 쇼핑: 쇼핑백 + 태그
+    shop: PH_SVG(`
+      <path d="M64 58h72l7 62H57z" ${PH_SOFT}/>
+      <path d="M80 58v-8a20 20 0 0 1 40 0v8"/>
+      <path d="M86 84c3 9 25 9 28 0" opacity="0.7"/>
+      <path d="M150 40l16 16-12 12-16-16z" ${PH_SOFT}/><circle cx="152" cy="46" r="2"/>
+      <path d="M34 50h10M39 45v10" stroke-width="1.6" opacity="0.6"/>`),
+    // 기념품/선물: 선물상자
+    gift: PH_SVG(`
+      <rect x="54" y="72" width="92" height="50" rx="4" ${PH_SOFT}/>
+      <rect x="48" y="56" width="104" height="18" rx="4" ${PH_SOFT}/>
+      <path d="M100 56v66"/>
+      <path d="M100 56c-8-17-28-14-23-4 3 6 15 4 23 4z"/><path d="M100 56c8-17 28-14 23-4-3 6-15 4-23 4z"/>
+      <path d="M32 44h10M37 39v10M164 34h8M168 30v8" stroke-width="1.6" opacity="0.6"/>`),
+    // 식당: 접시 + 포크 + 스푼
+    restaurant: PH_SVG(`
+      <circle cx="100" cy="80" r="36" ${PH_SOFT}/><circle cx="100" cy="80" r="23"/>
+      <path d="M46 40v22a6 6 0 0 0 12 0V40M52 40v24M52 68v50"/>
+      <ellipse cx="152" cy="52" rx="7" ry="12"/><path d="M152 64v54"/>
+      <path d="M92 74c4-6 12-6 16 0" opacity="0.55" stroke-width="1.6"/>`),
+    // 카페/티: 컵 + 김
+    cafe: PH_SVG(`
+      <path d="M56 68h76v24a32 32 0 0 1-32 32h-12a32 32 0 0 1-32-32z" ${PH_SOFT}/>
+      <path d="M132 76h7a12 12 0 0 1 0 24h-11"/>
+      <path d="M44 132h100"/>
+      <path d="M78 56c-6-6 6-10 0-18M94 56c-6-6 6-10 0-18M110 56c-6-6 6-10 0-18" stroke-width="2"/>
+      <path d="M72 82h44" opacity="0.5" stroke-width="1.6"/>`),
+    // 디저트: 케이크 + 체리
+    dessert: PH_SVG(`
+      <rect x="50" y="98" width="100" height="26" rx="5" ${PH_SOFT}/>
+      <rect x="58" y="76" width="84" height="22" rx="5" ${PH_SOFT}/>
+      <path d="M58 76c7-9 14-9 21 0s14 9 21 0 14-9 21 0 14 9 21 0"/>
+      <circle cx="100" cy="60" r="8" ${PH_SOFT}/><path d="M100 52c1-8 7-11 13-11"/>
+      <path d="M66 111h68" opacity="0.5" stroke-width="1.6"/>`),
+    // 바: 칵테일 글라스
+    bar: PH_SVG(`
+      <path d="M58 46h84l-42 46z" ${PH_SOFT}/>
+      <path d="M100 92v32M78 124h44"/>
+      <path d="M118 30l-22 30"/><circle cx="121" cy="27" r="4.5" ${PH_SOFT}/>
+      <circle cx="150" cy="70" r="2.5" opacity="0.6"/><circle cx="46" cy="86" r="3" opacity="0.6"/><circle cx="158" cy="98" r="2" opacity="0.6"/>`),
+    // 그 외: 여행 가방
+    travel: PH_SVG(`
+      <rect x="54" y="56" width="92" height="64" rx="10" ${PH_SOFT}/>
+      <path d="M84 56v-8a8 8 0 0 1 8-8h16a8 8 0 0 1 8 8v8"/>
+      <path d="M54 84h92M92 84v8h16v-8" />`),
   };
+  const GUIDE_PLACEHOLDER_LABEL = {
+    landmark: "LANDMARK", area: "DISTRICT", camera: "PHOTO SPOT", shop: "SHOP", gift: "GIFTS",
+    restaurant: "TABLE", cafe: "CAFE", dessert: "SWEETS", bar: "BAR", travel: "TRAVEL",
+  };
+  // 카테고리/탭 → 일러스트 종류. 데이터는 건드리지 않고 기존 tab/eatType/category만 읽습니다.
   function guidePlaceholderKind(spot) {
-    if (spot.tab === "eat" || (spot.tabs || []).includes("eat")) return spot.eatType || "restaurant";
-    if (spot.tab === "shop" || (spot.tabs || []).includes("shop")) return "shop";
-    return "see";
+    const cat = String(spot.category || "").toUpperCase();
+    const tab = spot.tab || (spot.tabs || [])[0] || "";
+    if (tab === "eat") return ["restaurant", "cafe", "dessert", "bar"].includes(spot.eatType) ? spot.eatType : "restaurant";
+    if (tab === "shop") return cat.includes("SOUVENIR") ? "gift" : "shop";
+    if (tab === "see") {
+      if (cat.includes("EXPERIENCE")) return "camera";
+      if (cat.includes("AREA")) return "area";
+      const nm = `${spot.name || ""} ${spot.name_zh || ""}`;
+      // 거리·구역·수향 마을은 지도 일러스트, 나머지 명소는 스카이라인 일러스트.
+      if (/\b(Road|Rd)\b|Water Town|Tianzifang|Xintiandi|Lujiazui|North Bund|Nanjing East|Circle|Square|Tiandi|路$|路 |滨江|新天地|田子坊|陆家嘴|人民广场|镇$|古镇|天地|新所/i.test(nm)) return "area";
+      return "landmark";
+    }
+    return "travel";
+  }
+  // ---------- Google 이미지 검색 링크 ----------
+  // image_search_query가 있으면 그대로 사용하고, 없으면 (1) 중국어명 + 上海, (2) 영문명 + Shanghai 순으로 자동 생성.
+  function guideImageSearchQuery(spot) {
+    const q = String(spot.image_search_query || "").trim();
+    if (q) return q;
+    const zh = String(spot.name_zh || "").trim();
+    if (zh) return /上海/.test(zh) ? zh : zh + " 上海";
+    const en = String(spot.name || "").trim();
+    return en ? en + " Shanghai" : "";
+  }
+  function guideImageSearchUrl(spot) {
+    const q = guideImageSearchQuery(spot);
+    return q ? "https://www.google.com/search?tbm=isch&q=" + encodeURIComponent(q) : "";
+  }
+  // hero 전체를 덮는 링크(+ 우상단 "PHOTOS ↗" 배지). 새 탭, noopener noreferrer.
+  function guideHeroLinkHtml(spot) {
+    const url = guideImageSearchUrl(spot);
+    if (!url) return "";
+    return `<a class="guide-card__hero-link" href="${escapeAttr(url)}" target="_blank" rel="noopener noreferrer" aria-label="${escapeAttr(spot.name)} — 사진 보기 (Google 이미지 검색, 새 탭)"><span class="guide-card__photos-badge">PHOTOS ↗</span></a>`;
   }
   function guidePlaceholderHtml(spot) {
     const kind = guidePlaceholderKind(spot);
-    const svg = GUIDE_PLACEHOLDER_ICON[kind] || GUIDE_PLACEHOLDER_ICON.see;
-    return `<div class="guide-card__photo guide-card__photo--${kind}">${svg}</div>`;
+    const art = GUIDE_PLACEHOLDER_ART[kind] || GUIDE_PLACEHOLDER_ART.travel;
+    return `<div class="guide-card__photo guide-card__photo--ph guide-card__photo--${kind}" data-photo-spot="${escapeAttr(spot.id)}">` +
+      `<span class="guide-card__ph-art">${art}</span>` +
+      `<span class="guide-card__ph-stamp">SHANGHAI · ${GUIDE_PLACEHOLDER_LABEL[kind] || "TRAVEL"}</span>` +
+      `${guideHeroLinkHtml(spot)}</div>`;
   }
-  // v0.7.3 — 재사용 라이선스가 확인된 Wikimedia Commons 사진을 직접 표시합니다. 크레딧은 사진 우하단의 작은
+  // 재사용 라이선스가 확인된 사진만 표시합니다. 크레딧은 사진 우하단의 작은
   // "Photo: Author · License" 한 줄이며, 누르면 Wikimedia Commons file page가 새 탭에서
   // 열립니다. image_context(예: "AREA VIEW")가 있으면 사진 좌상단에 라벨을 표시해
   // 매장 자체 사진으로 오해되지 않게 합니다.
@@ -175,9 +280,9 @@
     const ctxHtml = spot.image_context
       ? `<span class="guide-card__img-context">${escapeAttr(spot.image_context)}</span>`
       : "";
-    return `<div class="guide-card__photo guide-card__photo--img" data-photo-spot="${escapeAttr(spot.id)}"><img src="${escapeAttr(spot.image)}" alt="${escapeAttr(spot.image_alt || spot.name)}" loading="lazy" decoding="async" />${ctxHtml}${creditHtml}</div>`;
+    return `<div class="guide-card__photo guide-card__photo--img" data-photo-spot="${escapeAttr(spot.id)}"><img src="${escapeAttr(spot.image)}" alt="${escapeAttr(spot.image_alt || spot.name)}" loading="lazy" decoding="async" />${ctxHtml}${guideHeroLinkHtml(spot)}${creditHtml}</div>`;
   }
-  // 이미지 파일이 없거나 로드에 실패하면 깨진 이미지 대신 기존 category placeholder로 되돌립니다.
+  // 이미지 파일이 없거나 로드에 실패하면 깨진 이미지 대신 일러스트 placeholder로 되돌립니다.
   document.addEventListener("error", (ev) => {
     const img = ev.target;
     if (!img || img.tagName !== "IMG") return;
