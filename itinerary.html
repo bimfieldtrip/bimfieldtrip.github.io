@@ -1,0 +1,77 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=5" />
+<title>Itinerary · KAIST BIM Shanghai Field Trip Hub</title>
+<meta name="theme-color" content="#ffffff" />
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns=%27http://www.w3.org/2000/svg%27 viewBox=%270 0 100 100%27%3E%3Ccircle cx=%2750%27 cy=%2750%27 r=%2746%27 fill=%27%23ffffff%27 stroke=%27%231a2c5c%27 stroke-width=%274%27/%3E%3Ccircle cx=%2750%27 cy=%2730%27 r=%277%27 fill=%27%231a2c5c%27/%3E%3Ccircle cx=%2728%27 cy=%2770%27 r=%277%27 fill=%27%234863b5%27/%3E%3Ccircle cx=%2772%27 cy=%2770%27 r=%277%27 fill=%27%234863b5%27/%3E%3C/svg%3E" />
+<link rel="stylesheet" href="css/style.css" />
+</head>
+<body data-page="itinerary">
+<a class="skip-link" href="#main">본문 바로가기</a>
+
+<div class="demo-strip"><span class="demo-strip__dot"></span><strong>DEMO MODE</strong>&nbsp;— Course Prototype &middot; Dummy Data</div>
+
+<header class="site-header">
+  <div class="site-header__bar">
+    <a class="brand" href="index.html">
+      <span class="brand__mark" data-brand-mark></span>
+      <span class="brand__text">KAIST BIM</span>
+      <span class="brand__sub">Shanghai Field Trip Hub</span>
+    </a>
+    <button class="nav-toggle" data-nav-toggle aria-label="메뉴 열기" aria-expanded="false"></button>
+  </div>
+  <nav class="site-nav" data-site-nav aria-label="주요 메뉴"><ul class="site-nav__list"></ul></nav>
+</header>
+
+<main id="main" class="container">
+  <div class="page-head">
+    <div class="kicker">SCHEDULE</div>
+    <h1>Schedule</h1>
+    <p class="page-head__desc">2026.12.27 ~ 12.31, 실제 Field Trip 기간입니다. 아래는 Day별 대략적인 이동 흐름입니다. 정확한 시간·집합 장소·버스 탑승 정보는 로그인 후 <a href="#" onclick="goToPrivatePortal(event)">My Trip</a>(Private Participant Portal)에서 확인하세요.</p>
+  </div>
+
+  <div class="notice notice--tbd"><strong>SAMPLE MODE</strong> — 날짜(기간)는 확정입니다. 아래 방문기관·동선은 기능 검증을 위한 SAMPLE이며, 실제 공식 일정이 확정되면 교체됩니다.</div>
+
+  <p class="text-faint mono" style="margin:0 0 10px; font-size:.76rem;">방문기관 상세 프로필은 각 Day 카드의 기관 이름을 누르거나 <a href="host-orgs.html">Field Visits 전체 목록</a>에서 확인하세요.</p>
+
+  <div id="itinerary-root" class="grid"></div>
+</main>
+
+<footer class="site-footer">SHANGHAI FIELD TRIP HUB · v0.6.3 · PORTAL LINK HOTFIX</footer>
+<nav class="bottom-nav" data-bottom-nav aria-label="주요 메뉴 (모바일)"></nav>
+
+<script src="js/config.js"></script>
+<script src="js/data-trip.js"></script>
+<script src="js/main.js"></script>
+<script>
+  // v0.6 — Schedule은 더 이상 상세 시간표(Hour-by-hour)나 Trip Map schematic을
+  // 그리지 않습니다. 각 Day의 officialSchedule.note는 이미 "A → B → C" 형태의
+  // 짧은 동선 요약으로 작성되어 있어(data-trip.js), 새 데이터를 만들지 않고
+  // 그대로 재사용합니다. 정확한 시간·집합 장소·버스 탑승 상태는 My Trip(Private
+  // Participant Portal)에서만 확인합니다.
+  function orgChipsForDay(day) {
+    const orgIds = [...new Set((day.schedule || []).filter((s) => s.org_id).map((s) => s.org_id))];
+    const orgs = orgIds.map((id) => ORGS.find((o) => o.id === id)).filter(Boolean);
+    if (!orgs.length) return "";
+    return `<div class="btn-row" style="margin-top:10px;">${orgs.map((o) => `<a class="btn btn--sm" href="host-orgs/${o.id}.html">${o.name_ko.split("(")[0].trim()} ${icon("chevron")}</a>`).join("")}</div>`;
+  }
+
+  function renderItinerary() {
+    const root = document.getElementById("itinerary-root");
+    root.innerHTML = ITINERARY.map((day) => `
+      <div class="card">
+        <div class="day-card__header">
+          <div><span class="day-card__label">${day.label}</span><span class="day-card__date"> &middot; ${day.date} (${day.weekday})</span></div>
+          ${statusBadge(day.status)}
+        </div>
+        <p class="text-muted" style="margin-bottom:0;">${(day.officialSchedule && day.officialSchedule.note) || day.title}</p>
+        ${orgChipsForDay(day)}
+      </div>
+    `).join("");
+  }
+  document.addEventListener("DOMContentLoaded", renderItinerary);
+</script>
+</body>
+</html>

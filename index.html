@@ -1,0 +1,49 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=5" />
+<title>Home · KAIST BIM Shanghai Field Trip Hub</title>
+<meta name="description" content="KAIST BIM Bio Expedition — Shanghai Field Trip 2026 정보 허브 (DEMO)" />
+<meta name="theme-color" content="#ffffff" />
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns=%27http://www.w3.org/2000/svg%27 viewBox=%270 0 100 100%27%3E%3Ccircle cx=%2750%27 cy=%2750%27 r=%2746%27 fill=%27%23ffffff%27 stroke=%27%231a2c5c%27 stroke-width=%274%27/%3E%3Ccircle cx=%2750%27 cy=%2730%27 r=%277%27 fill=%27%231a2c5c%27/%3E%3Ccircle cx=%2728%27 cy=%2770%27 r=%277%27 fill=%27%234863b5%27/%3E%3Ccircle cx=%2772%27 cy=%2770%27 r=%277%27 fill=%27%234863b5%27/%3E%3C/svg%3E" />
+<link rel="stylesheet" href="css/style.css" />
+</head>
+<body data-page="home">
+<a class="skip-link" href="#main">본문 바로가기</a>
+
+<div class="demo-strip"><span class="demo-strip__dot"></span><strong>DEMO MODE</strong>&nbsp;— Course Prototype &middot; Dummy Data</div>
+
+<header class="site-header">
+  <div class="site-header__bar">
+    <a class="brand" href="index.html">
+      <span class="brand__mark" data-brand-mark></span>
+      <span class="brand__text">KAIST BIM</span>
+      <span class="brand__sub">Shanghai Field Trip Hub</span>
+    </a>
+    <button class="nav-toggle" data-nav-toggle aria-label="메뉴 열기" aria-expanded="false"></button>
+  </div>
+  <nav class="site-nav" data-site-nav aria-label="주요 메뉴"><ul class="site-nav__list"></ul></nav>
+</header>
+
+<main id="main" class="container">
+  <div class="sample-banner">
+    <span class="sample-banner__dot"></span>
+    <div class="sample-banner__body">
+      <strong>SAMPLE MODE</strong>
+      <p>Trip details shown here (schedule, stay, host organizations) are prototype SAMPLE data. Official schedule TBD.<br>일정 · 숙소 · 방문기관 등 아직 확정되지 않은 여행 정보는 프로토타입 확인을 위한 SAMPLE이며 공식 확정 일정이 아닙니다.</p>
+    </div>
+  </div>
+
+  <div id="today-root"><!-- home.js가 렌더링 --></div>
+</main>
+
+<footer class="site-footer">SHANGHAI FIELD TRIP HUB · v0.6.3 · PORTAL LINK HOTFIX</footer>
+<nav class="bottom-nav" data-bottom-nav aria-label="주요 메뉴 (모바일)"></nav>
+
+<script src="js/config.js"></script>
+<script src="js/data-trip.js"></script>
+<script src="js/main.js"></script>
+<script src="js/home.js"></script>
+</body>
+</html>

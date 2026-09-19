@@ -1,0 +1,302 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=5" />
+<title>Prep · KAIST BIM Shanghai Field Trip Hub</title>
+<meta name="theme-color" content="#ffffff" />
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns=%27http://www.w3.org/2000/svg%27 viewBox=%270 0 100 100%27%3E%3Ccircle cx=%2750%27 cy=%2750%27 r=%2746%27 fill=%27%23ffffff%27 stroke=%27%231a2c5c%27 stroke-width=%274%27/%3E%3Ccircle cx=%2750%27 cy=%2730%27 r=%277%27 fill=%27%231a2c5c%27/%3E%3Ccircle cx=%2728%27 cy=%2770%27 r=%277%27 fill=%27%234863b5%27/%3E%3Ccircle cx=%2772%27 cy=%2770%27 r=%277%27 fill=%27%234863b5%27/%3E%3C/svg%3E" />
+<link rel="stylesheet" href="css/style.css" />
+</head>
+<body data-page="prep">
+<a class="skip-link" href="#main">본문 바로가기</a>
+
+<div class="demo-strip"><span class="demo-strip__dot"></span><strong>DEMO MODE</strong>&nbsp;— Course Prototype &middot; Dummy Data</div>
+
+<header class="site-header">
+  <div class="site-header__bar">
+    <a class="brand" href="index.html">
+      <span class="brand__mark" data-brand-mark></span>
+      <span class="brand__text">KAIST BIM</span>
+      <span class="brand__sub">Shanghai Field Trip Hub</span>
+    </a>
+    <button class="nav-toggle" data-nav-toggle aria-label="메뉴 열기" aria-expanded="false"></button>
+  </div>
+  <nav class="site-nav" data-site-nav aria-label="주요 메뉴"><ul class="site-nav__list"></ul></nav>
+</header>
+
+<main id="main" class="container">
+  <div class="page-head">
+    <div class="kicker">BEFORE WE GO</div>
+    <h1>Prep</h1>
+    <p class="page-head__desc">출국 전 체크리스트와 중국 현지 세팅(앱 · 결제 · 통신 · 이동 · 팁)을 모아둔 페이지입니다. 안내 강도에 따라 ESSENTIAL / OPTIONAL / BACKUP / TRAVELER TIP / CHECK BEFORE DEPARTURE / REFERENCE로 구분되어 있습니다.</p>
+  </div>
+
+  <div class="notice notice--tbd"><strong>TRAVELER TIP은 공식 확정 정보가 아닙니다</strong> — 개인 경험을 바탕으로 한 참고 정보이며, ESSENTIAL/CHECK BEFORE DEPARTURE 항목만 공식 확인이 필요한 수준으로 다뤄집니다. 자세한 내용은 각 카드의 라벨을 확인하세요.</div>
+
+  <div class="manifest-title" style="margin-top:0;"><span class="manifest-title__num">01</span>BEFORE YOU FLY<span class="manifest-title__line"></span></div>
+  <div class="card" id="checklist-root"></div>
+
+  <details class="details-box details-box--category">
+    <summary><span class="manifest-title__num">02</span>ESSENTIAL APPS<span class="manifest-title__line"></span></summary>
+    <div class="details-box__body">
+      <p class="text-muted" id="essential-apps-note" style="margin-bottom:12px; font-size:.86rem;"></p>
+      <div class="grid grid--3" id="essential-apps-root"></div>
+      <details class="details-box" style="margin-top:14px;">
+        <summary>OPTIONAL APPS 더보기</summary>
+        <div class="grid grid--3" id="optional-apps-root" style="margin-top:12px;"></div>
+      </details>
+    </div>
+  </details>
+
+  <details class="details-box details-box--category">
+    <summary><span class="manifest-title__num">03</span>PAYMENT<span class="manifest-title__line"></span></summary>
+    <div class="details-box__body">
+      <div id="payment-primary-root"></div>
+      <details class="details-box" style="margin-top:10px;">
+        <summary>BACKUP 결제 방법 보기</summary>
+        <div id="payment-backup-root" style="margin-top:12px;"></div>
+      </details>
+    </div>
+  </details>
+
+  <details class="details-box details-box--category">
+    <summary><span class="manifest-title__num">04</span>CONNECTIVITY<span class="manifest-title__line"></span></summary>
+    <div class="details-box__body">
+      <div id="connectivity-root"></div>
+      <details class="details-box" style="margin-top:10px;">
+        <summary>참고 — eSIM 추천 링크</summary>
+        <div id="connectivity-reference-root" style="margin-top:12px;"></div>
+      </details>
+    </div>
+  </details>
+
+  <details class="details-box details-box--category">
+    <summary><span class="manifest-title__num">05</span>PACKING / POWER<span class="manifest-title__line"></span></summary>
+    <div class="details-box__body">
+      <div id="powerbank-root"></div>
+      <div id="emergency-cash-root" style="margin-top:12px;"></div>
+    </div>
+  </details>
+
+  <details class="details-box details-box--category">
+    <summary><span class="manifest-title__num">06</span>LOCAL TIPS<span class="manifest-title__line"></span></summary>
+    <div class="details-box__body">
+      <p class="text-muted" id="getting-around-note" style="margin-bottom:12px; font-size:.86rem;"></p>
+      <div class="grid grid--3" id="getting-around-root"></div>
+      <div class="grid grid--3" id="local-tips-root" style="margin-top:12px;"></div>
+    </div>
+  </details>
+</main>
+
+<footer class="site-footer">SHANGHAI FIELD TRIP HUB · v0.6.3 · PORTAL LINK HOTFIX</footer>
+<nav class="bottom-nav" data-bottom-nav aria-label="주요 메뉴 (모바일)"></nav>
+
+<script src="js/config.js"></script>
+<script src="js/data-trip.js"></script>
+<script src="js/main.js"></script>
+<script>
+  // Prep — v0.5에서 실제 출국 전 체크리스트 수준으로 보강했습니다. 모든 앱/결제/통신/
+  // 이동/팁 내용은 사용자가 직접 제공한 내용만 그대로 사용했으며, 새로 조사해서 추가한
+  // 항목은 없습니다 (Disney 관련 내용도 포함하지 않습니다).
+  function prepStatusBadge(status) {
+    const label = (typeof PREP_STATUS_LABEL !== "undefined" && PREP_STATUS_LABEL[status]) || String(status || "").toUpperCase();
+    const cls = "tag--" + String(status || "").toLowerCase();
+    return `<span class="tag ${cls}">${label}</span>`;
+  }
+
+  // -------- BEFORE YOU FLY 체크리스트 (localStorage-backed, 단순한 방어 처리만) --------
+  // 복잡한 마이그레이션 시스템을 만들 필요는 없다는 지침에 따라, 알 수 없는 id는
+  // 그냥 무시하는 아주 단순한 구조로 유지합니다. 참가자별 데이터가 아니라 "이 브라우저"
+  // 기준으로 하나만 관리합니다 (SAMPLE_STATE의 참가자별 체크인/탑승 상태와는 별개).
+  const PREP_CHECKLIST_KEY = "kaistbim_shanghai_v05_prep_checklist";
+  function loadPrepChecklist() {
+    try {
+      const raw = JSON.parse(localStorage.getItem(PREP_CHECKLIST_KEY) || "{}");
+      return raw && typeof raw === "object" ? raw : {};
+    } catch (e) { return {}; }
+  }
+  function savePrepChecklist(state) {
+    try { localStorage.setItem(PREP_CHECKLIST_KEY, JSON.stringify(state)); } catch (e) { /* DEMO — 저장 실패 시 조용히 무시 */ }
+  }
+
+  function renderChecklist() {
+    const root = document.getElementById("checklist-root");
+    const state = loadPrepChecklist();
+    const items = PREP.beforeYouFly.items;
+    const doneCount = items.filter((it) => !!state[it.id]).length;
+    const pct = items.length ? Math.round((doneCount / items.length) * 100) : 0;
+
+    root.innerHTML = `
+      <p class="text-muted" style="margin-bottom:10px; font-size:.86rem;">${PREP.beforeYouFly.intro}</p>
+      <div class="prep-progress">
+        <div class="progress-track" style="flex:1;"><div class="progress-fill" style="width:${pct}%"></div></div>
+        <span class="prep-progress__text">${doneCount} / ${items.length} DONE</span>
+      </div>
+      ${items.map((it) => {
+        const checked = !!state[it.id];
+        return `
+        <div class="prep-check">
+          <button class="prep-check__box ${checked ? "is-checked" : ""}" data-check="${it.id}" type="button" aria-pressed="${checked}">${checked ? icon("check") : ""}</button>
+          <label class="prep-check__label ${checked ? "is-checked" : ""}" data-check-label="${it.id}">${it.label}</label>
+          ${prepStatusBadge(it.status)}
+        </div>`;
+      }).join("")}
+      <p class="text-faint mono" style="margin-top:12px; font-size:.72rem;">DEMO — 체크 상태는 이 브라우저에만 저장됩니다 (다른 사람·다른 기기와 공유되지 않습니다).</p>
+    `;
+
+    root.querySelectorAll("[data-check]").forEach((btn) => {
+      btn.addEventListener("click", () => {
+        const id = btn.getAttribute("data-check");
+        const s = loadPrepChecklist();
+        s[id] = !s[id];
+        savePrepChecklist(s);
+        renderChecklist();
+      });
+    });
+  }
+
+  // -------- ESSENTIAL / OPTIONAL APPS --------
+  function appCardHtml(app) {
+    return `
+      <div class="card">
+        <div style="display:flex; justify-content:space-between; align-items:flex-start; gap:8px; margin-bottom:8px;">
+          <div>
+            <div style="font-weight:800;">${app.name}</div>
+            <div class="text-faint mono" style="font-size:.76rem;">${app.name_zh || ""}</div>
+          </div>
+          ${prepStatusBadge(app.status)}
+        </div>
+        <ul style="margin:0; padding-left:18px; color:var(--ink-dim); font-size:.86rem;">
+          ${(app.purpose || []).map((p) => `<li>${p}</li>`).join("")}
+        </ul>
+      </div>
+    `;
+  }
+
+  // -------- PAYMENT (v0.6 — 기본 결제 수단은 바로 보이고, BACKUP은 details로 접어둡니다) --------
+  function renderPayment() {
+    const p = PREP.payment;
+    document.getElementById("payment-primary-root").innerHTML = `
+      <div class="card">
+        <div style="display:flex; justify-content:space-between; align-items:center; gap:8px; margin-bottom:6px;">
+          <div style="font-weight:800;">${p.primary.name} (기본 결제 수단)</div>
+          ${prepStatusBadge(p.primary.status)}
+        </div>
+        <p class="text-muted" style="margin-bottom:0;">${p.primary.note}</p>
+      </div>
+    `;
+    document.getElementById("payment-backup-root").innerHTML = `
+      <div class="card" style="border-color:var(--navy-500);">
+        <div style="display:flex; justify-content:space-between; align-items:center; gap:8px; margin-bottom:8px;">
+          <div style="font-weight:800;">${p.backup.title}</div>
+          ${prepStatusBadge(p.backup.status)}
+        </div>
+        <ol style="margin:0 0 10px; padding-left:18px; color:var(--ink-dim); font-size:.86rem;">
+          ${p.backup.steps.map((s) => `<li>${s}</li>`).join("")}
+        </ol>
+        <p class="text-faint" style="margin-bottom:0; font-size:.82rem;">${p.backup.note}</p>
+      </div>
+    `;
+  }
+
+  // -------- CONNECTIVITY (v0.6 — 핵심 안내는 바로 보이고, 참고 링크는 details로 접어둡니다) --------
+  function renderConnectivity() {
+    const c = PREP.connectivity;
+    document.getElementById("connectivity-root").innerHTML = `
+      <div class="card">
+        <p class="text-muted" style="margin-bottom:10px;">${c.note}</p>
+        <div class="btn-row">${c.options.map((o) => `<span class="filter-chip" style="cursor:default;">${o}</span>`).join("")}</div>
+      </div>
+    `;
+    document.getElementById("connectivity-reference-root").innerHTML = `
+      <div class="card">
+        <div style="display:flex; justify-content:space-between; align-items:center; gap:8px; margin-bottom:6px;">
+          <div style="font-weight:800;">${c.reference.title}</div>
+          ${prepStatusBadge(c.reference.status)}
+        </div>
+        <p class="text-muted" style="margin-bottom:8px;">${c.reference.note}</p>
+        <a class="btn btn--sm" href="${c.reference.url}" target="_blank" rel="noopener">${icon("pin")}<span>REFERENCE LINK</span></a>
+      </div>
+    `;
+  }
+
+  // -------- POWER BANK --------
+  function renderPowerBank() {
+    const pb = PREP.powerBank;
+    document.getElementById("powerbank-root").innerHTML = `
+      <div class="card">
+        <div style="display:flex; justify-content:space-between; align-items:center; gap:8px; margin-bottom:6px;">
+          <div style="font-weight:800;">${pb.title}</div>
+          ${prepStatusBadge(pb.status)}
+        </div>
+        <p class="text-muted" style="margin-bottom:8px;">${pb.note}</p>
+        <p class="text-faint" style="margin-bottom:0; font-size:.82rem;">${pb.caution}</p>
+      </div>
+    `;
+  }
+
+  // -------- GETTING AROUND --------
+  function gettingAroundCardHtml(item) {
+    return `
+      <div class="card">
+        <div style="display:flex; justify-content:space-between; align-items:center; gap:8px; margin-bottom:6px;">
+          <div style="font-weight:800;">${item.title}</div>
+          ${prepStatusBadge(item.status)}
+        </div>
+        <p class="text-muted" style="margin-bottom:0; font-size:.88rem;">${item.note}</p>
+      </div>
+    `;
+  }
+
+  // -------- EMERGENCY CASH --------
+  function renderEmergencyCash() {
+    const ec = PREP.emergencyCash;
+    document.getElementById("emergency-cash-root").innerHTML = `
+      <div class="card">
+        <div style="display:flex; justify-content:space-between; align-items:center; gap:8px; margin-bottom:6px;">
+          <div style="font-weight:800;">${ec.title}</div>
+          ${prepStatusBadge(ec.status)}
+        </div>
+        <p class="text-muted" style="margin-bottom:8px;">${ec.note}</p>
+        <span class="tag tag--outline">${ec.example}</span>
+      </div>
+    `;
+  }
+
+  // -------- LOCAL TIPS --------
+  function localTipCardHtml(tip) {
+    return `
+      <div class="card">
+        <div style="display:flex; justify-content:space-between; align-items:center; gap:8px; margin-bottom:6px;">
+          <div style="font-weight:800;">${tip.title}</div>
+          ${prepStatusBadge(tip.status)}
+        </div>
+        <p class="text-muted" style="margin-bottom:0; font-size:.88rem;">${tip.note}</p>
+      </div>
+    `;
+  }
+
+  function renderPrep() {
+    renderChecklist();
+
+    document.getElementById("essential-apps-note").textContent = PREP.essentialAppsNote;
+    document.getElementById("essential-apps-root").innerHTML = PREP.essentialApps.map(appCardHtml).join("");
+    document.getElementById("optional-apps-root").innerHTML = PREP.optionalApps.map(appCardHtml).join("");
+
+    renderPayment();
+    renderConnectivity();
+    renderPowerBank();
+
+    document.getElementById("getting-around-note").textContent = PREP.gettingAroundNote;
+    document.getElementById("getting-around-root").innerHTML = PREP.gettingAround.map(gettingAroundCardHtml).join("");
+
+    renderEmergencyCash();
+
+    document.getElementById("local-tips-root").innerHTML = PREP.localTips.map(localTipCardHtml).join("");
+  }
+
+  document.addEventListener("DOMContentLoaded", renderPrep);
+</script>
+</body>
+</html>
