@@ -67,7 +67,7 @@
   </div>
 </main>
 
-<footer class="site-footer">SHANGHAI FIELD TRIP HUB · v0.7.4 · SHANGHAI GUIDE · PHOTO SEARCH + ILLUSTRATIONS</footer>
+<footer class="site-footer">SHANGHAI FIELD TRIP HUB · v0.7.5 · SHANGHAI GUIDE · ILLUSTRATION SYSTEM</footer>
 <nav class="bottom-nav" data-bottom-nav aria-label="주요 메뉴 (모바일)"></nav>
 
 <script src="js/config.js"></script>
@@ -132,103 +132,226 @@
     return "https://uri.amap.com/search?" + params.toString();
   }
 
-  // ---------- 사진 영역 (v0.7.4) ----------
+  // ---------- 사진 영역 + 일러스트 시스템 (v0.7.5) ----------
   // 모든 카드는 상단 hero(4:3) 영역을 유지합니다. 실제 사진이 있으면 사진을, 없으면
   // 카테고리별 inline SVG 일러스트 placeholder를 보여주고, hero 영역 전체가
   // Google 이미지 검색(새 탭)으로 연결됩니다. 이미지는 repo에 저장하지 않습니다.
   // 일러스트는 외부 파일 없이 inline SVG(stroke=currentColor)로만 그립니다.
-  const PH_SVG = (inner) => `<svg viewBox="0 0 200 150" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false">${inner}</svg>`;
-  const PH_SOFT = 'fill="currentColor" fill-opacity="0.10"';
-  const GUIDE_PLACEHOLDER_ART = {
-    // 볼거리(랜드마크): 스카이라인 + 핀
-    landmark: PH_SVG(`
-      <path d="M18 118H182"/>
-      <rect x="30" y="86" width="22" height="32" rx="2" ${PH_SOFT}/>
-      <rect x="56" y="68" width="20" height="50" rx="2" ${PH_SOFT}/>
-      <path d="M100 118V40"/><circle cx="100" cy="58" r="8" ${PH_SOFT}/><circle cx="100" cy="86" r="5.5" ${PH_SOFT}/><path d="M100 40V30"/>
-      <rect x="124" y="98" width="20" height="20" rx="2" ${PH_SOFT}/>
-      <rect x="148" y="84" width="24" height="34" rx="2" ${PH_SOFT}/>
-      <path d="M154 66s-9-8.5-9-15.5a9 9 0 0 1 18 0c0 7-9 15.5-9 15.5z" stroke-width="2"/><circle cx="154" cy="50.5" r="3"/>
-      <path d="M36 44h10M41 39v10M170 30h8M174 26v8" stroke-width="1.6" opacity="0.6"/>`),
-    // 지역/거리: 접이식 지도 + 경로
-    area: PH_SVG(`
-      <path d="M38 42l40-12 44 12 40-12v82l-40 12-44-12-40 12z" ${PH_SOFT}/>
-      <path d="M78 30v82M122 42v82"/>
-      <path d="M50 96c14-26 30-4 46-20s24-22 46-30" stroke-dasharray="3 6" stroke-width="2"/>
-      <circle cx="50" cy="98" r="4"/>
-      <path d="M144 66s-9-8.5-9-15.5a9 9 0 0 1 18 0c0 7-9 15.5-9 15.5z" ${PH_SOFT}/><circle cx="144" cy="50.5" r="3"/>`),
-    // 체험/포토스팟: 카메라
-    camera: PH_SVG(`
-      <rect x="44" y="52" width="112" height="70" rx="12" ${PH_SOFT}/>
-      <path d="M78 52l7-12h30l7 12"/>
-      <circle cx="100" cy="87" r="22"/><circle cx="100" cy="87" r="11"/>
-      <circle cx="140" cy="68" r="3"/>
-      <path d="M162 34h10M167 29v10M28 40h8M32 36v8" stroke-width="1.6" opacity="0.6"/>`),
-    // 쇼핑: 쇼핑백 + 태그
-    shop: PH_SVG(`
-      <path d="M64 58h72l7 62H57z" ${PH_SOFT}/>
-      <path d="M80 58v-8a20 20 0 0 1 40 0v8"/>
-      <path d="M86 84c3 9 25 9 28 0" opacity="0.7"/>
-      <path d="M150 40l16 16-12 12-16-16z" ${PH_SOFT}/><circle cx="152" cy="46" r="2"/>
-      <path d="M34 50h10M39 45v10" stroke-width="1.6" opacity="0.6"/>`),
-    // 기념품/선물: 선물상자
-    gift: PH_SVG(`
-      <rect x="54" y="72" width="92" height="50" rx="4" ${PH_SOFT}/>
-      <rect x="48" y="56" width="104" height="18" rx="4" ${PH_SOFT}/>
-      <path d="M100 56v66"/>
-      <path d="M100 56c-8-17-28-14-23-4 3 6 15 4 23 4z"/><path d="M100 56c8-17 28-14 23-4-3 6-15 4-23 4z"/>
-      <path d="M32 44h10M37 39v10M164 34h8M168 30v8" stroke-width="1.6" opacity="0.6"/>`),
-    // 식당: 접시 + 포크 + 스푼
-    restaurant: PH_SVG(`
-      <circle cx="100" cy="80" r="36" ${PH_SOFT}/><circle cx="100" cy="80" r="23"/>
-      <path d="M46 40v22a6 6 0 0 0 12 0V40M52 40v24M52 68v50"/>
-      <ellipse cx="152" cy="52" rx="7" ry="12"/><path d="M152 64v54"/>
-      <path d="M92 74c4-6 12-6 16 0" opacity="0.55" stroke-width="1.6"/>`),
-    // 카페/티: 컵 + 김
-    cafe: PH_SVG(`
-      <path d="M56 68h76v24a32 32 0 0 1-32 32h-12a32 32 0 0 1-32-32z" ${PH_SOFT}/>
-      <path d="M132 76h7a12 12 0 0 1 0 24h-11"/>
-      <path d="M44 132h100"/>
-      <path d="M78 56c-6-6 6-10 0-18M94 56c-6-6 6-10 0-18M110 56c-6-6 6-10 0-18" stroke-width="2"/>
-      <path d="M72 82h44" opacity="0.5" stroke-width="1.6"/>`),
-    // 디저트: 케이크 + 체리
-    dessert: PH_SVG(`
-      <rect x="50" y="98" width="100" height="26" rx="5" ${PH_SOFT}/>
-      <rect x="58" y="76" width="84" height="22" rx="5" ${PH_SOFT}/>
-      <path d="M58 76c7-9 14-9 21 0s14 9 21 0 14-9 21 0 14 9 21 0"/>
-      <circle cx="100" cy="60" r="8" ${PH_SOFT}/><path d="M100 52c1-8 7-11 13-11"/>
-      <path d="M66 111h68" opacity="0.5" stroke-width="1.6"/>`),
-    // 바: 칵테일 글라스
-    bar: PH_SVG(`
-      <path d="M58 46h84l-42 46z" ${PH_SOFT}/>
-      <path d="M100 92v32M78 124h44"/>
-      <path d="M118 30l-22 30"/><circle cx="121" cy="27" r="4.5" ${PH_SOFT}/>
-      <circle cx="150" cy="70" r="2.5" opacity="0.6"/><circle cx="46" cy="86" r="3" opacity="0.6"/><circle cx="158" cy="98" r="2" opacity="0.6"/>`),
-    // 그 외: 여행 가방
-    travel: PH_SVG(`
-      <rect x="54" y="56" width="92" height="64" rx="10" ${PH_SOFT}/>
-      <path d="M84 56v-8a8 8 0 0 1 8-8h16a8 8 0 0 1 8 8v8"/>
-      <path d="M54 84h92M92 84v8h16v-8" />`),
+  const PH_SOFT = 'fill="currentColor" fill-opacity="0.12"';
+  const PH_PAPER = 'fill="#fff" fill-opacity="0.92"';
+  // 공통 프레임: 아치 창(모든 타입 공통 모티프) + 바닥선 + 작은 반짝임 → "같은 시리즈"로 보이게 하는 장치.
+  const PH_FRAME = '<path d="M48 132V72a52 52 0 0 1 104 0v60z" fill="#fff" fill-opacity="0.55" stroke="none"/>' +
+    '<path d="M30 132h140" stroke-opacity="0.55"/>' +
+    '<path d="M34 46h9M38.5 41.5v9M162 34h8M166 30v8" stroke-width="1.6" stroke-opacity="0.6"/>';
+  const PH_SVG = (inner) => `<svg viewBox="0 0 200 150" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false">${PH_FRAME}${inner}</svg>`;
+  const phPin = (x, y) => `<path d="M${x} ${y}s-8-7.5-8-14a8 8 0 0 1 16 0c0 6.5-8 14-8 14z" ${PH_PAPER}/><circle cx="${x}" cy="${y - 14}" r="3"/>`;
+  const phWin = (cx, y) => `<path d="M${cx - 5} ${y + 11}V${y + 5}a5 5 0 0 1 10 0v6z" ${PH_PAPER}/>`;
+
+  // ---------- 일러스트 시스템: 6개 타입 × 여러 변형(variant) ----------
+  // 타입(type): see / cafe / eat / shop / gift / view  — 색조·배경 패턴·스탬프 문구가 타입별로 정해집니다.
+  // 변형(variant): 같은 타입 안에서 모티프만 달라집니다(예: eat → 접시/국수/딤섬/꼬치/웍).
+  // 각 변형은 { label, art } 로만 구성되어 있어, 새 모티프를 추가하려면 여기에 한 줄만 넣으면 됩니다.
+  const GUIDE_ILLUSTRATIONS = {
+    // 1) SEE — 관광 · 거리 · 명소
+    see: {
+      skyline: { label: "LANDMARK", art: PH_SVG(`
+        <rect x="50" y="106" width="14" height="26" rx="1.5" ${PH_SOFT}/><rect x="66" y="90" width="16" height="42" rx="1.5" ${PH_SOFT}/>
+        <path d="M100 132V40M100 40V30M92 132l8-20 8 20"/><circle cx="100" cy="60" r="9" ${PH_SOFT}/><circle cx="100" cy="90" r="6" ${PH_SOFT}/>
+        <rect x="118" y="100" width="16" height="32" rx="1.5" ${PH_SOFT}/><rect x="136" y="112" width="14" height="20" rx="1.5" ${PH_SOFT}/>
+        <path d="M72 100h4M72 108h4M72 116h4M124 108h4M124 116h4" stroke-width="1.6" stroke-opacity="0.5"/>
+        ${phPin(140, 90)}`) },
+      map: { label: "DISTRICT", art: PH_SVG(`
+        <path d="M54 46l30-10 32 10 30-10v76l-30 10-32-10-30 10z" ${PH_SOFT}/><path d="M84 36v76M116 46v76"/>
+        <path d="M64 100c12-22 22-2 34-16s18-20 38-26" stroke-dasharray="3 6"/><circle cx="64" cy="100" r="3.5" ${PH_PAPER}/>
+        ${phPin(136, 62)}`) },
+      street: { label: "STREET WALK", art: PH_SVG(`
+        <path d="M74 132L94 78h12l20 54z" ${PH_SOFT}/><path d="M100 126v-6M100 112v-6M100 98v-6" stroke-opacity="0.6"/>
+        <rect x="90" y="62" width="20" height="16" rx="2" ${PH_SOFT}/>
+        <path d="M60 132V110"/><circle cx="60" cy="98" r="14" ${PH_SOFT}/><path d="M142 132V114"/><circle cx="142" cy="103" r="11" ${PH_SOFT}/>
+        ${phPin(100, 58)}`) },
+      watertown: { label: "WATER TOWN", art: PH_SVG(`
+        <rect x="52" y="94" width="38" height="38" rx="2" ${PH_SOFT}/><path d="M46 96l25-22 25 22z" ${PH_SOFT}/>
+        <path d="M63 132v-14a8 8 0 0 1 16 0v14" ${PH_PAPER}/>
+        <path d="M92 112c12-10 48-10 60 0v6H92z" ${PH_SOFT}/><path d="M98 132a24 24 0 0 1 48 0"/>
+        <path d="M40 141q6-4 12 0t12 0 12 0 12 0 12 0 12 0 12 0 12 0" stroke-opacity="0.55"/>`) },
+      temple: { label: "TEMPLE & GARDEN", art: PH_SVG(`
+        <path d="M58 132c10 0 16-6 20-14h44c4 8 10 14 20 14z" ${PH_SOFT}/><rect x="84" y="100" width="32" height="18" ${PH_SOFT}/>
+        <path d="M68 100c8 0 12-5 16-11h32c4 6 8 11 16 11z" ${PH_SOFT}/><rect x="90" y="76" width="20" height="13" ${PH_SOFT}/>
+        <path d="M78 76c6 0 9-4 12-9h20c3 5 6 9 12 9z" ${PH_SOFT}/><path d="M100 67V50"/><circle cx="100" cy="47" r="2.5" ${PH_PAPER}/>`) },
+      building: { label: "ARCHITECTURE", art: PH_SVG(`
+        <path d="M70 132V72a30 30 0 0 1 60 0v60z" ${PH_SOFT}/><path d="M100 42V30"/><path d="M62 132h76" stroke-width="3"/>
+        ${phWin(84, 74)}${phWin(100, 74)}${phWin(116, 74)}${phWin(84, 96)}${phWin(116, 96)}
+        <path d="M92 132v-14a8 8 0 0 1 16 0v14" ${PH_PAPER}/>`) },
+      camera: { label: "PHOTO SPOT", art: PH_SVG(`
+        <rect x="54" y="62" width="92" height="60" rx="11" ${PH_SOFT}/><path d="M84 62l6-11h20l6 11"/>
+        <circle cx="100" cy="92" r="19" ${PH_PAPER}/><circle cx="100" cy="92" r="9" ${PH_SOFT}/><circle cx="132" cy="75" r="2.5"/>`) },
+    },
+    // 2) CAFE / TEA
+    cafe: {
+      cup: { label: "COFFEE", art: PH_SVG(`
+        <path d="M70 84h56v28a16 16 0 0 1-16 16H86a16 16 0 0 1-16-16z" ${PH_SOFT}/><path d="M126 92h6a11 11 0 0 1 0 22h-6"/>
+        <path d="M84 74c-5-5 5-8 0-14M98 74c-5-5 5-8 0-14M112 74c-5-5 5-8 0-14"/>
+        <path d="M78 96h40" stroke-width="1.6" stroke-opacity="0.5"/><path d="M62 130h76" stroke-width="3"/>`) },
+      teapot: { label: "TEA TIME", art: PH_SVG(`
+        <path d="M60 108c0-18 12-28 28-28s28 10 28 28v6a14 14 0 0 1-14 14H74a14 14 0 0 1-14-14z" ${PH_SOFT}/>
+        <path d="M76 80c0-6 5-10 12-10s12 4 12 10"/><circle cx="88" cy="65" r="3.2" ${PH_SOFT}/>
+        <path d="M116 100c10 2 16-6 20-16 1 8-1 16-8 22"/><path d="M60 96c-14-2-16 22-2 24"/>
+        <path d="M72 100h32" stroke-width="1.6" stroke-opacity="0.5"/><path d="M142 74c-4-4 4-6 0-12" stroke-opacity="0.7"/>`) },
+      cake: { label: "SWEETS", art: PH_SVG(`
+        <rect x="64" y="104" width="72" height="24" rx="4" ${PH_SOFT}/><rect x="72" y="84" width="56" height="20" rx="4" ${PH_SOFT}/>
+        <path d="M72 84c5-8 10-8 14 0s9 8 14 0 9-8 14 0 9 8 14 0"/><circle cx="100" cy="72" r="6" ${PH_PAPER}/><path d="M100 66c1-7 6-10 12-10"/>
+        <path d="M72 116h56" stroke-width="1.6" stroke-opacity="0.5"/>`) },
+      togo: { label: "COFFEE", art: PH_SVG(`
+        <path d="M76 60h48l-6 68H82z" ${PH_SOFT}/><rect x="72" y="52" width="56" height="9" rx="3" ${PH_SOFT}/><path d="M104 52l6-20h10"/>
+        <rect x="86" y="70" width="10" height="10" rx="2" transform="rotate(-14 91 75)" ${PH_PAPER}/><rect x="102" y="74" width="9" height="9" rx="2" transform="rotate(10 106 78)" ${PH_PAPER}/>
+        <path d="M79 90h42l-2 22H81z" ${PH_PAPER}/>`) },
+    },
+    // 3) EAT / RESTAURANT
+    eat: {
+      table: { label: "TABLE", art: PH_SVG(`
+        <circle cx="100" cy="86" r="30" ${PH_SOFT}/><circle cx="100" cy="86" r="19" ${PH_PAPER}/>
+        <path d="M54 56v14a5 5 0 0 0 10 0V56M59 56v16M59 75v53"/><path d="M144 58c-9 6-11 20-9 34h9zM144 92v36"/>`) },
+      bowl: { label: "NOODLES & RICE", art: PH_SVG(`
+        <path d="M54 94h92c0 22-18 36-46 36S54 116 54 94z" ${PH_SOFT}/><path d="M86 130h28"/>
+        <path d="M64 94c4-12 14-14 22-8 6-8 20-8 26 0 8-4 18-2 24 8" ${PH_PAPER}/>
+        <path d="M126 36L104 90M136 40L112 92"/><path d="M80 74c-4-4 4-6 0-12M94 72c-4-4 4-6 0-12" stroke-opacity="0.7"/>`) },
+      steamer: { label: "DIM SUM", art: PH_SVG(`
+        <rect x="62" y="104" width="76" height="24" rx="6" ${PH_SOFT}/><rect x="66" y="82" width="68" height="22" rx="6" ${PH_SOFT}/>
+        <path d="M64 82c2-14 16-22 36-22s34 8 36 22z" ${PH_SOFT}/><path d="M96 60h8M100 60v-5" /><circle cx="100" cy="52" r="3" ${PH_PAPER}/>
+        <path d="M82 80v-10M100 80v-16M118 80v-10" stroke-width="1.6" stroke-opacity="0.45"/>
+        <path d="M78 108v16M92 108v16M108 108v16M122 108v16M82 86v14M96 86v14M110 86v14M124 86v14" stroke-width="1.6" stroke-opacity="0.45"/>
+        <path d="M84 46c-4-4 4-6 0-10M116 46c-4-4 4-6 0-10" stroke-opacity="0.7"/>`) },
+      skewer: { label: "SKEWERS", art: PH_SVG(`
+        <g transform="translate(100 88) rotate(-25) scale(0.9) translate(-100 -93)">
+          <path d="M46 78h108M46 108h108"/>
+          <rect x="62" y="68" width="16" height="20" rx="4" ${PH_SOFT}/><rect x="82" y="66" width="16" height="24" rx="4" ${PH_SOFT}/><rect x="102" y="68" width="16" height="20" rx="4" ${PH_SOFT}/><rect x="122" y="70" width="14" height="16" rx="4" ${PH_SOFT}/>
+          <rect x="62" y="98" width="16" height="20" rx="4" ${PH_SOFT}/><rect x="82" y="96" width="16" height="24" rx="4" ${PH_SOFT}/><rect x="102" y="98" width="16" height="20" rx="4" ${PH_SOFT}/><rect x="122" y="100" width="14" height="16" rx="4" ${PH_SOFT}/>
+        </g>`) },
+      wok: { label: "STIR-FRY", art: PH_SVG(`
+        <path d="M56 90c0 18 20 28 44 28s44-10 44-28z" ${PH_SOFT}/><path d="M144 94l22-8M144 100l22-8"/>
+        <circle cx="84" cy="70" r="5" ${PH_PAPER}/><rect x="98" y="58" width="11" height="11" rx="3" transform="rotate(18 103 63)" ${PH_PAPER}/><circle cx="120" cy="72" r="4" ${PH_PAPER}/><path d="M92 82c3-3 7-3 10 0" stroke-opacity="0.6"/>
+        <path d="M84 132c-6-6-2-12 0-18 2 4 8 8 6 12a6 6 0 0 1-6 6zM100 132c-6-6-2-12 0-18 2 4 8 8 6 12a6 6 0 0 1-6 6zM116 132c-6-6-2-12 0-18 2 4 8 8 6 12a6 6 0 0 1-6 6z" stroke-width="1.8"/>`) },
+    },
+    // 4) SHOP / LIFESTYLE
+    shop: {
+      bag: { label: "SHOPPING", art: PH_SVG(`
+        <path d="M66 62h68l7 70H59z" ${PH_SOFT}/><path d="M82 62v-8a18 18 0 0 1 36 0v8"/><rect x="88" y="90" width="24" height="16" rx="2" ${PH_PAPER}/>
+        <path d="M146 44l14 14-12 12-14-14z" ${PH_SOFT}/><circle cx="148" cy="50" r="2"/>`) },
+      hanger: { label: "STYLE", art: PH_SVG(`
+        <path d="M100 68V62c0-4 7-4 7-9a7 7 0 1 0-14 0"/><path d="M100 68L62 88h76z"/>
+        <path d="M72 90l-14 8 7 13 7-4v25h56v-25l7 4 7-13-14-8c-5 5-11 7-18 7h-20c-7 0-13-2-18-7z" ${PH_SOFT}/>`) },
+      perfume: { label: "BEAUTY & SCENT", art: PH_SVG(`
+        <rect x="76" y="78" width="48" height="52" rx="9" ${PH_SOFT}/><rect x="92" y="66" width="16" height="12" ${PH_SOFT}/><rect x="90" y="50" width="20" height="16" rx="3" ${PH_SOFT}/>
+        <rect x="86" y="94" width="28" height="20" rx="2" ${PH_PAPER}/><path d="M134 62h7M142 54l5-3M140 70l6 3" stroke-width="1.8" stroke-opacity="0.7"/>`) },
+      shelf: { label: "LIFESTYLE", art: PH_SVG(`
+        <path d="M50 116h100M60 116v8M140 116v8"/>
+        <path d="M70 116c-5-14-1-24 8-28 8 4 12 14 8 28z" ${PH_SOFT}/><path d="M78 88c-7-14-2-24 5-30M78 88c2-12 12-20 19-22"/>
+        <ellipse cx="84" cy="62" rx="4" ry="7" transform="rotate(28 84 62)" ${PH_PAPER}/><ellipse cx="97" cy="68" rx="4" ry="7" transform="rotate(60 97 68)" ${PH_PAPER}/>
+        <rect x="108" y="66" width="36" height="46" rx="3" ${PH_PAPER}/><path d="M114 100l10-12 8 8 5-5 3 4" stroke-width="1.8"/>`) },
+      blindbox: { label: "COLLECTIBLES", art: PH_SVG(`
+        <path d="M100 52l36 16v40l-36 16-36-16V68z" ${PH_SOFT}/><path d="M64 68l36 16 36-16M100 84v40"/>
+        <path d="M76 98c0-6 8-6 8 0 0 4-6 4-6 10M78 116h.01" stroke-width="2.4"/><path d="M144 52h8M148 48v8M52 56h6M55 53v6" stroke-width="1.6" stroke-opacity="0.6"/>`) },
+    },
+    // 5) SOUVENIRS / GIFT
+    gift: {
+      box: { label: "GIFTS", art: PH_SVG(`
+        <rect x="62" y="84" width="76" height="48" rx="4" ${PH_SOFT}/><rect x="56" y="68" width="88" height="18" rx="4" ${PH_SOFT}/><path d="M100 68v64"/>
+        <path d="M100 68c-6-16-26-14-22-4 3 5 14 4 22 4zM100 68c6-16 26-14 22-4-3 5-14 4-22 4z"/>`) },
+      snack: { label: "SNACKS", art: PH_SVG(`
+        <path d="M70 56h60l4 72H66z" ${PH_SOFT}/><path d="M69 62h62M69 66h62" stroke-width="1.6" stroke-opacity="0.6"/>
+        <circle cx="100" cy="98" r="15" ${PH_PAPER}/><path d="M100 90l3 6 7 1-5 5 1 7-6-3-6 3 1-7-5-5 7-1z" stroke-width="1.8"/>`) },
+      tote: { label: "TOTE & GOODS", art: PH_SVG(`
+        <path d="M64 72h72l6 60H58z" ${PH_SOFT}/><path d="M82 72c0-24 36-24 36 0"/>
+        <path d="M100 116c-14-9-12-21-4-21 3 0 4 2 4 4 0-2 1-4 4-4 8 0 10 12-4 21z" ${PH_PAPER} stroke-width="1.8"/>`) },
+      postcard: { label: "POSTCARD", art: PH_SVG(`
+        <rect x="54" y="70" width="92" height="56" rx="4" ${PH_SOFT}/><path d="M54 74l46 32 46-32"/>
+        <rect x="120" y="100" width="18" height="16" rx="2" ${PH_PAPER}/><path d="M62 116h32M62 122h20" stroke-width="1.6" stroke-opacity="0.5"/>`) },
+    },
+    // 6) VIEW / NIGHT VIEW / ROOFTOP
+    view: {
+      night: { label: "NIGHT VIEW", art: PH_SVG(`
+        <path d="M134 32a16 16 0 1 0 12 26 13 13 0 0 1-12-26z" ${PH_SOFT}/>
+        <rect x="52" y="104" width="14" height="28" rx="1.5" ${PH_SOFT}/><rect x="68" y="88" width="14" height="44" rx="1.5" ${PH_SOFT}/>
+        <path d="M94 132V66l6-16 6 16v66z" ${PH_SOFT}/><rect x="116" y="96" width="14" height="36" rx="1.5" ${PH_SOFT}/><rect x="132" y="110" width="14" height="22" rx="1.5" ${PH_SOFT}/>
+        <path d="M100 60v4M100 72v4M58 112h3M58 120h3M74 96h3M74 104h3M122 104h3M122 112h3" stroke-width="1.6" stroke-opacity="0.55"/>
+        <path d="M60 50h.01M80 38h.01M150 84h.01M46 76h.01" stroke-width="3.2"/>`) },
+      river: { label: "RIVERSIDE", art: PH_SVG(`
+        <circle cx="100" cy="72" r="20" ${PH_SOFT}/>
+        <rect x="56" y="92" width="12" height="12" rx="1.5" ${PH_SOFT}/><rect x="70" y="84" width="10" height="20" rx="1.5" ${PH_SOFT}/><rect x="82" y="90" width="12" height="14" rx="1.5" ${PH_SOFT}/>
+        <rect x="108" y="88" width="12" height="16" rx="1.5" ${PH_SOFT}/><rect x="122" y="80" width="10" height="24" rx="1.5" ${PH_SOFT}/><rect x="134" y="92" width="14" height="12" rx="1.5" ${PH_SOFT}/>
+        <path d="M50 104h100"/>
+        <path d="M44 114q7-5 14 0t14 0 14 0 14 0 14 0 14 0 14 0M58 124q7-5 14 0t14 0 14 0 14 0 14 0 14 0" stroke-opacity="0.65"/>`) },
+      deck: { label: "OBSERVATION DECK", art: PH_SVG(`
+        <path d="M95 132l4-64h2l4 64z" ${PH_SOFT}/><path d="M76 62h48l-6 10H82z" ${PH_SOFT}/>
+        <path d="M86 62v-8a4 4 0 0 1 4-4h20a4 4 0 0 1 4 4v8" ${PH_SOFT}/><path d="M100 50V34"/><path d="M92 57h.01M100 57h.01M108 57h.01" stroke-width="3"/>
+        <path d="M46 62h26a7 7 0 0 0 0-14 10 10 0 0 0-19-2 8 8 0 0 0-7 16z" stroke-opacity="0.65"/>
+        <rect x="56" y="108" width="14" height="24" rx="1.5" ${PH_SOFT}/><rect x="72" y="118" width="12" height="14" rx="1.5" ${PH_SOFT}/>
+        <rect x="118" y="112" width="14" height="20" rx="1.5" ${PH_SOFT}/><rect x="134" y="102" width="12" height="30" rx="1.5" ${PH_SOFT}/>`) },
+      rooftop: { label: "ROOFTOP", art: PH_SVG(`
+        <rect x="60" y="86" width="12" height="24" rx="1.5" ${PH_SOFT}/><rect x="74" y="74" width="10" height="36" rx="1.5" ${PH_SOFT}/>
+        <path d="M118 110V70"/><circle cx="118" cy="76" r="5.5" ${PH_SOFT}/><rect x="128" y="88" width="14" height="22" rx="1.5" ${PH_SOFT}/>
+        <rect x="44" y="108" width="112" height="7" rx="2" ${PH_SOFT}/><path d="M52 115v17M68 115v17M84 115v17M100 115v17M116 115v17M132 115v17M148 115v17" stroke-width="1.8"/>
+        <path d="M82 52h36l-18 26z" ${PH_PAPER}/><path d="M100 78v30"/><path d="M114 46l-14 20"/><circle cx="116" cy="44" r="4" ${PH_SOFT}/>`) },
+    },
   };
-  const GUIDE_PLACEHOLDER_LABEL = {
-    landmark: "LANDMARK", area: "DISTRICT", camera: "PHOTO SPOT", shop: "SHOP", gift: "GIFTS",
-    restaurant: "TABLE", cafe: "CAFE", dessert: "SWEETS", bar: "BAR", travel: "TRAVEL",
+  // 타입별 스탬프/기본 변형. 새 카테고리 값은 아래 guideIllustrationType()의 분기에만 추가하면 됩니다.
+  const GUIDE_ILLUSTRATION_TYPES = ["see", "cafe", "eat", "shop", "gift", "view"];
+  const GUIDE_ILLUSTRATION_GENERIC = {   // 키워드로 특정되지 않을 때 id 해시로 고르는 "중립" 변형들
+    see: ["skyline", "map"], cafe: ["cup", "togo"], eat: ["table"],
+    shop: ["bag", "hanger", "shelf"], gift: ["box", "tote"], view: ["night"],
   };
-  // 카테고리/탭 → 일러스트 종류. 데이터는 건드리지 않고 기존 tab/eatType/category만 읽습니다.
-  function guidePlaceholderKind(spot) {
+  function guideHash(str) {
+    let h = 0;
+    for (let i = 0; i < str.length; i++) h = (h * 31 + str.charCodeAt(i)) >>> 0;
+    return h;
+  }
+  function guideIllustrationText(spot) {   // 변형 판별용 텍스트(이름/중국어명/키워드/대표메뉴/별칭 — note 본문은 제외)
+    const j = (v) => (Array.isArray(v) ? v.join(" ") : v || "");
+    return [spot.name, spot.name_zh, spot.name_ko, j(spot.keywords), j(spot.signature), j(spot.aliases)].join(" ").toLowerCase();
+  }
+  // 어떤 타입(type)·변형(variant)의 일러스트를 쓸지 결정 — data-guide.js를 수정하지 않고
+  // 기존 tab / eatType / category / 이름·키워드만 읽습니다. spot.illustration = "type" 또는 "type:variant"로 수동 지정도 가능.
+  function guideIllustrationFor(spot) {
+    const ov = String(spot.illustration || "").toLowerCase().split(":");
     const cat = String(spot.category || "").toUpperCase();
-    const tab = spot.tab || (spot.tabs || [])[0] || "";
-    if (tab === "eat") return ["restaurant", "cafe", "dessert", "bar"].includes(spot.eatType) ? spot.eatType : "restaurant";
-    if (tab === "shop") return cat.includes("SOUVENIR") ? "gift" : "shop";
-    if (tab === "see") {
-      if (cat.includes("EXPERIENCE")) return "camera";
-      if (cat.includes("AREA")) return "area";
-      const nm = `${spot.name || ""} ${spot.name_zh || ""}`;
-      // 거리·구역·수향 마을은 지도 일러스트, 나머지 명소는 스카이라인 일러스트.
-      if (/\b(Road|Rd)\b|Water Town|Tianzifang|Xintiandi|Lujiazui|North Bund|Nanjing East|Circle|Square|Tiandi|路$|路 |滨江|新天地|田子坊|陆家嘴|人民广场|镇$|古镇|天地|新所/i.test(nm)) return "area";
-      return "landmark";
+    const tab = spot.tab || (spot.tabs || [])[0] || "see";
+    const t = guideIllustrationText(spot);
+    let type = "see";
+    if (GUIDE_ILLUSTRATION_TYPES.includes(ov[0])) type = ov[0];
+    else if (tab === "eat") type = spot.eatType === "bar" ? "view" : (spot.eatType === "cafe" || spot.eatType === "dessert") ? "cafe" : "eat";
+    else if (tab === "shop") type = /SOUVENIR|FOOD|GIFT/.test(cat) ? "gift" : "shop";
+    else if (/night view|rooftop|observation|sunset|观景台|北外滩|north bund|야경|전망/.test(t)) type = "view";
+    const V = GUIDE_ILLUSTRATIONS[type];
+    let variant = ov[1] && V[ov[1]] ? ov[1] : "";
+    if (!variant) {
+      const pick = (re, v) => (re.test(t) ? v : "");
+      if (type === "see") {
+        variant = pick(/water town|古镇|朱家角|乌镇|蟠龙|panlong|zhujiajiao|wuzhen/, "watertown")
+          || pick(/temple|pagoda|寺|龙华|豫园|yuyuan|garden/, "temple")
+          || (/EXPERIENCE/.test(cat) || /自助照相|photo ?booth/.test(t) ? "camera" : "")
+          || (/AREA/.test(cat) ? "map" : "")
+          || pick(/mansion|大楼|cathedral|教堂|library|书院|columbia|新所|museum|美术馆|provisional|旧址|m50|louis|路易|1000 trees|千树/, "building")
+          || pick(/\broad\b|\brd\b|路$|路 |street|nanjing east|南京东路|tianzifang|田子坊|xintiandi|新天地|square|广场/, "street")
+          || pick(/bund|外滩|pearl|东方明珠|lujiazui|陆家嘴|tower|大厦|skyline/, "skyline");
+      } else if (type === "cafe") {
+        variant = spot.eatType === "dessert" ? "cake" : pick(/tea|茶|charlietown/, "teapot") || pick(/manner/, "togo") || pick(/coffee|roastery|starbucks|咖啡|mahlk|dirty|三立方/, "cup");
+      } else if (type === "eat") {
+        variant = pick(/羊肉串|skewer|bbq|烤串/, "skewer") || pick(/点都德|dim ?sum|点心|小笼|包子/, "steamer")
+          || pick(/炒/, "wok") || pick(/面|饭|noodle|rice|粥/, "bowl");
+      } else if (type === "shop") {
+        variant = pick(/pop ?mart|泡泡玛特|top ?toy|miniso|名创|潮玩|blind ?box|toy/, "blindbox") || pick(/观夏|to summer|harmay|香水|perfume|fragrance/, "perfume") || pick(/m&m|candy|chocolate/, "bag");
+      } else if (type === "gift") {
+        variant = pick(/食品|snack|candy|food/, "snack") || (/FOOD/.test(cat) ? "snack" : "") || pick(/monogram|墨格|stationery|文具|postcard|明信片/, "postcard");
+      } else if (type === "view") {
+        variant = (spot.eatType === "bar" ? "rooftop" : "") || pick(/rooftop|屋顶|天台|루프탑/, "rooftop")
+          || pick(/stage|观景台|observation|deck|白玉兰|전망대/, "deck") || pick(/north bund|北外滩|滨江|riverside|river/, "river");
+      }
     }
-    return "travel";
+    if (!variant || !V[variant]) {
+      const g = GUIDE_ILLUSTRATION_GENERIC[type];
+      variant = g[guideHash(String(spot.id || spot.name || "")) % g.length];
+    }
+    return { type, variant, label: V[variant].label, art: V[variant].art };
   }
   // ---------- Google 이미지 검색 링크 ----------
   // image_search_query가 있으면 그대로 사용하고, 없으면 (1) 중국어명 + 上海, (2) 영문명 + Shanghai 순으로 자동 생성.
@@ -251,11 +374,10 @@
     return `<a class="guide-card__hero-link" href="${escapeAttr(url)}" target="_blank" rel="noopener noreferrer" aria-label="${escapeAttr(spot.name)} — 사진 보기 (Google 이미지 검색, 새 탭)"><span class="guide-card__photos-badge">PHOTOS ↗</span></a>`;
   }
   function guidePlaceholderHtml(spot) {
-    const kind = guidePlaceholderKind(spot);
-    const art = GUIDE_PLACEHOLDER_ART[kind] || GUIDE_PLACEHOLDER_ART.travel;
-    return `<div class="guide-card__photo guide-card__photo--ph guide-card__photo--${kind}" data-photo-spot="${escapeAttr(spot.id)}">` +
-      `<span class="guide-card__ph-art">${art}</span>` +
-      `<span class="guide-card__ph-stamp">SHANGHAI · ${GUIDE_PLACEHOLDER_LABEL[kind] || "TRAVEL"}</span>` +
+    const ill = guideIllustrationFor(spot);
+    return `<div class="guide-card__photo guide-card__photo--ph guide-card__photo--${ill.type}" data-photo-spot="${escapeAttr(spot.id)}" data-ill="${ill.type}:${ill.variant}">` +
+      `<span class="guide-card__ph-art">${ill.art}</span>` +
+      `<span class="guide-card__ph-stamp">SHANGHAI · ${ill.label}</span>` +
       `${guideHeroLinkHtml(spot)}</div>`;
   }
   // 재사용 라이선스가 확인된 사진만 표시합니다. 크레딧은 사진 우하단의 작은

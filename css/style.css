@@ -740,7 +740,7 @@ input[type="number"], select {
   width: 70%; aspect-ratio: 1; right: -18%; top: -34%; border-radius: 50%;
   background: radial-gradient(circle, rgba(255,255,255,0.75), rgba(255,255,255,0) 68%);
 }
-.guide-card__ph-art { position: relative; z-index: 1; display: block; width: min(52%, 168px); pointer-events: none; transition: transform 0.25s ease; }
+.guide-card__ph-art { position: relative; z-index: 1; display: block; width: min(62%, 196px); pointer-events: none; transition: transform 0.25s ease; }
 .guide-card__ph-art svg { display: block; width: 100%; height: auto; opacity: 0.92; }
 .guide-card__ph-stamp {
   position: absolute; left: 10px; bottom: 9px; z-index: 1; pointer-events: none;
@@ -749,26 +749,20 @@ input[type="number"], select {
 }
 .guide-card__photo--ph:hover .guide-card__ph-art { transform: translateY(-2px) scale(1.04); }
 
-/* 종류별 톤 — 모두 옅은 muted blue-gray 계열 안에서만 살짝 변주합니다. */
-.guide-card__photo--landmark { background: linear-gradient(160deg, #eaf0fa, #d9e2f2); color: #3f5799;
+/* 타입별 톤 — 6개 타입 모두 KAIST 화이트·네이비·연한 블루 팔레트 안에서 아주 조금만 변주합니다(같은 시리즈).
+   배경 패턴만 타입마다 다르고, 일러스트는 공통 아치 프레임 + 같은 선 굵기를 씁니다. */
+.guide-card__photo--see { background: linear-gradient(160deg, #eaf0fa, #d9e2f2); color: #3f5799;
   --ph-pattern: linear-gradient(rgba(35,57,122,0.05) 1px, transparent 1px), linear-gradient(90deg, rgba(35,57,122,0.05) 1px, transparent 1px); --ph-size: 22px 22px; }
-.guide-card__photo--area { background: linear-gradient(160deg, #e9f0f4, #d6e2ea); color: #3d5a80;
-  --ph-pattern: radial-gradient(rgba(35,57,122,0.13) 1.4px, transparent 1.5px); --ph-size: 16px 16px; }
-.guide-card__photo--camera { background: linear-gradient(160deg, #edf0f8, #dbdff0); color: #4a5590;
-  --ph-pattern: repeating-linear-gradient(135deg, rgba(35,57,122,0.05) 0 2px, transparent 2px 14px); --ph-size: auto; }
-.guide-card__photo--shop { background: linear-gradient(160deg, #eaeef8, #d8dff0); color: #3b4f92;
-  --ph-pattern: repeating-linear-gradient(45deg, rgba(35,57,122,0.06) 0 6px, transparent 6px 16px); --ph-size: auto; }
-.guide-card__photo--gift { background: linear-gradient(160deg, #eef0f8, #dde0f0); color: #55589a;
-  --ph-pattern: radial-gradient(rgba(72,72,150,0.10) 1.6px, transparent 1.7px); --ph-size: 14px 14px; }
-.guide-card__photo--restaurant { background: linear-gradient(160deg, #eef1f5, #dde4ec); color: #45597f;
-  --ph-pattern: repeating-linear-gradient(90deg, rgba(35,57,122,0.05) 0 2px, transparent 2px 18px); --ph-size: auto; }
-.guide-card__photo--cafe { background: linear-gradient(160deg, #eaf1f3, #d8e5e9); color: #3c6072;
+.guide-card__photo--cafe { background: linear-gradient(160deg, #eaf1f4, #d7e4ea); color: #3a5f76;
   --ph-pattern: repeating-linear-gradient(0deg, rgba(35,80,110,0.05) 0 2px, transparent 2px 16px); --ph-size: auto; }
-.guide-card__photo--dessert { background: linear-gradient(160deg, #f0eff7, #e0e0ef); color: #5e5a98;
-  --ph-pattern: radial-gradient(rgba(94,90,152,0.10) 2px, transparent 2.1px); --ph-size: 18px 18px; }
-.guide-card__photo--bar { background: linear-gradient(160deg, #e6ebf5, #d2daec); color: #36478a;
-  --ph-pattern: radial-gradient(rgba(35,57,122,0.10) 1px, transparent 1.1px); --ph-size: 10px 10px; }
-.guide-card__photo--travel { background: linear-gradient(160deg, #eef1f8, #dde3f0); color: #4a5f9a; }
+.guide-card__photo--eat { background: linear-gradient(160deg, #eef1f6, #dce3ee); color: #43587f;
+  --ph-pattern: repeating-linear-gradient(90deg, rgba(35,57,122,0.05) 0 2px, transparent 2px 18px); --ph-size: auto; }
+.guide-card__photo--shop { background: linear-gradient(160deg, #ecf0fa, #d9dff1); color: #3b4f92;
+  --ph-pattern: repeating-linear-gradient(45deg, rgba(35,57,122,0.06) 0 6px, transparent 6px 16px); --ph-size: auto; }
+.guide-card__photo--gift { background: linear-gradient(160deg, #f0f0f9, #dfe0f1); color: #56599c;
+  --ph-pattern: radial-gradient(rgba(72,72,150,0.10) 1.6px, transparent 1.7px); --ph-size: 14px 14px; }
+.guide-card__photo--view { background: linear-gradient(160deg, #dfe7f6, #c9d6ee); color: #2f4485;
+  --ph-pattern: radial-gradient(rgba(35,57,122,0.13) 1px, transparent 1.1px); --ph-size: 11px 11px; }
 
 /* 실제 사진(Wikimedia Commons): 우하단 작은 크레딧 + (선택) 좌상단 AREA VIEW 등 컨텍스트 라벨 */
 .guide-card__credit {

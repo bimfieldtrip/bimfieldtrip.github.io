@@ -1,10 +1,33 @@
-# Shanghai Field Trip Hub — v0.7.4 · Shanghai Guide Photo Search + Illustrations
+# Shanghai Field Trip Hub — v0.7.5 · Shanghai Guide Illustration System
 
 KAIST BIM Shanghai Field Trip(2026.12.27~12.31)을 위한 **공개 여행 안내 허브**입니다.
 "상하이에서 무엇을 하고, 무엇을 준비하고, 어디를 볼 수 있는가"에만 집중하며, 실제 참가자 운영
 (체크인·버스 탑승·룸 배정·택시팀·정산 등)은 별도의 Private Participant Portal에서 처리합니다.
 
-## 🔎 v0.7.4 — 사진 없는 카드 정리 + Google 이미지 검색 연결 (Guide만 수정)
+## 🎨 v0.7.5 — Guide 카드 일러스트 시스템 + v0.7.4 데이터 보존
+
+사진이 없는 카드의 placeholder를 "6개 타입 × 여러 변형(총 30종)" 일러스트 시스템으로 교체했습니다. 사진이 있는
+카드는 그대로입니다. 모든 일러스트는 외부 파일 없이 `guide.html` 안의 inline SVG이며, 공통 아치 프레임 ·
+같은 선 굵기 · 화이트/네이비/연한 블루 팔레트를 공유해 같은 시리즈처럼 보입니다.
+
+| 타입 | 자동 적용 조건 (기존 필드만 읽음) | 변형(모티프) |
+| --- | --- | --- |
+| `see` | `tab: "see"` | skyline · map · street · watertown · temple · building · camera |
+| `cafe` | `tab: "eat"` + `eatType: "cafe"` 또는 `"dessert"` | cup · teapot · cake · togo |
+| `eat` | `tab: "eat"` + `eatType: "restaurant"` | table · bowl · steamer · skewer · wok |
+| `shop` | `tab: "shop"` (category에 SOUVENIR/FOOD/GIFT가 없을 때) | bag · hanger · perfume · shelf · blindbox |
+| `gift` | `tab: "shop"` + category에 `SOUVENIR` / `FOOD` / `GIFT` 포함 | box · snack · tote · postcard |
+| `view` | `tab: "see"` + 이름/keywords에 night view·rooftop·observation·北外滩 등, 또는 `eatType: "bar"` | night · river · deck · rooftop |
+
+**새 장소를 추가할 때**: `GUIDE_SPOTS`에 지금처럼 `tab`(+ 먹거리면 `eatType`)과 `category`만 맞게 넣으면 타입이
+자동으로 정해집니다. 변형은 이름·중국어명·keywords·signature·aliases의 키워드(예: `羊肉串`→skewer, `茶`→teapot,
+`点心`→steamer, `Water Town`→watertown)로 고르고, 매칭되는 키워드가 없으면 그 타입의 "중립" 변형 중에서 spot id
+해시로 골라 카드마다 조금씩 다르게 보입니다. 원하는 모티프를 직접 고르고 싶으면 spot에 선택 필드
+`illustration: "cafe"` 또는 `illustration: "eat:steamer"`를 추가하면 됩니다(필수 아님).
+새 모티프를 만들려면 `guide.html`의 `GUIDE_ILLUSTRATIONS`에 `{ label, art }` 한 항목을 추가하고,
+필요하면 `guideIllustrationFor()`에 키워드 한 줄을 추가하세요.
+
+## 🔎 v0.7.3 — 사진 없는 카드 정리 + Google 이미지 검색 연결 (Guide만 수정)
 
 - 사진이 없는 모든 카드에 카테고리별 inline SVG 일러스트 placeholder(스카이라인/지도/카메라/쇼핑백/선물상자/
   접시·포크/컵/케이크/칵테일)와 옅은 패턴 배경을 적용 — 외부 이미지 파일 없음

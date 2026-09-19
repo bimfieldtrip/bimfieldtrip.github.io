@@ -35,7 +35,7 @@
 // ===== 지역 클러스터 (MAP 탭 스케매틱 지도 + 공유 AREA 필터) =====
 // x/y는 800x560 스케매틱(비례 지도 아님) SVG 좌표입니다.
 const AREA_CLUSTERS = [
-  { id: "NANJING EAST · BUND", label: "NANJING EAST · BUND", x: 520, y: 300, image_search_query: "路易号 The Louis Louis Vuitton 兴业太古汇 上海"},
+  { id: "NANJING EAST · BUND", label: "NANJING EAST · BUND", x: 520, y: 300 },
   { id: "NORTH BUND", label: "NORTH BUND", x: 560, y: 200 },
   { id: "NANJING WEST · JING'AN", label: "NANJING WEST · JING'AN", x: 340, y: 260 },
   { id: "WUKANG · ANFU", label: "WUKANG · ANFU", x: 230, y: 380 },
