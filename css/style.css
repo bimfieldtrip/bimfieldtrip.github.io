@@ -685,3 +685,123 @@ input[type="number"], select {
   background: var(--surface); border: 1px solid var(--line); color: var(--ink);
   border-radius: var(--radius-sm); padding: 10px;
 }
+
+/* ==========================================================================
+   Shanghai Guide FINAL (v0.7) — 정보공유형 가이드 전용 스타일
+   guide.html에서만 사용합니다. 기존 팔레트(navy/white)와 radius/shadow
+   토큰을 그대로 재사용하고, 새 테마를 만들지 않습니다.
+   ========================================================================== */
+
+/* ---------- 검색창 ---------- */
+.guide-search { position: relative; margin: 4px 0 14px; }
+.guide-search input {
+  width: 100%; box-sizing: border-box;
+  background: var(--surface); border: 1px solid var(--line); color: var(--ink);
+  border-radius: var(--radius-md); padding: 12px 14px 12px 42px;
+  font-size: 0.92rem; min-height: 46px;
+}
+.guide-search input:focus { outline: none; border-color: var(--navy-500); }
+.guide-search__icon {
+  position: absolute; left: 14px; top: 50%; transform: translateY(-50%);
+  color: var(--ink-faint); width: 17px; height: 17px; pointer-events: none;
+}
+.guide-search__icon svg { width: 100%; height: 100%; }
+
+/* ---------- EAT 서브필터 (조금 더 작은 chip) ---------- */
+.filter-bar--sub .filter-chip { padding: 6px 12px; font-size: 0.76rem; }
+
+/* ---------- Guide 카드 ---------- */
+.guide-grid { display: grid; grid-template-columns: 1fr; gap: 14px; margin: 4px 0 30px; }
+@media (min-width: 640px) { .guide-grid { grid-template-columns: repeat(2, 1fr); } }
+@media (min-width: 1020px) { .guide-grid { grid-template-columns: repeat(3, 1fr); } }
+
+.guide-card {
+  background: var(--surface); border: 1px solid var(--line); border-radius: var(--radius-md);
+  overflow: hidden; box-shadow: var(--shadow-card); display: flex; flex-direction: column;
+  transition: transform 0.16s ease, border-color 0.16s ease;
+}
+.guide-card:hover { transform: translateY(-3px); border-color: var(--navy-500); box-shadow: var(--shadow-lift); }
+.guide-card__photo {
+  aspect-ratio: 4 / 3; display: flex; align-items: center; justify-content: center;
+  background: linear-gradient(140deg, var(--bg-soft), #e7ecf7);
+  color: var(--navy-600); border-bottom: 1px solid var(--line);
+  position: relative; overflow: hidden;
+}
+.guide-card__photo svg { width: 34px; height: 34px; opacity: 0.6; position: relative; z-index: 1; }
+.guide-card__photo img { width: 100%; height: 100%; object-fit: cover; display: block; }
+/* v0.7.2 — 실제 사진: 우하단 작은 크레딧 + (선택) 좌상단 AREA VIEW 등 컨텍스트 라벨 */
+.guide-card__credit {
+  position: absolute; right: 6px; bottom: 6px; z-index: 2; max-width: calc(100% - 12px);
+  padding: 2px 7px; border-radius: 999px; background: rgba(10, 18, 40, 0.58); color: rgba(255,255,255,0.92);
+  font-family: var(--font-mono); font-size: 0.6rem; line-height: 1.5; letter-spacing: 0.01em;
+  white-space: nowrap; overflow: hidden; text-overflow: ellipsis; text-decoration: none;
+}
+a.guide-card__credit:hover { background: rgba(10, 18, 40, 0.82); text-decoration: underline; }
+.guide-card__img-context {
+  position: absolute; left: 8px; top: 8px; z-index: 2; max-width: calc(100% - 16px);
+  padding: 3px 8px; border-radius: 6px; background: rgba(255,255,255,0.92); color: var(--navy-800);
+  font-family: var(--font-mono); font-size: 0.62rem; font-weight: 700; letter-spacing: 0.05em; line-height: 1.4;
+  white-space: nowrap; overflow: hidden; text-overflow: ellipsis; box-shadow: 0 1px 4px rgba(10,18,40,0.18);
+}
+/* 카테고리별 placeholder 톤 구분 — 기존 navy/white 팔레트 안에서만 변주합니다. */
+.guide-card__photo--see { background: linear-gradient(140deg, #eef1f9, #dbe2f3); color: var(--navy-700); }
+.guide-card__photo--see::before { content: ""; position: absolute; inset: 0; background-image: radial-gradient(rgba(26,44,92,0.10) 1.5px, transparent 1.5px); background-size: 16px 16px; }
+.guide-card__photo--shop { background: linear-gradient(140deg, #e9edf8, var(--navy-900) 220%); color: var(--navy-800); }
+.guide-card__photo--shop::before { content: ""; position: absolute; inset: 0; background-image: repeating-linear-gradient(45deg, rgba(26,44,92,0.07) 0 8px, transparent 8px 16px); }
+.guide-card__photo--restaurant { background: linear-gradient(140deg, #f3f0e8, #e7ecf7); color: var(--navy-800); }
+.guide-card__photo--restaurant::before { content: ""; position: absolute; inset: 0; background-image: repeating-linear-gradient(90deg, rgba(26,44,92,0.06) 0 2px, transparent 2px 18px); }
+.guide-card__photo--cafe { background: linear-gradient(140deg, #efe7da, #e7ecf7); color: #7a5a2e; }
+.guide-card__photo--dessert { background: linear-gradient(140deg, #f6e9ee, #e7ecf7); color: #a45a75; }
+.guide-card__photo--bar { background: linear-gradient(140deg, var(--navy-900), var(--navy-700)); color: #dfe6f7; }
+.guide-card__photo--bar::before { content: ""; position: absolute; inset: 0; background-image: radial-gradient(rgba(255,255,255,0.08) 1px, transparent 1px); background-size: 10px 10px; }
+.guide-card__body { padding: 15px 16px 16px; display: flex; flex-direction: column; gap: 8px; flex: 1; }
+.guide-card__top { display: flex; justify-content: space-between; align-items: flex-start; gap: 8px; }
+.guide-card__category {
+  font-size: 0.68rem; color: var(--navy-700); text-transform: uppercase;
+  letter-spacing: 0.06em; font-weight: 700;
+}
+.guide-card__area {
+  font-family: var(--font-mono); font-size: 0.66rem; color: var(--ink-faint);
+  text-transform: uppercase; letter-spacing: 0.04em; text-align: right;
+}
+.guide-card__name { font-size: 1.05rem; font-weight: 800; color: var(--navy-950); line-height: 1.3; }
+.guide-card__name-zh { font-size: 0.9rem; color: var(--ink-dim); word-break: break-word; }
+.guide-card__note { font-size: 0.86rem; color: var(--ink-dim); }
+.guide-card__addr { font-family: var(--font-mono); font-size: 0.74rem; color: var(--ink-faint); word-break: break-word; }
+.guide-card__actions { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 2px; }
+.copy-btn--sm { min-height: 36px; padding: 6px 10px; font-size: 0.74rem; }
+
+/* ---------- 딥링크(#spot=<id>) 진입 시 잠깐 강조 ---------- */
+.guide-card.is-deep-linked { animation: guide-card-highlight 2.1s ease; }
+@keyframes guide-card-highlight {
+  0% { box-shadow: 0 0 0 3px rgba(72,99,181,0.55), var(--shadow-lift); border-color: var(--navy-500); }
+  70% { box-shadow: 0 0 0 3px rgba(72,99,181,0.55), var(--shadow-lift); border-color: var(--navy-500); }
+  100% { box-shadow: var(--shadow-card); border-color: var(--line); }
+}
+
+.guide-card__more { border-top: 1px solid var(--line-soft); margin-top: 4px; padding-top: 10px; }
+.guide-card__more summary {
+  cursor: pointer; font-weight: 700; font-size: 0.78rem; color: var(--navy-700);
+  list-style: none; text-transform: uppercase; letter-spacing: 0.05em;
+}
+.guide-card__more summary::-webkit-details-marker { display: none; }
+.guide-card__more summary::before { content: "+ MORE"; }
+.guide-card__more[open] summary::before { content: "\2212 LESS"; }
+.guide-card__more-body { margin-top: 10px; display: flex; flex-direction: column; gap: 8px; font-size: 0.84rem; color: var(--ink-dim); }
+.guide-card__more-row dt { font-family: var(--font-mono); font-size: 0.64rem; color: var(--ink-faint); text-transform: uppercase; letter-spacing: 0.05em; margin: 0 0 2px; }
+.guide-card__more-row dd { margin: 0; color: var(--ink); font-size: 0.86rem; }
+.guide-card__more-row + .guide-card__more-row { margin-top: 8px; }
+
+/* ---------- MAP 탭 (스케매틱 SVG) ---------- */
+.guide-map-wrap {
+  border: 1px solid var(--line); border-radius: var(--radius-lg);
+  background: var(--bg-soft); padding: 10px; margin: 10px 0 18px;
+}
+.guide-map-wrap svg { width: 100%; height: auto; display: block; }
+.guide-map__pin { cursor: pointer; }
+.guide-map__pin circle.dot { fill: var(--navy-800); stroke: #fff; stroke-width: 2; transition: r 0.15s ease, fill 0.15s ease; }
+.guide-map__pin:hover circle.dot, .guide-map__pin.is-active circle.dot { fill: var(--coral); }
+.guide-map__pin text.pin-label { font-family: var(--font-display); font-size: 12px; font-weight: 800; fill: var(--navy-950); }
+.guide-map__pin text.pin-count { font-family: var(--font-mono); font-size: 10px; fill: var(--ink-dim); }
+.guide-map__note { font-size: 0.8rem; color: var(--ink-faint); margin: 0 0 8px; }
+.guide-map__result-head { font-weight: 800; font-size: 0.92rem; color: var(--navy-900); margin: 18px 0 4px; }

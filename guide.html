@@ -11,7 +11,7 @@
 <body data-page="guide">
 <a class="skip-link" href="#main">본문 바로가기</a>
 
-<div class="demo-strip"><span class="demo-strip__dot"></span><strong>DEMO MODE</strong>&nbsp;— Course Prototype &middot; Dummy Data</div>
+<div class="demo-strip"><span class="demo-strip__dot"></span><strong>FIELD GUIDE</strong>&nbsp;— Information Reference</div>
 
 <header class="site-header">
   <div class="site-header__bar">
@@ -29,236 +29,335 @@
   <div class="page-head">
     <div class="kicker">SHANGHAI GUIDE</div>
     <h1>볼거리 · 먹거리 · 쇼핑 · 기념품</h1>
-    <p class="page-head__desc">자유시간에 참고할 SEE / EAT / SHOP / SOUVENIRS 정보를 한 곳에 모았습니다. 회사 방문 일정은 Schedule · Field Visits에서 따로 확인하세요.</p>
+    <p class="page-head__desc">상하이에서 볼거리, 먹거리, 카페, 쇼핑, 기념품을 한곳에 정리했습니다.<br>운영시간과 재고는 변동될 수 있으므로 방문 당일 현지 지도앱에서 확인하세요.</p>
   </div>
 
-  <div class="notice notice--tbd"><strong>CANDIDATE</strong> — 아래 정보는 이번 라운드에서 새로 조사한 것이 아니라, 기존에 수집되어 있던 후보 목록을 SEE/EAT/SHOP/SOUVENIRS로 다시 정리한 것입니다. 실제 방문·구매가 확정된 것이 아니며, 중국어명/주소가 VERIFY로 표시된 항목은 아직 검증 전입니다.</div>
+  <div class="guide-search">
+    <span class="guide-search__icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><circle cx="10.8" cy="10.8" r="6.8"/><line x1="20" y1="20" x2="15.6" y2="15.6"/></svg></span>
+    <input type="search" id="guide-search" placeholder="장소 · 음식 · 브랜드를 한/영/중으로 검색" autocomplete="off" />
+  </div>
 
   <div class="tabbar" id="guide-tabbar"></div>
 
   <div id="panel-see" class="tabpanel">
-    <div class="filter-bar" id="filter-bar"></div>
-    <div class="grid grid--2" id="see-root"></div>
+    <div class="filter-bar" id="see-area-filter"></div>
+    <div class="guide-grid" id="see-root"></div>
   </div>
 
   <div id="panel-eat" class="tabpanel">
-    <div class="subsection-head">
-      <div class="subsection-head__title">먹고 싶은 음식</div>
-      <div class="subsection-head__desc">특정 식당은 아직 미확정인, 메뉴 자체에 대한 관심 후보입니다.</div>
-    </div>
-    <div class="grid grid--2" id="food-root"></div>
-
-    <div class="subsection-head">
-      <div class="subsection-head__title">식당 · 카페 후보</div>
-      <div class="subsection-head__desc">실제로 수집한 식당/카페 후보입니다. 방문이 확정된 곳이 아닙니다.</div>
-    </div>
-    <div class="grid grid--2" id="restaurant-root"></div>
+    <div class="filter-bar filter-bar--sub" id="eat-type-filter"></div>
+    <div class="filter-bar" id="eat-area-filter"></div>
+    <div class="guide-grid" id="eat-root"></div>
   </div>
 
   <div id="panel-shop" class="tabpanel">
-    <div class="subsection-head">
-      <div class="subsection-head__title">SHOP · 매장</div>
-      <div class="subsection-head__desc">기념품/굿즈 구매 후보 매장입니다.</div>
-    </div>
-    <div class="grid grid--2" id="shop-root"></div>
+    <div class="filter-bar" id="shop-area-filter"></div>
+    <div class="guide-grid" id="shop-root"></div>
   </div>
 
   <div id="panel-souvenirs" class="tabpanel">
-    <div class="subsection-head">
-      <div class="subsection-head__title">SOUVENIRS · 기념품 품목</div>
-      <div class="subsection-head__desc">사진·설명·가격대·구매처를 품목별로 정리할 자리입니다. 아직 실제로 수집한 품목이 없으면 임의로 채우지 않습니다.</div>
-    </div>
-    <div class="grid grid--2" id="souvenir-root"></div>
+    <div class="guide-grid" id="souvenir-root"></div>
+  </div>
+
+  <div id="panel-map" class="tabpanel">
+    <p class="guide-map__note">정확한 축척 지도가 아니라, 장소들의 상대적인 위치와 지역 묶음을 이해하기 위한 스케매틱 지도입니다. 핀을 누르면 해당 지역의 장소를 아래에서 볼 수 있습니다.</p>
+    <div class="guide-map-wrap"><svg id="guide-map-svg" viewBox="0 0 800 560" xmlns="http://www.w3.org/2000/svg"></svg></div>
+    <div id="map-result-head" class="guide-map__result-head" style="display:none;"></div>
+    <div class="guide-grid" id="map-result-root"></div>
   </div>
 </main>
 
-<footer class="site-footer">SHANGHAI FIELD TRIP HUB · v0.6.3 · PORTAL LINK HOTFIX</footer>
+<footer class="site-footer">SHANGHAI FIELD TRIP HUB · v0.7.3 · SHANGHAI GUIDE · IMAGES + HU GONG GUAN</footer>
 <nav class="bottom-nav" data-bottom-nav aria-label="주요 메뉴 (모바일)"></nav>
 
 <script src="js/config.js"></script>
-<script src="js/data-trip.js"></script>
+<script src="js/data-guide.js"></script>
 <script src="js/main.js"></script>
 <script>
-  // Shanghai Guide — v0.4.1까지 Explore/Eat/Shop 3개 페이지로 나뉘어 있던 자유시간 참고
-  // 정보를, Participant 관점에서 하나의 진입점(SEE/EAT/SHOP/SOUVENIRS)으로 모아 보여줍니다.
-  // 기존 explore.html/eat.html/shop.html의 데이터(PLACES/FOOD_ITEMS/RESTAURANTS/
-  // SOUVENIR_ITEMS)와 카드 렌더링 로직을 그대로 재사용하며, 새로운 장소/음식/식당/
-  // 매장/기념품은 이번 라운드에서 추가하지 않았습니다 (content freeze).
-  const SEE_PLACES = PLACES.filter((p) => p.category === "see");
-  const SHOP_PLACES = PLACES.filter((p) => p.category === "shop");
+  // ============================================================
+  // Shanghai Guide FINAL QA (v0.7.1) — 정보공유형 가이드
+  // js/data-trip.js가 아니라 js/data-guide.js(GUIDE_SPOTS/GUIDE_SOUVENIRS/
+  // GUIDE_RESEARCH_NOTES/GUIDE_RESEARCH_NOTES_EXTENDED)만 읽습니다.
+  // CANDIDATE/후보/SAMPLE/TBD/VERIFY/NOT CONFIRMED 등 일정 확정 여부를
+  // 뜻하는 표현은 이 화면에서 쓰지 않습니다 — Guide는 일정관리 페이지가
+  // 아닙니다.
+  // v0.7.1 QA 변경점: 한국어 별칭(aliases) 검색, 高德地图 URI API 링크,
+  // COPY NAME/ADDRESS 버튼 분리, #spot=<id> 딥링크, 카테고리별 placeholder.
+  // ============================================================
 
   const GUIDE_TABS = [
     { id: "see", label: "SEE", icon: "pin" },
     { id: "eat", label: "EAT", icon: "fork" },
     { id: "shop", label: "SHOP", icon: "bag" },
     { id: "souvenirs", label: "SOUVENIRS", icon: "bag" },
+    { id: "map", label: "MAP", icon: "route" },
   ];
-  const EXPLORE_FILTERS = [
-    { id: "all", label: "ALL", icon: "bolt" },
-    { id: "landmark", label: "LANDMARK", icon: "pin" },
-    { id: "nightview", label: "NIGHT VIEW", icon: "pin" },
-    { id: "photo", label: "PHOTO", icon: "camera" },
-    { id: "museum", label: "MUSEUM", icon: "pin" },
-    { id: "walk", label: "WALK", icon: "route" },
-    { id: "experience", label: "EXPERIENCE", icon: "bolt" },
-  ];
-  let activeGuideTab = "see";
-  let activeExploreType = "all";
 
-  // -------- SEE (explore.html과 동일한 카드) --------
-  function exploreCardHtml(place) {
-    const types = (place.exploreType || []).map((t) => (EXPLORE_FILTERS.find((f) => f.id === t) || {}).label || t.toUpperCase());
+  let activeGuideTab = "see";
+  let activeArea = "ALL";
+  let activeEatType = "ALL";
+  let searchQuery = "";
+  let activeMapArea = null;
+
+  // ---------- 검색 대상 문자열 (한/영/중 + 한국어 별칭 + 대표메뉴) ----------
+  function spotSearchText(spot) {
+    return [
+      spot.name, spot.name_ko, spot.name_zh, spot.note, spot.tip,
+      Array.isArray(spot.aliases) ? spot.aliases.join(" ") : spot.aliases,
+      Array.isArray(spot.signature) ? spot.signature.join(" ") : spot.signature,
+      Array.isArray(spot.keywords) ? spot.keywords.join(" ") : spot.keywords,
+    ].filter(Boolean).join(" ").toLowerCase();
+  }
+  function matchesSearch(spot) {
+    if (!searchQuery) return true;
+    return spotSearchText(spot).includes(searchQuery);
+  }
+
+  // ---------- 高德地图 URI API (API KEY 없이 검색 실행) ----------
+  // PC에서는 高德地图 웹 검색, 모바일에서는 설치된 高德地图 APP 실행을 시도합니다.
+  // keyword는 가능하면 "중국어 상호명 + 주소"를 함께 사용합니다.
+  function amapSearchUrl(spot) {
+    const nameZh = spot.name_zh || "";
+    const addr = spot.address || "";
+    let keyword = [nameZh, addr].filter(Boolean).join(" ");
+    if (!keyword) keyword = spot.name ? spot.name + " 上海" : "";
+    if (!keyword) return "";
+    const params = new URLSearchParams({
+      keyword: keyword,
+      city: "310000", // 上海 행정구역코드(adcode) — 고정값
+      view: "map",
+      src: "bimfieldtrip",
+      callnative: "1",
+    });
+    return "https://uri.amap.com/search?" + params.toString();
+  }
+
+  // ---------- 사진 자리 (실제 사진 없으면 카테고리별로 구분되는 플레이스홀더) ----------
+  // SEE/CAFE/RESTAURANT/DESSERT/SHOP/BAR가 서로 다른 톤(기존 navy/white
+  // 팔레트 내)과 아이콘을 갖도록 구분합니다 — 모든 카드가 똑같아 보이지 않게.
+  const GUIDE_PLACEHOLDER_ICON = {
+    see: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M12 21.5s7-7.3 7-12.3a7 7 0 1 0-14 0c0 5 7 12.3 7 12.3z"/><circle cx="12" cy="9.2" r="2.3"/></svg>',
+    shop: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M6 8.5h12l1 12.5H5L6 8.5z"/><path d="M9 8.5V6.8a3 3 0 0 1 6 0v1.7"/></svg>',
+    restaurant: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M7 2.5v7.5M9.4 2.5v7.5M7 10a2.4 2.4 0 0 1-2.4-2.4V2.5M9.4 10a2.4 2.4 0 0 0 2.4-2.4V2.5M8.2 10v11.5"/><path d="M16.5 2.5c-1.8 0-3 2-3 5s1.2 4.6 3 4.6V21.5"/></svg>',
+    cafe: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M4.5 8.5h13v6a5 5 0 0 1-5 5h-3a5 5 0 0 1-5-5v-6z"/><path d="M17.5 9.5h1.5a2.7 2.7 0 0 1 0 5.4h-1.2"/><path d="M8 4.2c-.6.7-.6 1.3 0 2M11.5 4.2c-.6.7-.6 1.3 0 2"/></svg>',
+    dessert: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M5 11.5h14l-1.4 8.2a1.6 1.6 0 0 1-1.6 1.3H8a1.6 1.6 0 0 1-1.6-1.3L5 11.5z"/><path d="M6.5 11.5a5.5 5.5 0 0 1 11 0"/><path d="M12 3.2v2.4M9 4.4l.6 1.6M15 4.4l-.6 1.6"/></svg>',
+    bar: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M5 4h14l-6 8.4v6.6h3M13 19h-6"/><path d="M10 12.4V19"/></svg>',
+  };
+  function guidePlaceholderKind(spot) {
+    if (spot.tab === "eat" || (spot.tabs || []).includes("eat")) return spot.eatType || "restaurant";
+    if (spot.tab === "shop" || (spot.tabs || []).includes("shop")) return "shop";
+    return "see";
+  }
+  function guidePlaceholderHtml(spot) {
+    const kind = guidePlaceholderKind(spot);
+    const svg = GUIDE_PLACEHOLDER_ICON[kind] || GUIDE_PLACEHOLDER_ICON.see;
+    return `<div class="guide-card__photo guide-card__photo--${kind}">${svg}</div>`;
+  }
+  // v0.7.3 — 재사용 라이선스가 확인된 Wikimedia Commons 사진을 직접 표시합니다. 크레딧은 사진 우하단의 작은
+  // "Photo: Author · License" 한 줄이며, 누르면 Wikimedia Commons file page가 새 탭에서
+  // 열립니다. image_context(예: "AREA VIEW")가 있으면 사진 좌상단에 라벨을 표시해
+  // 매장 자체 사진으로 오해되지 않게 합니다.
+  function guideCreditText(spot) {
+    const lic = spot.image_license || "";
+    const cr = spot.image_credit || "";
+    // CC0 / Public Domain은 저작자 표기 의무가 없으므로 라이선스명만 간단히 표시.
+    if (/^(cc0|public domain)$/i.test(lic)) return lic;
+    return [cr, lic].filter(Boolean).join(" · ");
+  }
+  function guidePhotoHtml(spot) {
+    if (!spot.image) return guidePlaceholderHtml(spot);
+    const credit = guideCreditText(spot);
+    const creditHtml = credit
+      ? (spot.image_source_url
+          ? `<a class="guide-card__credit" href="${escapeAttr(spot.image_source_url)}" target="_blank" rel="noopener noreferrer" title="Wikimedia Commons">${escapeAttr(credit)}</a>`
+          : `<span class="guide-card__credit">${escapeAttr(credit)}</span>`)
+      : "";
+    const ctxHtml = spot.image_context
+      ? `<span class="guide-card__img-context">${escapeAttr(spot.image_context)}</span>`
+      : "";
+    return `<div class="guide-card__photo guide-card__photo--img" data-photo-spot="${escapeAttr(spot.id)}"><img src="${escapeAttr(spot.image)}" alt="${escapeAttr(spot.image_alt || spot.name)}" loading="lazy" decoding="async" />${ctxHtml}${creditHtml}</div>`;
+  }
+  // 이미지 파일이 없거나 로드에 실패하면 깨진 이미지 대신 기존 category placeholder로 되돌립니다.
+  document.addEventListener("error", (ev) => {
+    const img = ev.target;
+    if (!img || img.tagName !== "IMG") return;
+    const wrap = img.closest && img.closest(".guide-card__photo--img");
+    if (!wrap) return;
+    const spot = GUIDE_SPOTS.find((s) => s.id === wrap.getAttribute("data-photo-spot"));
+    if (spot) wrap.outerHTML = guidePlaceholderHtml(spot);
+  }, true);
+
+  // ---------- 카드 MORE(details) 안 항목들 ----------
+  function guideMoreRowsHtml(spot) {
+    const rows = [];
+    if (spot.signature) {
+      const sig = Array.isArray(spot.signature) ? spot.signature.join(" · ") : spot.signature;
+      rows.push(`<div class="guide-card__more-row"><dt>대표 메뉴 · 무엇을 사는 곳</dt><dd>${sig}</dd></div>`);
+    }
+    if (spot.tip) rows.push(`<div class="guide-card__more-row"><dt>여행자 팁</dt><dd>${spot.tip}</dd></div>`);
+    if (spot.reservationNote) rows.push(`<div class="guide-card__more-row"><dt>웨이팅 · 예약 참고</dt><dd>${spot.reservationNote}</dd></div>`);
+    if (spot.hours) rows.push(`<div class="guide-card__more-row"><dt>영업시간</dt><dd>${spot.hours} <span class="text-faint">(변동 가능 · 당일 확인)</span></dd></div>`);
+    if (spot.metro) rows.push(`<div class="guide-card__more-row"><dt>지하철</dt><dd>${spot.metro}</dd></div>`);
+    if (spot.keywords && spot.keywords.length) rows.push(`<div class="guide-card__more-row"><dt>키워드</dt><dd>${spot.keywords.join(" · ")}</dd></div>`);
+    return rows.join("");
+  }
+
+  // ---------- 공용 Guide 카드 템플릿 ----------
+  function guideCardHtml(spot) {
+    const mapUrl = amapSearchUrl(spot);
+    const moreRows = guideMoreRowsHtml(spot);
+    // COPY NAME(중국어명) / COPY ADDRESS(주소) — 없는 값은 버튼 자체를 숨김.
+    // 택시기사님께 보여주거나 현지 지도앱 검색에 바로 쓸 수 있도록 분리.
+    const copyButtons = [
+      spot.name_zh ? `<button class="copy-btn copy-btn--sm" type="button" data-copy="${escapeAttr(spot.name_zh)}">${icon("copy")}<span>NAME</span></button>` : "",
+      spot.address ? `<button class="copy-btn copy-btn--sm" type="button" data-copy="${escapeAttr(spot.address)}">${icon("copy")}<span>ADDRESS</span></button>` : "",
+    ].filter(Boolean).join("");
     return `
-      <article class="explore-card">
-        <div class="explore-card__photo-wrap">
-          ${photoPlaceholderHtml()}
-          <div class="explore-card__types">${types.map((t) => `<span class="type-chip">${t}</span>`).join("")}</div>
-          <div class="explore-card__badges">${statusBadge(place.status)}</div>
+      <article class="guide-card" id="card-${escapeAttr(spot.id)}">
+        ${guidePhotoHtml(spot)}
+        <div class="guide-card__body">
+          <div class="guide-card__top">
+            <div class="guide-card__category">${spot.category}</div>
+            <div class="guide-card__area">${spot.area}</div>
+          </div>
+          <div class="guide-card__name">${spot.name}</div>
+          ${spot.name_zh ? `<div class="guide-card__name-zh">${spot.name_zh}</div>` : ""}
+          ${spot.note ? `<div class="guide-card__note">${spot.note}</div>` : ""}
+          ${spot.address ? `<div class="guide-card__addr">${icon("pin")} ${spot.address}</div>` : ""}
+          <div class="guide-card__actions">
+            ${mapUrl ? `<a class="btn btn--sm" href="${mapUrl}" target="_blank" rel="noopener">${icon("pin")}<span>高德地图</span></a>` : ""}
+            ${copyButtons}
+          </div>
+          ${moreRows ? `<details class="guide-card__more"><summary>&nbsp;</summary><div class="guide-card__more-body">${moreRows}</div></details>` : ""}
         </div>
-        <div>
-          <div class="explore-card__name-ko">${place.name_ko}</div>
-          <div class="explore-card__name-en">${place.name_en || ""}</div>
-        </div>
-        ${place.note ? `<div class="place-card__desc">${place.note}</div>` : ""}
-        ${zhBlockOrNotice(place)}
-        <div class="place-card__meta">${icon("pin")}<span>${place.area || "지역 TBD"}</span></div>
-        <div class="explore-card__time">${icon("bolt")}<span>추천 시간대 · ${place.bestTime || "TBD"}</span></div>
-        <div class="explore-card__time">${icon("route")}<span>예상 체류시간 · ${place.duration || "TBD"}</span></div>
-        <div class="btn-row">${reservationTag(place.reservation)}</div>
-        <div class="btn-row">${zhActionsHtml(place)}</div>
-        <div class="btn-row">${mapButtonsHtml(place)}</div>
       </article>
     `;
   }
 
-  function renderFilterBar() {
-    document.getElementById("filter-bar").innerHTML = EXPLORE_FILTERS.map(
-      (c) => `<button class="filter-chip ${c.id === activeExploreType ? "is-active" : ""}" data-type="${c.id}" type="button">${icon(c.icon)}<span>${c.label}</span></button>`
+  function emptyBoxHtml(msg) {
+    return `<div class="placeholder-box">${msg}</div>`;
+  }
+
+  // ---------- AREA 필터 바 (SEE/EAT/SHOP 공용) ----------
+  function areaFilterBarHtml() {
+    return ["ALL", ...AREA_CLUSTERS.map((c) => c.id), AREA_OTHER].map(
+      (a) => `<button class="filter-chip ${a === activeArea ? "is-active" : ""}" data-area="${escapeAttr(a)}" type="button"><span>${a}</span></button>`
     ).join("");
-    document.querySelectorAll("#filter-bar [data-type]").forEach((btn) => {
-      btn.addEventListener("click", () => { activeExploreType = btn.getAttribute("data-type"); renderFilterBar(); renderSee(); });
+  }
+  function renderAreaFilterBars() {
+    ["see-area-filter", "eat-area-filter", "shop-area-filter"].forEach((elId) => {
+      const el = document.getElementById(elId);
+      if (!el) return;
+      el.innerHTML = areaFilterBarHtml();
+      el.querySelectorAll("[data-area]").forEach((btn) => {
+        btn.addEventListener("click", () => { activeArea = btn.getAttribute("data-area"); renderAreaFilterBars(); renderActiveTabList(); });
+      });
     });
   }
 
+  // ---------- EAT 서브필터 ----------
+  function renderEatTypeFilter() {
+    const el = document.getElementById("eat-type-filter");
+    el.innerHTML = EAT_TYPES.map(
+      (t) => `<button class="filter-chip ${t === activeEatType ? "is-active" : ""}" data-eat-type="${t}" type="button">${icon("fork")}<span>${t}</span></button>`
+    ).join("");
+    el.querySelectorAll("[data-eat-type]").forEach((btn) => {
+      btn.addEventListener("click", () => { activeEatType = btn.getAttribute("data-eat-type"); renderEatTypeFilter(); renderEat(); });
+    });
+  }
+
+  // ---------- 탭별 목록 필터링 + 렌더 ----------
+  function spotsForTab(tabId) {
+    return GUIDE_SPOTS.filter((s) => (s.tabs || [s.tab]).includes(tabId));
+  }
+  function applyAreaFilter(list) {
+    if (activeArea === "ALL") return list;
+    return list.filter((s) => s.area === activeArea);
+  }
+  function applySearch(list) {
+    return list.filter(matchesSearch);
+  }
+
   function renderSee() {
-    const list = activeExploreType === "all" ? SEE_PLACES : SEE_PLACES.filter((p) => (p.exploreType || []).includes(activeExploreType));
-    const root = document.getElementById("see-root");
-    root.innerHTML = list.length ? list.map(exploreCardHtml).join("") : `<div class="placeholder-box">해당 카테고리의 장소가 아직 없습니다.</div>`;
+    let list = applySearch(applyAreaFilter(spotsForTab("see")));
+    document.getElementById("see-root").innerHTML = list.length ? list.map(guideCardHtml).join("") : emptyBoxHtml("조건에 맞는 장소가 없습니다.");
   }
-
-  // -------- EAT (eat.html과 동일한 카드) --------
-  function foodItemCardHtml(food) {
-    const linked = (food.restaurant_ids || []).map((id) => RESTAURANTS.find((r) => r.id === id)).filter(Boolean);
-    return `
-      <article class="food-item-card">
-        <div class="food-item-card__top">
-          <div>
-            <div class="food-item-card__name-ko">${food.name_ko}</div>
-            <div class="food-item-card__name-en">${food.name_en || ""}</div>
-          </div>
-          ${statusBadge(food.status)}
-        </div>
-        ${food.note ? `<div class="place-card__desc">${food.note}</div>` : ""}
-        ${food.name_zh ? `
-        <div class="zh-block">
-          <div class="zh-block__label">中文</div>
-          <div class="zh-block__text">${food.name_zh}</div>
-          <div class="btn-row" style="margin-top:11px;"><button class="copy-btn" type="button" data-copy="${escapeAttr(food.name_zh)}">${icon("copy")}<span>NAME</span></button></div>
-        </div>` : `<div class="notice notice--tbd">中文名称 &middot; VERIFY</div>`}
-        <div class="food-item-card__link">${icon("fork")} ${linked.length ? `연결된 식당 후보 ${linked.length}곳: ${linked.map((r) => r.name_ko).join(", ")}` : "관련 식당 후보 없음 (TBD)"}</div>
-      </article>
-    `;
-  }
-
-  function restaurantCardHtml(r) {
-    return `
-      <article class="place-card">
-        ${photoPlaceholderHtml()}
-        <div class="place-card__top">
-          <div class="place-card__category">${icon("fork")}<span>${(r.category || "restaurant").toUpperCase()}</span></div>
-          <div style="display:flex; gap:6px; flex-wrap:wrap; justify-content:flex-end;">${statusBadge(r.status)}${reservationTag(r.reservation)}</div>
-        </div>
-        <div>
-          <div class="place-card__name-ko">${r.name_ko}</div>
-          <div class="place-card__name-en">${r.name_en || ""}</div>
-        </div>
-        ${r.note ? `<div class="place-card__desc">${r.note}</div>` : ""}
-        ${zhBlockOrNotice(r)}
-        <div class="place-card__meta">${icon("pin")}<span>${r.area || "지역 TBD"}</span></div>
-        <div class="place-card__meta">${icon("fork")}<span>대표메뉴 · ${r.signatureMenu || "TBD"}</span></div>
-        <div class="place-card__meta">${icon("coin")}<span>가격대 · ${r.priceRange || "TBD"}</span></div>
-        <div class="btn-row">${mapButtonsHtml(r)}</div>
-      </article>
-    `;
-  }
-
   function renderEat() {
-    document.getElementById("food-root").innerHTML = FOOD_ITEMS.length
-      ? FOOD_ITEMS.map(foodItemCardHtml).join("")
-      : `<div class="placeholder-box">아직 등록된 음식이 없습니다.</div>`;
-    document.getElementById("restaurant-root").innerHTML = RESTAURANTS.length
-      ? RESTAURANTS.map(restaurantCardHtml).join("")
-      : `<div class="placeholder-box">아직 확인된 식당/카페 후보가 없습니다. 확정되는 대로 하나씩 추가할 예정입니다.</div>`;
+    let list = spotsForTab("eat");
+    if (activeEatType !== "ALL") list = list.filter((s) => (s.eatType || "").toUpperCase() === activeEatType);
+    list = applySearch(applyAreaFilter(list));
+    document.getElementById("eat-root").innerHTML = list.length ? list.map(guideCardHtml).join("") : emptyBoxHtml("조건에 맞는 식당·카페가 없습니다.");
   }
-
-  // -------- SHOP (shop.html과 동일한 카드) --------
-  function shopCardHtml(shop) {
-    const linkedSouvenirs = (shop.souvenir_ids || []).map((id) => SOUVENIR_ITEMS.find((s) => s.id === id)).filter(Boolean);
-    return `
-      <article class="place-card">
-        ${photoPlaceholderHtml()}
-        <div class="place-card__top">
-          <div class="place-card__category">${icon("bag")}<span>SHOP</span></div>
-          ${statusBadge(shop.status)}
-        </div>
-        <div>
-          <div class="place-card__name-ko">${shop.name_ko}</div>
-          <div class="place-card__name-en">${shop.name_en || ""}</div>
-        </div>
-        ${shop.note ? `<div class="place-card__desc">${shop.note}</div>` : ""}
-        ${zhBlockOrNotice(shop)}
-        <div class="place-card__meta">${icon("pin")}<span>${shop.area || "지역 TBD"}</span></div>
-        <div class="place-card__meta">${icon("bag")}<span>${linkedSouvenirs.length ? `취급 품목 ${linkedSouvenirs.length}개: ` + linkedSouvenirs.map((s) => s.name_ko).join(", ") : "취급 품목 목록 TBD"}</span></div>
-        <div class="btn-row">${mapButtonsHtml(shop)}</div>
-      </article>
-    `;
-  }
-
   function renderShop() {
-    document.getElementById("shop-root").innerHTML = SHOP_PLACES.length
-      ? SHOP_PLACES.map(shopCardHtml).join("")
-      : `<div class="placeholder-box">아직 등록된 매장이 없습니다.</div>`;
+    let list = applySearch(applyAreaFilter(spotsForTab("shop")));
+    document.getElementById("shop-root").innerHTML = list.length ? list.map(guideCardHtml).join("") : emptyBoxHtml("조건에 맞는 매장이 없습니다.");
   }
 
-  // -------- SOUVENIRS (shop.html과 동일한 카드) --------
+  // ---------- SOUVENIRS ----------
   function souvenirCardHtml(item) {
-    const shops = (item.shop_ids || []).map((id) => SHOP_PLACES.find((s) => s.id === id)).filter(Boolean);
+    const shops = (item.shop_ids || []).map((id) => GUIDE_SPOTS.find((s) => s.id === id)).filter(Boolean);
     return `
-      <article class="place-card">
-        <div class="place-card__top">
-          <div class="place-card__category">${icon("bag")}<span>SOUVENIR</span></div>
-          ${statusBadge(item.status)}
+      <article class="guide-card">
+        <div class="guide-card__body">
+          <div class="guide-card__top">
+            <div class="guide-card__category">SOUVENIR</div>
+          </div>
+          <div class="guide-card__name">${item.name}</div>
+          ${item.note ? `<div class="guide-card__note">${item.note}</div>` : ""}
+          <div class="guide-card__note">${shops.length ? "구매처: " + shops.map((s) => s.name).join(", ") : "구매처: 상하이 현지 매장 (지점은 방문 당일 확인)"}</div>
         </div>
-        <div>
-          <div class="place-card__name-ko">${item.name_ko}</div>
-          <div class="place-card__name-en">${item.name_en || ""}</div>
-        </div>
-        ${item.note ? `<div class="place-card__desc">${item.note}</div>` : ""}
-        <div class="place-card__meta">${icon("coin")}<span>가격대 · ${item.priceRange || "TBD"}</span></div>
-        <div class="place-card__meta">${icon("bag")}<span>${shops.length ? "구매처: " + shops.map((s) => s.name_ko).join(", ") : "구매처 TBD"}</span></div>
       </article>
     `;
   }
-
   function renderSouvenirs() {
-    document.getElementById("souvenir-root").innerHTML = SOUVENIR_ITEMS.length
-      ? SOUVENIR_ITEMS.map(souvenirCardHtml).join("")
-      : `<div class="placeholder-box"><h3>아직 등록된 기념품이 없습니다</h3><p>실제로 마음에 드는 기념품을 정하면 사진·가격대·구매처와 함께 이 자리에 하나씩 추가할 예정입니다.</p></div>`;
+    const q = searchQuery;
+    const list = GUIDE_SOUVENIRS.filter((item) => !q || (item.name + " " + (item.note || "")).toLowerCase().includes(q));
+    document.getElementById("souvenir-root").innerHTML = list.length ? list.map(souvenirCardHtml).join("") : emptyBoxHtml("조건에 맞는 기념품이 없습니다.");
   }
 
-  // -------- 탭 전환 (SEE/EAT/SHOP/SOUVENIRS) --------
-  // Home의 Free Time 바로가기(guide.html#see 등)와 직접 연결되도록 URL hash로
-  // 활성 탭을 관리합니다.
+  // ---------- MAP ----------
+  function renderGuideMap() {
+    const svg = document.getElementById("guide-map-svg");
+    const pins = AREA_CLUSTERS.map((c) => {
+      const count = GUIDE_SPOTS.filter((s) => s.area === c.id).length;
+      const active = activeMapArea === c.id ? "is-active" : "";
+      return `
+        <g class="guide-map__pin ${active}" data-map-area="${escapeAttr(c.id)}">
+          <circle class="dot" cx="${c.x}" cy="${c.y}" r="9"/>
+          <text class="pin-label" x="${c.x}" y="${c.y - 16}" text-anchor="middle">${c.label}</text>
+          <text class="pin-count" x="${c.x}" y="${c.y + 24}" text-anchor="middle">${count}곳</text>
+        </g>`;
+    }).join("");
+    svg.innerHTML = `
+      <rect x="0" y="0" width="800" height="560" fill="none"/>
+      <path d="M 120 60 C 260 120, 560 90, 700 220 C 760 300, 620 430, 420 480 C 260 520, 120 460, 90 340 C 70 220, 90 120, 120 60 Z" fill="#eef1f9" stroke="#dde3f0" stroke-width="1.5"/>
+      <path d="M 560 60 L 620 500" stroke="#c9d3ea" stroke-width="10" opacity="0.6"/>
+      ${pins}
+    `;
+    svg.querySelectorAll("[data-map-area]").forEach((g) => {
+      g.addEventListener("click", () => {
+        const area = g.getAttribute("data-map-area");
+        activeMapArea = activeMapArea === area ? null : area;
+        renderGuideMap();
+        renderMapResult();
+      });
+    });
+  }
+  function renderMapResult() {
+    const head = document.getElementById("map-result-head");
+    const root = document.getElementById("map-result-root");
+    if (!activeMapArea) {
+      head.style.display = "none";
+      root.innerHTML = "";
+      return;
+    }
+    head.style.display = "block";
+    head.textContent = activeMapArea + " · 이 지역의 장소";
+    const list = GUIDE_SPOTS.filter((s) => s.area === activeMapArea);
+    root.innerHTML = list.length ? list.map(guideCardHtml).join("") : emptyBoxHtml("이 지역에 등록된 장소가 없습니다.");
+  }
+
+  // ---------- 탭 전환 ----------
   function renderGuideTabbar() {
     const el = document.getElementById("guide-tabbar");
     el.innerHTML = GUIDE_TABS.map((t) => `<button class="tabbar__btn ${t.id === activeGuideTab ? "is-active" : ""}" data-guide-tab="${t.id}" type="button">${icon(t.icon)}<span>${t.label}</span></button>`).join("");
@@ -266,28 +365,76 @@
       btn.addEventListener("click", () => { activeGuideTab = btn.getAttribute("data-guide-tab"); location.hash = activeGuideTab; showActiveGuidePanel(); });
     });
   }
-
   function showActiveGuidePanel() {
     document.querySelectorAll(".tabpanel").forEach((p) => p.classList.remove("is-active"));
     const panel = document.getElementById("panel-" + activeGuideTab);
     if (panel) panel.classList.add("is-active");
     renderGuideTabbar();
   }
+  function renderActiveTabList() {
+    if (activeGuideTab === "see") renderSee();
+    else if (activeGuideTab === "eat") renderEat();
+    else if (activeGuideTab === "shop") renderShop();
+    else if (activeGuideTab === "souvenirs") renderSouvenirs();
+  }
+
+  // ---------- 특정 spot 딥링크 (#spot=<id>) ----------
+  // 향후 Schedule 등 다른 화면에서 실제 확정 장소를 Guide 카드로 바로 연결할 때
+  // 쓰기 위한 준비입니다. 이번 라운드에서 Schedule 쪽에 실제로 링크를 걸지는
+  // 않았습니다 — Guide 쪽 지원만 미리 만들어 둡니다.
+  function goToSpotDeepLink(spotId) {
+    const spot = GUIDE_SPOTS.find((s) => s.id === spotId);
+    if (!spot) return false;
+    const tab = (spot.tabs || [spot.tab])[0];
+    if (!["see", "eat", "shop"].includes(tab)) return false;
+
+    activeGuideTab = tab;
+    activeArea = "ALL"; // area 필터에 가려 안 보이는 일이 없도록 초기화
+    if (tab === "eat") activeEatType = "ALL";
+
+    renderAreaFilterBars();
+    renderEatTypeFilter();
+    renderActiveTabList();
+    showActiveGuidePanel();
+
+    requestAnimationFrame(() => {
+      const el = document.getElementById("card-" + spotId);
+      if (!el) return;
+      el.scrollIntoView({ behavior: "smooth", block: "center" });
+      el.classList.add("is-deep-linked");
+      setTimeout(() => el.classList.remove("is-deep-linked"), 2200);
+    });
+    return true;
+  }
+
+  function handleHashRoute() {
+    const raw = (location.hash || "#see").replace("#", "");
+    if (raw.indexOf("spot=") === 0) {
+      const spotId = decodeURIComponent(raw.slice("spot=".length));
+      if (goToSpotDeepLink(spotId)) return;
+    }
+    activeGuideTab = GUIDE_TABS.some((t) => t.id === raw) ? raw : "see";
+    showActiveGuidePanel();
+  }
 
   function initGuide() {
-    const hash = (location.hash || "#see").replace("#", "");
-    activeGuideTab = GUIDE_TABS.some((t) => t.id === hash) ? hash : "see";
-    renderFilterBar();
+    renderAreaFilterBars();
+    renderEatTypeFilter();
     renderSee();
     renderEat();
     renderShop();
     renderSouvenirs();
-    showActiveGuidePanel();
+    renderGuideMap();
+    renderMapResult();
+    handleHashRoute();
 
-    window.addEventListener("hashchange", () => {
-      const h = location.hash.replace("#", "");
-      if (GUIDE_TABS.some((t) => t.id === h)) { activeGuideTab = h; showActiveGuidePanel(); }
+    document.getElementById("guide-search").addEventListener("input", (e) => {
+      searchQuery = e.target.value.trim().toLowerCase();
+      renderSee(); renderEat(); renderShop(); renderSouvenirs();
     });
+
+    // #see / #eat / #shop / #souvenirs / #map 기존 동작 + #spot=<id> 딥링크 모두 지원
+    window.addEventListener("hashchange", handleHashRoute);
   }
 
   document.addEventListener("DOMContentLoaded", initGuide);
