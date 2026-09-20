@@ -86,25 +86,27 @@ function heroGraphicSVG() {
     <circle cx="60" cy="330" r="4" fill="#1a2c5c"/>
     <circle cx="730" cy="90" r="4" fill="#d9603f"/>
     <g fill="#d9603f">
-  <path
-    d="M -6 -1.4
-       L 5.5 -1.4
-       L 9 -5.5
-       L 11 -5.5
-       L 9 -1.4
-       L 13.5 0
-       L 9 1.4
-       L 11 5.5
-       L 9 5.5
-       L 5.5 1.4
-       L -6 1.4
-       L -9.5 4
-       L -11 4
-       L -9 0
-       L -11 -4
-       L -9.5 -4
-       Z"
-  />
+  <path d="
+  M -18 -2
+  L -4 -2
+  L 4 -14
+  L 8 -14
+  L 5 -2
+  L 18 -2
+  L 24 0
+  L 18 2
+  L 5 2
+  L 8 14
+  L 4 14
+  L -4 2
+  L -18 2
+  L -24 7
+  L -27 7
+  L -23 0
+  L -27 -7
+  L -24 -7
+  Z
+"/>
   <animateMotion
     dur="9s"
     repeatCount="indefinite"
