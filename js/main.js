@@ -85,9 +85,33 @@ function heroGraphicSVG() {
     <path id="fieldRoute" d="M 60 330 C 260 380, 420 60, 730 90" fill="none" stroke="url(#routeGrad)" stroke-width="1.6" stroke-dasharray="2 10" stroke-linecap="round" opacity="0.65"/>
     <circle cx="60" cy="330" r="4" fill="#1a2c5c"/>
     <circle cx="730" cy="90" r="4" fill="#d9603f"/>
-    <circle r="5" fill="#d9603f">
-      <animateMotion dur="9s" repeatCount="indefinite" path="M 60 330 C 260 380, 420 60, 730 90"/>
-    </circle>
+    <g fill="#d9603f">
+  <path
+    d="M -6 -1.4
+       L 5.5 -1.4
+       L 9 -5.5
+       L 11 -5.5
+       L 9 -1.4
+       L 13.5 0
+       L 9 1.4
+       L 11 5.5
+       L 9 5.5
+       L 5.5 1.4
+       L -6 1.4
+       L -9.5 4
+       L -11 4
+       L -9 0
+       L -11 -4
+       L -9.5 -4
+       Z"
+  />
+  <animateMotion
+    dur="9s"
+    repeatCount="indefinite"
+    rotate="auto"
+    path="M 60 330 C 260 380, 420 60, 730 90"
+  />
+</g>
 
     <!-- Shanghai skyline silhouette -->
     <g fill="#1a2c5c" opacity="0.08">
