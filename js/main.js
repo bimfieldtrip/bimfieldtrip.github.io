@@ -47,22 +47,20 @@ function brandMarkSVG() {
   </svg>`;
 }
 
-// ---------- Hero 그래픽: grid + molecular network + travel route + skyline ----------
-// 하나의 모티프로 KAIST(grid)·BIM(network)·Field Trip(route)·Shanghai(skyline)를 연결합니다.
+// ---------- Hero 그래픽: interactive layer (network + travel route + 비행기) ----------
+// 배경(Shanghai skyline 이미지)은 CSS(.hero)가, 이 SVG는 그 위에서 움직이는 route/비행기만 담당합니다.
 function heroGraphicSVG() {
+  // Interactive layer만 담당합니다 — molecular network + 점선 route + 노드 + 움직이는 비행기.
+  // Shanghai skyline/stamp/haze/river는 배경 이미지(assets/hero/shanghai-hero.jpg, css/style.css의 .hero)가 담당합니다.
+  // 좌표계: 940 x 420 (route/노드 좌표는 그대로 유지)
   return `
-  <svg viewBox="0 0 800 420" preserveAspectRatio="xMidYMid slice" xmlns="http://www.w3.org/2000/svg">
+  <svg viewBox="0 8 940 412" preserveAspectRatio="xMidYMin slice" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
     <defs>
-      <pattern id="grid" width="40" height="40" patternUnits="userSpaceOnUse">
-        <path d="M 40 0 L 0 0 0 40" fill="none" stroke="#1a2c5c" stroke-width="0.5" opacity="0.08"/>
-      </pattern>
       <linearGradient id="routeGrad" x1="0" y1="0" x2="1" y2="0">
         <stop offset="0%" stop-color="#1a2c5c"/>
         <stop offset="100%" stop-color="#4863b5"/>
       </linearGradient>
     </defs>
-
-    <rect width="800" height="420" fill="url(#grid)"/>
 
     <!-- molecular network (BIM: bio innovation) -->
     <g stroke="#23397a" stroke-width="1" opacity="0.4">
@@ -81,60 +79,19 @@ function heroGraphicSVG() {
       <circle cx="90" cy="230" r="3.5"/>
     </g>
 
-    <!-- travel route: ICN -> Shanghai -->
+    <!-- travel route: ICN -> Shanghai (기존 경로·노드 그대로) -->
     <path id="fieldRoute" d="M 60 330 C 260 380, 420 60, 730 90" fill="none" stroke="url(#routeGrad)" stroke-width="1.6" stroke-dasharray="2 10" stroke-linecap="round" opacity="0.65"/>
     <circle cx="60" cy="330" r="4" fill="#1a2c5c"/>
     <circle cx="730" cy="90" r="4" fill="#d9603f"/>
+    <!-- 비행기: 위 fieldRoute 경로를 그대로 재사용(mpath). 아이콘은 Material "flight" 글리프(기수가 위쪽)라
+         rotate(90)로 +x(진행 방향)에 맞추고, rotate="auto"가 경로 접선 방향으로 회전시킵니다. -->
     <g fill="#d9603f">
-  <path d="
-  M -18 -2
-  L -4 -2
-  L 4 -14
-  L 8 -14
-  L 5 -2
-  L 18 -2
-  L 24 0
-  L 18 2
-  L 5 2
-  L 8 14
-  L 4 14
-  L -4 2
-  L -18 2
-  L -24 7
-  L -27 7
-  L -23 0
-  L -27 -7
-  L -24 -7
-  Z
-"/>
-  <animateMotion
-    dur="9s"
-    repeatCount="indefinite"
-    rotate="auto"
-    path="M 60 330 C 260 380, 420 60, 730 90"
-  />
-</g>
-
-    <!-- Shanghai skyline silhouette -->
-    <g fill="#1a2c5c" opacity="0.08">
-      <rect x="0" y="368" width="800" height="52"/>
-    </g>
-    <g fill="#1a2c5c" opacity="0.22">
-      <rect x="30" y="330" width="14" height="90"/>
-      <rect x="55" y="300" width="10" height="120"/>
-      <rect x="80" y="345" width="18" height="75"/>
-      <rect x="470" y="310" width="12" height="110"/>
-      <rect x="495" y="270" width="16" height="150"/>
-      <rect x="522" y="335" width="10" height="85"/>
-      <rect x="545" y="295" width="13" height="125"/>
-      <rect x="640" y="320" width="11" height="100"/>
-      <rect x="665" y="285" width="15" height="135"/>
-      <rect x="695" y="345" width="10" height="75"/>
-      <rect x="720" y="300" width="13" height="120"/>
-    </g>
-    <g fill="#b9790a" opacity="0.55">
-      <rect x="497" y="266" width="3" height="6"/>
-      <rect x="667" y="281" width="3" height="6"/>
+      <animateMotion dur="9s" repeatCount="indefinite" rotate="auto">
+        <mpath href="#fieldRoute" xlink:href="#fieldRoute"/>
+      </animateMotion>
+      <g transform="rotate(90) scale(1.05) translate(-12 -12)">
+        <path d="M21 16v-2l-8-5V3.5c0-.83-.67-1.5-1.5-1.5S10 2.67 10 3.5V9l-8 5v2l8-2.5V19l-2 1.5V22l3.5-1 3.5 1v-1.5L13 19v-5.5l8 2.5z"/>
+      </g>
     </g>
   </svg>`;
 }
