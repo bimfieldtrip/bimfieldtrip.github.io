@@ -1,8 +1,30 @@
-# Shanghai Field Trip Hub — v0.7.5 · Shanghai Guide Illustration System
+# Shanghai Field Trip Hub — v0.8.0 · Shanghai Guide Region-First
 
 KAIST BIM Shanghai Field Trip(2026.12.27~12.31)을 위한 **공개 여행 안내 허브**입니다.
 "상하이에서 무엇을 하고, 무엇을 준비하고, 어디를 볼 수 있는가"에만 집중하며, 실제 참가자 운영
 (체크인·버스 탑승·룸 배정·택시팀·정산 등)은 별도의 Private Participant Portal에서 처리합니다.
+
+## 🗺 v0.8.0 — Shanghai Guide 지역 중심 구조 + 실사 이미지 확대 (Guide만 수정)
+
+`guide.html`의 정보 구조와 카드 이미지만 바꿨습니다. 헤더·내비·색·타이포·카드 스타일, HOME/SCHEDULE/PREP/MY TRIP,
+`js/data-trip.js`, Apps Script 연결은 건드리지 않았습니다. `GUIDE_SPOTS` 56곳의 기존 항목은 한 줄도 삭제·수정하지 않았습니다.
+
+- **흐름:** 전체 스케매틱 지도 → 지역 선택(지도 또는 대표 사진이 있는 지역 카드) → 지역 설명 + 지역 상세 지도(번호 핀)
+  → 카테고리 필터(전체/관광/음식/카페/쇼핑) → 장소 카드. SEE/EAT/SHOP/SOUVENIRS/MAP 5탭은 없앴고,
+  카테고리는 지역 안의 2차 필터가 됐습니다. 페이지를 새로 나누지 않고 `guide.html` 안에서 전환됩니다.
+- **지역 9개** (`js/data-guide.js` → `GUIDE_REGIONS`): 와이탄·난징동루·예원 / 북와이탄 / 푸동·루자쭈이 / 신천지·티엔즈팡 /
+  난징시루·정안 / 우캉루·안푸루 / 융캉루·쉬자후이·룽화 / 천수·M50 / 근교·수향마을. 기존 `area` 값은 그대로 두고,
+  `OTHER`였던 7곳은 `include`로 실제 위치의 지역에 넣었습니다. 지도 핀 좌표는 대략적인 상대 위치입니다(비례 지도 아님).
+- **검색**은 모든 지역을 가로질러 결과를 보여 줍니다(한/영/중·한국어 별칭·대표메뉴·지역명 포함, 기념품도 함께 검색).
+- **기념품** 33개는 페이지 하단의 접이식 "기념품 체크리스트"에 그대로 있고, 구매처는 해당 카드로 바로 이동합니다.
+- **링크:** `#region=<key>`(예: `guide.html#region=wukang-anfu`), 기존 `#spot=<id>` 딥링크, 기존 `#see`/`#eat`/`#shop`/`#souvenirs`/`#map` 모두 동작합니다.
+- **이미지:** 실사 8곳 → **28곳**. 모두 Wikimedia Commons API로 저작자·라이선스를 확인했습니다(`assets/guide/README.md`).
+  나머지 28곳(주로 카페·식당·매장)은 **ILLUSTRATION_NEEDED**입니다. 일러스트가 준비될 때까지 기존 SVG placeholder를 유지하고,
+  제작 브리프는 `assets/guide/ILLUSTRATION_BRIEF.md`에 있습니다. 장소별 점검 결과는 `assets/guide/IMAGE_AUDIT.md`를 보세요.
+- **카드:** 이미지 16:10 통일, `loading="lazy"`, Commons `srcset`(500/960/1280). 이미지 클릭과 **PHOTOS ↗** 버튼은 같은 Google 이미지 검색으로
+  연결됩니다(검색어 = 영문명 + 중국어명 + Shanghai). 高德地图 / NAME / ADDRESS 복사 / MORE는 그대로입니다.
+- **사진 로컬화(선택):** `python3 tools/fetch_guide_photos.py` → `assets/guide/photos/*.webp`(1280×800 WebP)를 만든 뒤
+  `js/data-guide.js`의 `GUIDE_LOCAL_PHOTOS = true`. 로컬 → Commons → placeholder 순으로 자동 fallback 됩니다.
 
 ## 🎨 v0.7.5 — Guide 카드 일러스트 시스템 + v0.7.4 데이터 보존
 
@@ -235,7 +257,7 @@ GitHub에 저장하지 않는다"는 보안 설명은 사용자 화면이 아니
 shanghai-field-trip-hub/
 ├── index.html               HOME — Hero + Trip at a Glance + My Trip CTA (날짜 기반 자동 Phase)
 ├── itinerary.html            SCHEDULE — Day별 대략적인 이동 흐름 요약 (상세 시간표 없음)
-├── guide.html                SHANGHAI GUIDE — SEE/EAT/SHOP/SOUVENIRS/MAP 5탭.
+├── guide.html                SHANGHAI GUIDE — 지역 선택 → 지역 지도 → 카테고리 → 카드 (v0.8).
 │                              js/data-guide.js만 읽음(js/data-trip.js와 완전 분리)
 ├── prep.html                 PREP — BEFORE YOU FLY(기본 펼침) + 5개 카테고리 accordion
 │                              (ESSENTIAL APPS/PAYMENT/CONNECTIVITY/PACKING·POWER/LOCAL TIPS)

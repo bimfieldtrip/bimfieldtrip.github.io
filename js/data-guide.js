@@ -611,3 +611,262 @@ const GUIDE_RESEARCH_NOTES_EXTENDED = [
   "何东旧居",
   "World Culture Park",
 ];
+
+// ============================================================================
+// v0.8 "REGION-FIRST GUIDE" — 추가 데이터 (기존 GUIDE_SPOTS 항목은 한 줄도 삭제·수정하지 않음)
+// ============================================================================
+
+// ===== 사진 로컬 호스팅 스위치 =====
+// false: Wikimedia Commons 공식 썸네일 CDN(thumb.wikimedia.org)에서 직접 불러옵니다.
+// true : tools/fetch_guide_photos.py 로 내려받은 assets/guide/photos/*.webp 를 먼저 쓰고,
+//        파일이 없으면 Commons 썸네일 → 그래도 실패하면 기존 placeholder 순으로 되돌아갑니다.
+const GUIDE_LOCAL_PHOTOS = false;
+
+// ===== GUIDE_IMAGE_MANIFEST — spot별 대표 이미지 (v0.8 audit 결과) =====
+// kind: "photo"        → 재사용 라이선스를 Commons API로 직접 확인한 실사 (저작자·라이선스 기록)
+//       "illustration" → ILLUSTRATION_NEEDED. 사용 가능한 실사가 없어 AI 일러스트로 교체할 대상.
+//                        file 경로에 이미지를 넣고 ready: true 로 바꾸면 카드에 자동 반영됩니다.
+//                        그 전까지는 기존 inline SVG placeholder를 그대로 유지합니다(교체 대상 표시).
+// 브리프(장소 특징·비율·파일명)는 assets/guide/ILLUSTRATION_BRIEF.md 참고.
+const GUIDE_IMAGE_MANIFEST = {
+  // ---------- REAL PHOTO (Wikimedia Commons, 라이선스 확인 2026-09-29) ----------
+  "gs-the-louis": { kind: "photo", commons: "The Louis, Louis Vuitton Flagship Store 20251128.jpg", thumb: "https://thumb.wikimedia.org/wikipedia/commons/thumb/9/92/The_Louis%2C_Louis_Vuitton_Flagship_Store_20251128.jpg/1280px-The_Louis%2C_Louis_Vuitton_Flagship_Store_20251128.jpg", credit: "Supanut Arunoprayote", license: "CC BY 4.0", alt: "The Louis, Louis Vuitton flagship ship-shaped building, Shanghai" },
+  "gs-starbucks-reserve-roastery": { kind: "photo", commons: "Starbucks Reserve Roastery Shanghai 02.jpg", thumb: "https://thumb.wikimedia.org/wikipedia/commons/thumb/4/43/Starbucks_Reserve_Roastery_Shanghai_02.jpg/1280px-Starbucks_Reserve_Roastery_Shanghai_02.jpg", credit: "Codas", license: "CC BY-SA 4.0", alt: "Interior of Starbucks Reserve Roastery Shanghai with the copper roasting cask" },
+  "gs-the-stage": { kind: "photo", commons: "White Magnolia Plaza, view from Shangqiu road.jpg", thumb: "https://thumb.wikimedia.org/wikipedia/commons/thumb/0/0f/White_Magnolia_Plaza%2C_view_from_Shangqiu_road.jpg/960px-White_Magnolia_Plaza%2C_view_from_Shangqiu_road.jpg", credit: "DmitryKvasov", license: "CC0", alt: "White Magnolia Plaza tower, North Bund — the building that houses The Stage observation deck", context: "WHITE MAGNOLIA PLAZA · EXTERIOR", focus: "50% 0%" },
+  "gs-north-bund": { kind: "photo", commons: "The North Bund, Shanghai.jpg", thumb: "https://thumb.wikimedia.org/wikipedia/commons/thumb/9/95/The_North_Bund%2C_Shanghai.jpg/1280px-The_North_Bund%2C_Shanghai.jpg", credit: "钉钉", license: "CC BY-SA 4.0", alt: "North Bund riverside lawn with the Pudong skyline across the Huangpu River" },
+  "gs-wukang-mansion": { kind: "photo", commons: "Wukang Mansion 20251128.jpg", thumb: "https://thumb.wikimedia.org/wikipedia/commons/thumb/4/41/Wukang_Mansion_20251128.jpg/1280px-Wukang_Mansion_20251128.jpg", credit: "Supanut Arunoprayote", license: "CC BY 4.0", alt: "Wukang Mansion, Shanghai", focus: "50% 35%" },
+  "gs-wukang-road": { kind: "photo", commons: "Wukang Road, Shanghai, May 2016.JPG", thumb: "https://thumb.wikimedia.org/wikipedia/commons/thumb/2/22/Wukang_Road%2C_Shanghai%2C_May_2016.JPG/1280px-Wukang_Road%2C_Shanghai%2C_May_2016.JPG", credit: "SSYoung", license: "CC BY-SA 4.0", alt: "Tree-lined Wukang Road with low historic houses" },
+  "gs-anfu-road": { kind: "photo", commons: "Anfulu 255 Hao Zhuzhai.JPG", thumb: "https://thumb.wikimedia.org/wikipedia/commons/thumb/9/90/Anfulu_255_Hao_Zhuzhai.JPG/1280px-Anfulu_255_Hao_Zhuzhai.JPG", credit: "Fayhoo", license: "CC BY-SA 3.0", alt: "Historic residence at No. 255 Anfu Road under plane trees", context: "ANFU RD. NO.255" },
+  "gs-columbia-circle": { kind: "photo", commons: "Columbia Country Club 06.jpg", thumb: "https://thumb.wikimedia.org/wikipedia/commons/thumb/0/08/Columbia_Country_Club_06.jpg/1280px-Columbia_Country_Club_06.jpg", credit: "WQL", license: "CC BY-SA 4.0", alt: "The turquoise outdoor pool of the former Columbia Country Club at Columbia Circle" },
+  "gs-andaz-itc": { kind: "photo", commons: "XuJiaHui-Complexe Shanghai ITC.jpg", thumb: "https://thumb.wikimedia.org/wikipedia/commons/thumb/e/eb/XuJiaHui-Complexe_Shanghai_ITC.jpg/960px-XuJiaHui-Complexe_Shanghai_ITC.jpg", credit: "ShanghaiDream", license: "CC0", alt: "Shanghai ITC tower complex in Xujiahui, home of Andaz Shanghai ITC", context: "SHANGHAI ITC · EXTERIOR", focus: "50% 0%" },
+  "gs-tian-an-1000-trees": { kind: "photo", commons: "1000 Trees 20251127.jpg", thumb: "https://thumb.wikimedia.org/wikipedia/commons/thumb/0/06/1000_Trees_20251127.jpg/1280px-1000_Trees_20251127.jpg", credit: "Supanut Arunoprayote", license: "CC BY 4.0", alt: "Tian An 1000 Trees, Shanghai", focus: "50% 40%" },
+  "gs-existing-bund": { kind: "photo", commons: "Shanghai skyline from the bund.jpg", thumb: "https://thumb.wikimedia.org/wikipedia/commons/thumb/6/64/Shanghai_skyline_from_the_bund.jpg/1280px-Shanghai_skyline_from_the_bund.jpg", credit: "", license: "CC0", alt: "Pudong skyline seen from the Bund, Shanghai" },
+  "gs-existing-nanjing-east-road": { kind: "photo", commons: "2014.11.15.181406 Nanjing Road Pedestrian Zone Shanghai.jpg", thumb: "https://thumb.wikimedia.org/wikipedia/commons/thumb/9/94/2014.11.15.181406_Nanjing_Road_Pedestrian_Zone_Shanghai.jpg/1280px-2014.11.15.181406_Nanjing_Road_Pedestrian_Zone_Shanghai.jpg", credit: "Hermann Luyken", license: "CC0", alt: "Nanjing Road pedestrian street at night with neon signs" },
+  "gs-existing-peoples-square": { kind: "photo", commons: "People's Square Shanghai November 2017 001.jpg", thumb: "https://thumb.wikimedia.org/wikipedia/commons/thumb/1/1a/People%27s_Square_Shanghai_November_2017_001.jpg/1280px-People%27s_Square_Shanghai_November_2017_001.jpg", credit: "King of Hearts", license: "CC BY-SA 4.0", alt: "People's Square, Shanghai" },
+  "gs-existing-oriental-pearl": { kind: "photo", commons: "ShanghaiPearlTower.jpg", thumb: "https://thumb.wikimedia.org/wikipedia/commons/thumb/e/e9/ShanghaiPearlTower.jpg/960px-ShanghaiPearlTower.jpg", credit: "", license: "Public Domain", alt: "Oriental Pearl Tower, Shanghai", focus: "50% 30%" },
+  "gs-existing-lujiazui": { kind: "photo", commons: "Shanghai Lujiazui night skyline 2017 - Flickr.jpg", thumb: "https://thumb.wikimedia.org/wikipedia/commons/thumb/1/18/Shanghai_Lujiazui_night_skyline_2017_-_Flickr.jpg/1280px-Shanghai_Lujiazui_night_skyline_2017_-_Flickr.jpg", credit: "Larry Qian", license: "CC0", alt: "Lujiazui skyline at night across the Huangpu River" },
+  "gs-existing-shanghai-tower": { kind: "photo", commons: "Shanghai Shanghai Tower 5166304.jpg", thumb: "https://thumb.wikimedia.org/wikipedia/commons/thumb/d/d7/Shanghai_Shanghai_Tower_5166304.jpg/960px-Shanghai_Shanghai_Tower_5166304.jpg", credit: "Ermell", license: "CC0", alt: "Twisting glass facade of Shanghai Tower", focus: "50% 25%" },
+  "gs-existing-xintiandi": { kind: "photo", commons: "新天地 = New Heaven & Earth (6033629189).jpg", thumb: "https://thumb.wikimedia.org/wikipedia/commons/thumb/5/59/%E6%96%B0%E5%A4%A9%E5%9C%B0_%3D_New_Heaven_%26_Earth_%286033629189%29.jpg/1280px-%E6%96%B0%E5%A4%A9%E5%9C%B0_%3D_New_Heaven_%26_Earth_%286033629189%29.jpg", credit: "Can Pac Swire", license: "CC BY-SA 2.0", alt: "Shikumen stone-gate houses in Xintiandi" },
+  "gs-existing-tianzifang": { kind: "photo", commons: "Tianzifang 1.jpg", thumb: "https://thumb.wikimedia.org/wikipedia/commons/thumb/7/7c/Tianzifang_1.jpg/1280px-Tianzifang_1.jpg", credit: "钉钉", license: "CC BY-SA 4.0", alt: "Narrow shikumen lane lined with shops in Tianzifang" },
+  "gs-existing-yuyuan": { kind: "photo", commons: "Yu Garden 1.jpg", thumb: "https://thumb.wikimedia.org/wikipedia/commons/thumb/e/e9/Yu_Garden_1.jpg/1280px-Yu_Garden_1.jpg", credit: "", license: "Public Domain", alt: "Yu Garden, Shanghai" },
+  "gs-existing-jingan-temple": { kind: "photo", commons: "Jing'an temple.JPG", thumb: "https://thumb.wikimedia.org/wikipedia/commons/thumb/e/ea/Jing%27an_temple.JPG/1280px-Jing%27an_temple.JPG", credit: "J. Patrick Fischer", license: "CC BY-SA 3.0", alt: "Jing'an Temple, Shanghai" },
+  "gs-existing-korean-provisional-govt": { kind: "photo", commons: "Entrance of Provisional Government of ROK in Shanghai.JPG", thumb: "https://thumb.wikimedia.org/wikipedia/commons/thumb/2/25/Entrance_of_Provisional_Government_of_ROK_in_Shanghai.JPG/960px-Entrance_of_Provisional_Government_of_ROK_in_Shanghai.JPG", credit: "Ericmetro", license: "CC BY-SA 3.0", alt: "Entrance of the Site of the Provisional Government of the Republic of Korea in Shanghai", focus: "50% 45%" },
+  "gs-existing-longhua": { kind: "photo", commons: "Longhua Pagoda, 2019-10-19 02.jpg", thumb: "https://thumb.wikimedia.org/wikipedia/commons/thumb/b/b7/Longhua_Pagoda%2C_2019-10-19_02.jpg/1280px-Longhua_Pagoda%2C_2019-10-19_02.jpg", credit: "Siyuwj", license: "CC BY-SA 4.0", alt: "Longhua Pagoda, Shanghai", focus: "50% 30%" },
+  "gs-existing-m50": { kind: "photo", commons: "201703 M50 Creative Park.jpg", thumb: "https://thumb.wikimedia.org/wikipedia/commons/thumb/0/0e/201703_M50_Creative_Park.jpg/1280px-201703_M50_Creative_Park.jpg", credit: "MNXANL", license: "CC BY-SA 4.0", alt: "M50 Creative Park on Moganshan Road" },
+  "gs-existing-pudong-art-museum": { kind: "photo", commons: "Museum of Art Pudong from the Bund.jpg", thumb: "https://thumb.wikimedia.org/wikipedia/commons/thumb/c/ca/Museum_of_Art_Pudong_from_the_Bund.jpg/1280px-Museum_of_Art_Pudong_from_the_Bund.jpg", credit: "Simon Wade", license: "CC BY-SA 4.0", alt: "Museum of Art Pudong on the riverfront, seen from the Bund", context: "VIEW FROM THE BUND" },
+  "gs-existing-xujiahui-library": { kind: "photo", commons: "徐家汇书院 08.jpg", thumb: "https://thumb.wikimedia.org/wikipedia/commons/thumb/1/12/%E5%BE%90%E5%AE%B6%E6%B1%87%E4%B9%A6%E9%99%A2_08.jpg/1280px-%E5%BE%90%E5%AE%B6%E6%B1%87%E4%B9%A6%E9%99%A2_08.jpg", credit: "Nanhuajiaren", license: "CC BY-SA 4.0", alt: "Reading hall interior of Xujiahui Library (徐家汇书院)" },
+  "gs-existing-xujiahui-cathedral": { kind: "photo", commons: "Xujiahui Cathedral, 2019-10-19 04.jpg", thumb: "https://thumb.wikimedia.org/wikipedia/commons/thumb/9/98/Xujiahui_Cathedral%2C_2019-10-19_04.jpg/1280px-Xujiahui_Cathedral%2C_2019-10-19_04.jpg", credit: "Siyuwj", license: "CC BY-SA 4.0", alt: "Red-brick Gothic facade of Xujiahui Cathedral" },
+  "gs-existing-zhujiajiao": { kind: "photo", commons: "Zhujiajiao ancient water town, Nr. Shanghai, China - 1.jpg", thumb: "https://thumb.wikimedia.org/wikipedia/commons/thumb/a/af/Zhujiajiao_ancient_water_town%2C_Nr._Shanghai%2C_China_-_1.jpg/1280px-Zhujiajiao_ancient_water_town%2C_Nr._Shanghai%2C_China_-_1.jpg", credit: "Lloyd Tudor", license: "CC BY-SA 4.0", alt: "Canal, stone bridge and traditional houses in Zhujiajiao water town" },
+  "gs-existing-wuzhen": { kind: "photo", commons: "One of the waterways in Wuzhen Ancient Town.jpg", thumb: "https://thumb.wikimedia.org/wikipedia/commons/thumb/d/df/One_of_the_waterways_in_Wuzhen_Ancient_Town.jpg/1280px-One_of_the_waterways_in_Wuzhen_Ancient_Town.jpg", credit: "Wanderingchina", license: "CC BY 4.0", alt: "Aerial view of a waterway in Wuzhen Ancient Town" },
+
+  // ---------- ILLUSTRATION_NEEDED (라이선스가 확인된 실사 없음 → AI 일러스트 교체 대상) ----------
+  // 현재는 기존 inline SVG placeholder를 유지합니다. file에 16:10 이미지를 넣고 ready: true로 바꾸세요.
+  "gs-henjiuyiqian-yangroushuan": { kind: "illustration", file: "assets/guide/illustrations/henjiuyiqian-yangroushuan.webp", ready: false },
+  "gs-manner-coffee-guoke": { kind: "illustration", file: "assets/guide/illustrations/manner-coffee-guoke.webp", ready: false },
+  "gs-13demarzo-cafe-anfu": { kind: "illustration", file: "assets/guide/illustrations/13demarzo-cafe-anfu.webp", ready: false },
+  "gs-harmay-wukang": { kind: "illustration", file: "assets/guide/illustrations/harmay-wukang.webp", ready: false },
+  "gs-photowith": { kind: "illustration", file: "assets/guide/illustrations/photowith.webp", ready: false },
+  "gs-to-summer": { kind: "illustration", file: "assets/guide/illustrations/to-summer.webp", ready: false },
+  "gs-tagi": { kind: "illustration", file: "assets/guide/illustrations/tagi.webp", ready: false },
+  "gs-gathering": { kind: "illustration", file: "assets/guide/illustrations/gathering.webp", ready: false },
+  "gs-pane-yongyuan": { kind: "illustration", file: "assets/guide/illustrations/pane-yongyuan.webp", ready: false },
+  "gs-mondaysleepingclub": { kind: "illustration", file: "assets/guide/illustrations/mondaysleepingclub.webp", ready: false },
+  "gs-tonton": { kind: "illustration", file: "assets/guide/illustrations/tonton.webp", ready: false },
+  "gs-sanlifang-dirty": { kind: "illustration", file: "assets/guide/illustrations/sanlifang-dirty.webp", ready: false },
+  "gs-renhe-guan": { kind: "illustration", file: "assets/guide/illustrations/renhe-guan.webp", ready: false },
+  "gs-rooftop-bar-andaz": { kind: "illustration", file: "assets/guide/illustrations/rooftop-bar-andaz.webp", ready: false },
+  "gs-dongge-andaz": { kind: "illustration", file: "assets/guide/illustrations/dongge-andaz.webp", ready: false },
+  "gs-charlietown": { kind: "illustration", file: "assets/guide/illustrations/charlietown.webp", ready: false },
+  "gs-qingzhi-handcream": { kind: "illustration", file: "assets/guide/illustrations/qingzhi-handcream.webp", ready: false },
+  "gs-popmart": { kind: "illustration", file: "assets/guide/illustrations/popmart.webp", ready: false },
+  "gs-miniso-land": { kind: "illustration", file: "assets/guide/illustrations/miniso-land.webp", ready: false },
+  "gs-toptoy": { kind: "illustration", file: "assets/guide/illustrations/toptoy.webp", ready: false },
+  "gs-shanghai-first-food-store": { kind: "illustration", file: "assets/guide/illustrations/shanghai-first-food-store.webp", ready: false },
+  "gs-mms-shanghai": { kind: "illustration", file: "assets/guide/illustrations/mms-shanghai.webp", ready: false },
+  "gs-monogram": { kind: "illustration", file: "assets/guide/illustrations/monogram.webp", ready: false },
+  "gs-libaixie": { kind: "illustration", file: "assets/guide/illustrations/libaixie.webp", ready: false },
+  "gs-hugongguan": { kind: "illustration", file: "assets/guide/illustrations/hugongguan.webp", ready: false },
+  "gs-diandude": { kind: "illustration", file: "assets/guide/illustrations/diandude.webp", ready: false },
+  "gs-feidachu": { kind: "illustration", file: "assets/guide/illustrations/feidachu.webp", ready: false },
+  "gs-existing-panlong-tiandi": { kind: "illustration", file: "assets/guide/illustrations/panlong-tiandi.webp", ready: false },
+};
+
+// manifest → 기존 image 필드에 반영 (GUIDE_SPOTS 원본 항목은 그대로 두고 런타임에만 덮어씀)
+GUIDE_SPOTS.forEach((s) => {
+  const m = GUIDE_IMAGE_MANIFEST[s.id];
+  s.image_kind = m ? m.kind : (s.image ? "photo" : "illustration");
+  s.image_status = s.image_kind === "photo" ? "REAL_PHOTO" : "ILLUSTRATION_NEEDED";
+  if (!m) return;
+  if (m.kind === "photo") {
+    const slug = s.id.replace(/^gs-(existing-)?/, "");
+    s.image = m.thumb;
+    s.image_local = "assets/guide/photos/" + slug + ".webp";
+    s.image_alt = m.alt || s.image_alt || s.name;
+    s.image_source_url = "https://commons.wikimedia.org/wiki/File:" + encodeURIComponent(m.commons.replace(/ /g, "_")).replace(/%2C/g, ",").replace(/%28/g, "(").replace(/%29/g, ")");
+    s.image_credit = m.credit ? "Photo: " + m.credit : "";
+    s.image_license = m.license;
+    s.image_context = m.context || "";
+    s.image_focus = m.focus || "";
+  } else {
+    s.image = "";
+    s.illustration_file = m.file;
+    s.illustration_ready = !!m.ready;
+  }
+});
+
+// ===== GUIDE_REGIONS — 지역 중심 탐색 (v0.8) =====
+// areas: 기존 AREA_CLUSTERS id를 그대로 묶습니다(spot.area 값은 바꾸지 않음).
+// include: area가 "OTHER"였던 spot을 실제 위치에 맞는 지역으로 편입.
+// short: 좁은 화면·지역 전환 칩에 쓰는 짧은 이름
+// ov: 전체 스케매틱 지도(800x560) 위 지역 중심 좌표.
+// map: 지역 상세 스케매틱 지도(800x460) — roads/water는 대략적인 상대 위치이며 비례 지도가 아닙니다.
+// pins: spot id → [x, y] (지역 상세 지도 좌표). 정확한 위치는 카드의 高德地图 버튼으로 확인.
+const GUIDE_REGIONS = [
+  {
+    key: "bund", short: "와이탄", name_ko: "와이탄 · 난징동루 · 예원", name_en: "BUND · NANJING EAST · YUYUAN",
+    areas: ["NANJING EAST · BUND"], include: ["gs-existing-yuyuan", "gs-existing-peoples-square"],
+    cover: "gs-existing-bund", ov: [530, 285],
+    desc: "인민광장에서 난징동루 보행가를 따라 황푸강변 와이탄까지 걸어가는 상하이 대표 동선. 남쪽으로 예원이 이어지고, 강 건너 푸동 스카이라인이 정면으로 보입니다.",
+    map: {
+      water: [{ d: "M 700 0 C 690 120, 720 250, 690 460", w: 46, label: "黄浦江", lx: 722, ly: 60 }],
+      roads: [
+        { d: "M 40 190 L 660 190", label: "南京东路 NANJING RD (E)", lx: 44, ly: 214, main: true },
+        { d: "M 660 20 C 668 150, 672 300, 650 440", label: "中山东一路 THE BUND", lx: 604, ly: 430 },
+        { d: "M 420 190 L 420 440", label: "", lx: 0, ly: 0 },
+        { d: "M 40 330 L 650 330", label: "延安东路", lx: 90, ly: 320 },
+      ],
+      pins: {
+        "gs-existing-peoples-square": [80, 250], "gs-mms-shanghai": [170, 190], "gs-monogram": [190, 150],
+        "gs-shanghai-first-food-store": [260, 190], "gs-toptoy": [350, 190], "gs-miniso-land": [430, 150],
+        "gs-popmart": [510, 190], "gs-existing-nanjing-east-road": [300, 230], "gs-qingzhi-handcream": [600, 150],
+        "gs-existing-bund": [660, 230], "gs-libaixie": [600, 370], "gs-hugongguan": [560, 400], "gs-existing-yuyuan": [470, 410],
+      },
+    },
+  },
+  {
+    key: "north-bund", short: "북와이탄", name_ko: "북와이탄", name_en: "NORTH BUND",
+    areas: ["NORTH BUND"], include: [],
+    cover: "gs-north-bund", ov: [575, 150],
+    desc: "와이탄 북쪽, 쑤저우허 너머의 새 강변 산책로. 사람이 적고 동방명주·루자쭈이를 정면에서 볼 수 있어 산책과 야경 사진에 좋습니다.",
+    map: {
+      water: [{ d: "M 0 420 C 250 400, 520 380, 800 300", w: 60, label: "黄浦江 HUANGPU", lx: 620, ly: 380 },
+              { d: "M 0 330 C 60 340, 110 360, 150 410", w: 16, label: "苏州河", lx: 30, ly: 316 }],
+      roads: [
+        { d: "M 120 250 L 780 180", label: "东大名路 DONGDAMING RD", lx: 300, ly: 214, main: true },
+        { d: "M 160 360 C 350 330, 560 320, 780 250", label: "北外滩滨江 RIVERSIDE WALK", lx: 330, ly: 360 },
+      ],
+      pins: { "gs-the-stage": [420, 200], "gs-manner-coffee-guoke": [560, 305], "gs-north-bund": [330, 330] },
+      compass_note: "강 건너 → 루자쭈이",
+    },
+  },
+  {
+    key: "pudong", short: "푸동", name_ko: "푸동 · 루자쭈이", name_en: "PUDONG · LUJIAZUI",
+    areas: ["LUJIAZUI"], include: [],
+    cover: "gs-existing-lujiazui", ov: [680, 300],
+    desc: "황푸강 동쪽 금융지구. 동방명주·상하이타워 등 초고층 전망대가 모여 있고, 강변 미술관에서 와이탄 방향 뷰도 볼 수 있습니다.",
+    map: {
+      water: [{ d: "M 120 0 C 140 150, 60 260, 0 330", w: 58, label: "黄浦江 HUANGPU", lx: 20, ly: 60 }],
+      roads: [
+        { d: "M 150 220 C 300 230, 480 240, 780 250", label: "世纪大道 CENTURY AVE", lx: 520, ly: 268, main: true },
+        { d: "M 170 120 C 220 250, 180 360, 120 460", label: "滨江大道 RIVERSIDE", lx: 196, ly: 440 },
+      ],
+      pins: { "gs-existing-pudong-art-museum": [200, 120], "gs-existing-oriental-pearl": [290, 170], "gs-existing-lujiazui": [420, 210], "gs-existing-shanghai-tower": [480, 300] },
+    },
+  },
+  {
+    key: "xintiandi", short: "신천지", name_ko: "신천지 · 티엔즈팡", name_en: "XINTIANDI · TIANZIFANG",
+    areas: ["XINTIANDI"], include: [],
+    cover: "gs-existing-xintiandi", ov: [470, 410],
+    desc: "스쿠먼(石库门) 골목을 살린 신천지와, 좁은 골목 공방 거리 티엔즈팡. 대한민국 임시정부 유적도 신천지 바로 옆에 있습니다.",
+    map: {
+      water: [],
+      roads: [
+        { d: "M 20 110 L 780 110", label: "淮海中路 HUAIHAI RD (M)", lx: 560, ly: 98, main: true },
+        { d: "M 360 30 L 360 440", label: "黄陂南路", lx: 368, ly: 440 },
+        { d: "M 520 60 L 520 440", label: "马当路", lx: 528, ly: 440 },
+        { d: "M 40 390 L 640 390", label: "泰康路", lx: 80, ly: 380 },
+      ],
+      pins: { "gs-feidachu": [440, 110], "gs-existing-xintiandi": [440, 190], "gs-existing-korean-provisional-govt": [520, 250], "gs-diandude": [360, 290], "gs-existing-tianzifang": [230, 390] },
+    },
+  },
+  {
+    key: "jingan", short: "정안", name_ko: "난징시루 · 정안", name_en: "NANJING WEST · JING'AN",
+    areas: ["NANJING WEST · JING'AN"], include: [],
+    cover: "gs-the-louis", ov: [345, 285],
+    desc: "정안사에서 싱예타이구후이(太古汇)까지 이어지는 고급 쇼핑가. 배 모양의 The Louis와 스타벅스 리저브 로스터리가 같은 구역에 있습니다.",
+    map: {
+      water: [],
+      roads: [
+        { d: "M 20 240 L 780 240", label: "南京西路 NANJING RD (W)", lx: 520, ly: 228, main: true },
+        { d: "M 20 380 L 780 380", label: "延安中路", lx: 40, ly: 370 },
+      ],
+      pins: { "gs-existing-jingan-temple": [140, 260], "gs-the-louis": [540, 290], "gs-starbucks-reserve-roastery": [610, 300], "gs-henjiuyiqian-yangroushuan": [580, 170] },
+    },
+  },
+  {
+    key: "wukang-anfu", short: "우캉·안푸", name_ko: "우캉루 · 안푸루", name_en: "WUKANG · ANFU",
+    areas: ["WUKANG · ANFU"], include: [],
+    cover: "gs-wukang-mansion", ov: [215, 380],
+    desc: "플라타너스 가로수 아래 옛 서양식 저택과 카페·편집숍이 이어지는 City Walk 구역. 우캉맨션에서 시작해 안푸루·우루무치중루로 걸어가면 좋습니다.",
+    map: {
+      water: [],
+      roads: [
+        { d: "M 190 420 C 250 300, 320 170, 380 40", label: "武康路 WUKANG RD", lx: 150, ly: 300, main: true },
+        { d: "M 330 150 L 760 150", label: "安福路 ANFU RD", lx: 470, ly: 138, main: true },
+        { d: "M 620 30 L 620 440", label: "乌鲁木齐中路", lx: 628, ly: 440 },
+        { d: "M 40 400 L 780 400", label: "淮海中路", lx: 520, ly: 390 },
+        { d: "M 200 330 L 520 330", label: "湖南路", lx: 420, ly: 320 },
+      ],
+      pins: {
+        "gs-columbia-circle": [70, 60], "gs-harmay-wukang": [360, 90], "gs-wukang-road": [300, 210], "gs-to-summer": [300, 330],
+        "gs-wukang-mansion": [200, 400], "gs-anfu-road": [460, 150], "gs-13demarzo-cafe-anfu": [540, 150],
+        "gs-mondaysleepingclub": [690, 60], "gs-tagi": [620, 220], "gs-gathering": [620, 290], "gs-pane-yongyuan": [470, 250], "gs-photowith": [740, 320],
+      },
+      edge_notes: [{ x: 70, y: 98, t: "↖ 延安西路 방면" }, { x: 740, y: 358, t: "襄阳南路 →" }],
+    },
+  },
+  {
+    key: "xuhui", short: "쉬자후이", name_ko: "융캉루 · 쉬자후이 · 룽화", name_en: "YONGKANG · XUHUI · LONGHUA",
+    areas: ["YONGKANG · XUHUI"], include: ["gs-existing-longhua"],
+    cover: "gs-existing-xujiahui-cathedral", ov: [320, 470],
+    desc: "카페 골목 융캉루, 쉬자후이 성당·도서관과 ITC 루프탑, 조금 더 남쪽의 룽화사까지. 이동 거리가 있어 두 묶음(융캉루 / 쉬자후이)으로 나눠 보는 것을 추천합니다.",
+    map: {
+      water: [],
+      roads: [
+        { d: "M 460 70 L 780 70", label: "永康路 YONGKANG RD", lx: 560, ly: 58, main: true },
+        { d: "M 60 190 L 780 170", label: "肇嘉浜路", lx: 560, ly: 162 },
+        { d: "M 200 60 L 260 440", label: "漕溪北路", lx: 150, ly: 440 },
+        { d: "M 40 260 L 400 250", label: "虹桥路", lx: 50, ly: 246 },
+      ],
+      pins: {
+        "gs-sanlifang-dirty": [560, 70], "gs-tonton": [680, 70], "gs-renhe-guan": [520, 180],
+        "gs-andaz-itc": [290, 230], "gs-rooftop-bar-andaz": [330, 205], "gs-dongge-andaz": [355, 245],
+        "gs-existing-xujiahui-library": [150, 290], "gs-existing-xujiahui-cathedral": [240, 330], "gs-existing-longhua": [600, 380],
+      },
+      edge_notes: [{ x: 600, y: 446, t: "↓ 남쪽 (택시·지하철 이동)" }],
+    },
+  },
+  {
+    key: "1000-trees", short: "천수·M50", name_ko: "천수 · M50", name_en: "1000 TREES · M50",
+    areas: ["1000 TREES"], include: ["gs-existing-m50"],
+    cover: "gs-tian-an-1000-trees", ov: [300, 140],
+    desc: "쑤저우허 남쪽 모간산루. 나무가 심어진 기둥들로 유명한 천수(1000 Trees)와 방직공장을 개조한 M50 예술지구가 걸어서 이어집니다.",
+    map: {
+      water: [{ d: "M 0 120 C 200 60, 420 170, 800 90", w: 30, label: "苏州河 SUZHOU CREEK", lx: 560, ly: 92 }],
+      roads: [{ d: "M 60 230 C 300 200, 500 250, 780 220", label: "莫干山路 MOGANSHAN RD", lx: 300, ly: 262, main: true }],
+      pins: { "gs-existing-m50": [230, 220], "gs-tian-an-1000-trees": [480, 225], "gs-charlietown": [560, 300] },
+    },
+  },
+  {
+    key: "outskirts", short: "근교", name_ko: "근교 · 수향마을", name_en: "DAY TRIPS · WATER TOWNS",
+    areas: [], include: ["gs-existing-zhujiajiao", "gs-existing-wuzhen", "gs-existing-panlong-tiandi"],
+    cover: "gs-existing-zhujiajiao", ov: [110, 470],
+    desc: "시내에서 차로 이동하는 근교 스팟. 운하와 돌다리가 있는 수향 고진(古镇)과 전통 마을을 재생한 복합공간입니다. 반나절~하루 일정으로 따로 잡으세요.",
+    map: {
+      water: [{ d: "M 60 330 C 200 300, 300 360, 420 320", w: 14, label: "", lx: 0, ly: 0 }],
+      roads: [{ d: "M 780 120 C 600 150, 420 200, 120 400", label: "시내 → 서쪽 근교", lx: 520, ly: 150, main: true }],
+      pins: { "gs-existing-panlong-tiandi": [560, 190], "gs-existing-zhujiajiao": [330, 300], "gs-existing-wuzhen": [120, 400] },
+      edge_notes: [{ x: 700, y: 100, t: "상하이 시내 →" }, { x: 120, y: 446, t: "↙ 저장성 (당일치기)" }],
+    },
+  },
+];
