@@ -11,7 +11,7 @@
 <body data-page="host-orgs">
 <a class="skip-link" href="#main">본문 바로가기</a>
 
-<div class="demo-strip"><span class="demo-strip__dot"></span><strong>DEMO MODE</strong>&nbsp;— Course Prototype &middot; Dummy Data</div>
+<div class="demo-strip"><span class="demo-strip__dot"></span><strong>OFFICIAL SCHEDULE</strong>&nbsp;— Guide 장소는 참고용</div>
 
 <header class="site-header">
   <div class="site-header__bar">
@@ -29,15 +29,13 @@
   <div class="page-head">
     <div class="kicker">FIELD VISITS</div>
     <h1>방문 회사 · 학교</h1>
-    <p class="page-head__desc">관광·식당과는 분리된, 방문기관 전용 영역입니다. 아래 5개 기관은 전부 실존하는 REAL ORGANIZATION을 SAMPLE VISIT으로 사용해 화면이 실제로 작동하는지 검증하는 것으로, KAIST BIM의 확정 방문기관이 아닙니다 (NOT CONFIRMED). 각 기관은 1-Minute Brief와 상세 사전학습을 함께 제공합니다.</p>
+    <p class="page-head__desc">2026.12.27~31 공식 일정의 방문처 6곳입니다(방문 순서). 각 카드를 누르면 Schedule 화면의 기관 소개·주소·지도로 이동합니다.</p>
   </div>
-
-  <div class="notice notice--tbd"><strong>SAMPLE MODE</strong> — 아래 기관은 전부 REAL ORGANIZATION · SAMPLE VISIT · NOT CONFIRMED 입니다. 실제 방문이 확정된 것이 아닙니다.</div>
 
   <div class="grid grid--2" id="orgs-root"></div>
 </main>
 
-<footer class="site-footer">SHANGHAI FIELD TRIP HUB · v0.6.3 · PORTAL LINK HOTFIX</footer>
+<footer class="site-footer">SHANGHAI FIELD TRIP HUB · v0.9.0 · OFFICIAL SCHEDULE</footer>
 <nav class="bottom-nav" data-bottom-nav aria-label="주요 메뉴 (모바일)"></nav>
 
 <script src="js/config.js"></script>
@@ -45,17 +43,21 @@
 <script src="js/main.js"></script>
 <script>
   function renderOrgList() {
-    document.getElementById("orgs-root").innerHTML = ORGS.map((org) => `
-      <a class="card is-hoverable" href="host-orgs/${org.id}.html">
+    document.getElementById("orgs-root").innerHTML = ORGS.map((org) => {
+      const day = ITINERARY.find((d) => d.date === org.visitDate);
+      const [, m, dd] = org.visitDate.split("-").map(Number);
+      return `
+      <a class="card is-hoverable" href="itinerary.html#org-${org.id}">
         <div style="display:flex; justify-content:space-between; align-items:flex-start; gap:8px; flex-wrap:wrap;">
-          <h3 style="margin-bottom:4px;">${org.name_ko}</h3>
-          <div style="display:flex; gap:6px; flex-wrap:wrap; justify-content:flex-end;">${statusOrRealTagsHtml(org)}</div>
+          <h3 style="margin-bottom:4px;">${org.name_en}</h3>
+          ${statusBadge(org.status)}
         </div>
-        <p class="text-muted" style="margin-bottom:8px;">${org.summary.oneLine}</p>
-        <div class="keyword-list">${org.summary.keywords.map((k) => `<span class="keyword-chip">${k}</span>`).join("")}</div>
-        <p class="mono" style="margin:14px 0 0; font-weight:700; color:var(--navy-700); font-size:.82rem;">FULL BRIEFING ${icon("chevron")}</p>
-      </a>
-    `).join("");
+        <p class="mono text-faint" style="margin:0 0 8px; font-size:.76rem;">${m}/${dd}${day ? " (" + day.weekday + ")" : ""} ${org.slot} · ${org.name_zh}</p>
+        <p class="text-muted" style="margin-bottom:8px;">${org.type}</p>
+        <div class="keyword-list">${org.keywords.map((k) => `<span class="keyword-chip">${k}</span>`).join("")}</div>
+        <p class="mono" style="margin:14px 0 0; font-weight:700; color:var(--navy-700); font-size:.82rem;">BRIEFING ${icon("chevron")}</p>
+      </a>`;
+    }).join("");
   }
   document.addEventListener("DOMContentLoaded", renderOrgList);
 </script>

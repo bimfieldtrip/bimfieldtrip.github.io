@@ -33,19 +33,15 @@
  *   FOOD_ITEMS     "먹어보고 싶은 음식" 위시리스트 (식당이 아직 미정)
  *   RESTAURANTS    실제 식당/카페 후보 장소 (확정된 방문지가 아님)
  *   SOUVENIR_ITEMS "무엇을 살지" 기념품 품목 (지금은 비어있음, 구조만 준비)
- *   SAMPLE_DINNERS v0.4 신설 — 공식 일정처럼 동작하는 SAMPLE 단체 저녁식사 2건
- *                  (Dinner 01 양꼬치 · Dinner 02 베이징덕). 실제 식당은 TBD.
- *   ITINERARY      v0.4에서 5일 전체에 schedule[] (시간대별 SAMPLE 이벤트)을
- *                  채워 Today/Itinerary 화면이 실제로 작동하는지 확인합니다.
+ *   SAMPLE_DINNERS v0.9에서 비움 (과거 SAMPLE 단체 저녁식사 제거 · 빈 배열 유지)
+ *   ITINERARY      v0.9 공식 일정 (Day별 items[] — 시간대(오전/오후/저녁)만, 시각 없음)
  * ------------------------------------------------------------------
  *
- * ⚠️ v0.4 SAMPLE MODE 안내
- * 이 파일에 있는 H+ Hotel / Sanofi China / Zai Lab / WuXi Biologics /
- * Shanghai Henlius Biotech / Alibaba Cloud 는 전부 "실존하는" 장소·기관입니다.
- * 하지만 KAIST BIM Shanghai Field Trip의 실제 확정 숙소/방문기관이 아닙니다.
- * 24명 SAMPLE 트립이 실제로 진행 중이라고 가정했을 때 Room Assignment /
- * Hotel Check-in / Wuxi Bus Boarding 같은 기능이 어떻게 동작하는지 검증하기
- * 위한 자리표시자(SAMPLE) 데이터입니다. 공식 일정이 확정되면 전부 교체됩니다.
+ * ⚠️ v0.9 공식 일정 반영 안내
+ * ITINERARY · ORGS는 2026.12.27~31 학교 공식 일정표 기준(공개용)입니다.
+ * 공개 저장소이므로 구체적인 시각, 호텔명·주소, 참가자 개인정보는 넣지 않습니다.
+ * PLACES의 H+ Hotel 등 나머지 항목은 기존 SAMPLE 데이터이며 SCHEDULE/HOME에는
+ * 표시되지 않습니다. 실제 숙소·시간·집합 정보는 Private Participant Portal에서만 다룹니다.
  */
 
 // ===== 여행 기본 정보 =====
@@ -56,7 +52,7 @@ const TRIP_CONFIG = {
   version: "v0.6.3 · Portal Link Hotfix",
   startDate: "2026-12-27",
   endDate: "2026-12-31",
-  note: "여행 기간(2026.12.27~12.31)은 확정입니다. 세부 일정(방문기관/식사/숙소)은 SAMPLE MODE로 채워져 있으며, 실제로 확정된 공식 일정이 아닙니다 (기능 검증용).",
+  note: "여행 기간(2026.12.27~12.31)과 방문기관 일정은 공식 일정표 기준입니다. 공개 페이지에는 구체적인 시각과 숙소 정보를 표시하지 않습니다.",
   totalParticipants: 24,
   studentCount: 18,
   professorCount: 5,
@@ -112,86 +108,7 @@ const PLACES = [
     map: { status: "unverified", google: "", amap: "", baidu: "" },
   },
 
-  // ---------- FIELD VISITS (방문기관 위치) — v0.4: 실존 기관을 SAMPLE 방문지로 사용 ----------
-  {
-    id: "wuxi-biologics-wuxi",
-    category: "org",
-    status: "sample",
-    real: true,
-    realLabel: "REAL ORGANIZATION",
-    sampleLabel: "SAMPLE VISIT",
-    name_ko: "우시 바이오로직스 (우시 소재 사업장)",
-    name_en: "WuXi Biologics — Wuxi site",
-    name_zh: "药明生物（无锡）",
-    address_zh: "확인 필요 (공개 주소 미검증 · 방문 대상 사업장 미정)",
-    area: "장쑤성 우시(無錫)시 — 이번 SAMPLE 일정은 우시 현지 사업장을 가정합니다",
-    note: "실제 방문 확정 기관이 아니라, Day 3 우시(Wuxi) 장거리 이동 SAMPLE 일정을 검증하기 위한 데이터입니다.",
-    map: { status: "unverified", google: "", amap: "", baidu: "" },
-  },
-  {
-    id: "sanofi-china-shanghai",
-    category: "org",
-    status: "sample",
-    real: true,
-    realLabel: "REAL ORGANIZATION",
-    sampleLabel: "SAMPLE VISIT",
-    name_ko: "사노피 차이나 (Sanofi China)",
-    name_en: "Sanofi China",
-    name_zh: "",
-    address_zh: "",
-    zhVerify: true,
-    area: "상하이 (방문 사업장 · 상세 주소 미정)",
-    note: "실제 방문 확정 기관이 아닙니다. Field Visits 화면 검증용 SAMPLE 데이터입니다.",
-    map: { status: "unverified", google: "", amap: "", baidu: "" },
-  },
-  {
-    id: "zai-lab-shanghai",
-    category: "org",
-    status: "sample",
-    real: true,
-    realLabel: "REAL ORGANIZATION",
-    sampleLabel: "SAMPLE VISIT",
-    name_ko: "자이랩 (Zai Lab)",
-    name_en: "Zai Lab",
-    name_zh: "",
-    address_zh: "",
-    zhVerify: true,
-    area: "상하이 (방문 사업장 · 상세 주소 미정)",
-    note: "실제 방문 확정 기관이 아닙니다. Field Visits 화면 검증용 SAMPLE 데이터입니다.",
-    map: { status: "unverified", google: "", amap: "", baidu: "" },
-  },
-  {
-    id: "henlius-biotech-shanghai",
-    category: "org",
-    status: "sample",
-    real: true,
-    realLabel: "REAL ORGANIZATION",
-    sampleLabel: "SAMPLE VISIT",
-    name_ko: "상하이 헨리우스 바이오텍 (Shanghai Henlius Biotech)",
-    name_en: "Shanghai Henlius Biotech",
-    name_zh: "",
-    address_zh: "",
-    zhVerify: true,
-    area: "상하이 (방문 사업장 · 상세 주소 미정)",
-    note: "실제 방문 확정 기관이 아닙니다. Field Visits 화면 검증용 SAMPLE 데이터입니다.",
-    map: { status: "unverified", google: "", amap: "", baidu: "" },
-  },
-  {
-    id: "alibaba-cloud-shanghai",
-    category: "org",
-    status: "sample",
-    real: true,
-    realLabel: "REAL ORGANIZATION",
-    sampleLabel: "SAMPLE VISIT",
-    name_ko: "알리바바 클라우드 (Alibaba Cloud) · DX·AI 산업 방문",
-    name_en: "Alibaba Cloud (DX / AI industry visit sample)",
-    name_zh: "",
-    address_zh: "",
-    zhVerify: true,
-    area: "상하이 (방문 사업장 · 상세 주소 미정 · DX·AI 유사 기관으로 대체될 수 있음)",
-    note: "실제 방문 확정 기관이 아닙니다. Field Visits 화면 검증용 SAMPLE 데이터입니다.",
-    map: { status: "unverified", google: "", amap: "", baidu: "" },
-  },
+  // ---------- FIELD VISITS 위치 — v0.9: 공식 방문기관의 주소·지도는 ORGS에서 관리합니다 ----------
 
   // ---------- EXPLORE SHANGHAI (SEE / 관광·야경·포토·전시·체험 후보) ----------
   {
@@ -510,130 +427,162 @@ const PLACES = [
   },
 ];
 
-// ===== Host Orgs (Field Visits): 방문기관 사전학습 콘텐츠 =====
-// v0.4: 실존 기관 5곳을 "REAL ORGANIZATION · SAMPLE VISIT · NOT CONFIRMED"로 사용합니다.
-// 방문 대상 사업장 · 상세 주소 · 방문 가능 여부 · 미팅 담당자 등 확인되지 않은 정보는
-// 임의로 만들지 않고 TBD로 남겨둡니다. (§9 — 이번 라운드는 짧은 SAMPLE 프로필만)
+// ===== Host Orgs (Field Visits): 공식 방문기관 · v0.9 =====
+// 2026-12 공식 일정표 기준 방문처 6곳입니다. 배열 순서 = 방문 순서입니다.
+// - 소개 문구는 각 기관 공식 홈페이지(및 해당 기관의 공식 발표)를 대조해 작성했습니다.
+//   확인할 수 없는 숫자·사업 성과·방문 프로그램 내용은 넣지 않습니다.
+// - 주소는 공식 일정 자료에 제공된 방문지 주소를 그대로 사용합니다.
+//   address_zh는 자료에 중국어 주소가 함께 제공된 경우에만 채웁니다(임의 번역 금지).
+// - 지도: 高德地图 URI 검색(키 없음, 좌표 미사용). mapKeyword가 검색어이며,
+//   중국어 주소가 있으면 그 주소를, 없으면 공식 중국어 명칭 + "上海"를 사용합니다.
+// - ⚠️ 방문 시각·이동 시간 등 구체적인 시각은 이 공개 데이터에 넣지 않습니다.
+//
+// { id, visitDate, slot("오전"|"오후"|"저녁"), status, name_en, name_zh, type,
+//   intro, keywords[], notes[], facility?{title, text}, address, address_zh,
+//   mapKeyword, website, sources[{label, url}] }
 const ORGS = [
   {
-    id: "wuxi-biologics",
-    place_id: "wuxi-biologics-wuxi",
-    status: "sample",
-    real: true,
-    realLabel: "REAL ORGANIZATION",
-    sampleLabel: "SAMPLE VISIT",
-    name_ko: "우시 바이오로직스 (WuXi Biologics · Wuxi)",
-    summary: {
-      oneLine: "바이오의약품 위탁개발생산(CRDMO) 기업 — Day 3 우시(Wuxi) 이동 SAMPLE 일정 검증용",
-      keywords: ["CRDMO", "바이오의약품 CDMO", "홍콩거래소 상장", "우시(Wuxi) 소재"],
-      whyVisit: "TBD — 방문 목적·의제는 아직 정해지지 않았습니다.",
-    },
-    detail: {
-      founded: "2015년 설립 (모회사 WuXi AppTec에서 분사, 사업 기원은 2010년으로 거슬러 올라감)",
-      headquarters: "중국 장쑤성 우시(無錫)시",
-      business: "생물의약품(바이오로직스) 신약 개발을 위한 개방형 통합 CRDMO(위탁연구·개발·생산) 플랫폼 제공",
-      listing: "2017년 6월 홍콩거래소(HKEX) 상장, 2020년 8월 항셍지수(Hang Seng Index) 편입",
-      shanghaiSites: "우시(無錫) 본사 사업장 외에도 상하이 와이가오차오, 펑셴 등 복수 사업장을 보유 — 이번 SAMPLE 일정은 Day 3 우시 이동을 가정해 우시 사업장을 대상으로 표시합니다. 실제 방문 대상 사업장은 아직 정해지지 않았습니다.",
-      whatToWatch: "TBD — 방문이 확정되면 최근 사업 이슈, 업계 내 포지셔닝, KAIST BIM 관점에서 주목할 점을 이 자리에 정리할 예정입니다.",
-      source: "일반에 공개된 기업 개요 수준 정보 (2026년 9월 기준, 상세 검증은 방문 확정 후 진행 예정)",
-      prepQuestions: "TBD — 방문이 확정되면 사전학습 질문을 이 자리에 정리할 예정입니다.",
-    },
+    id: "biointron",
+    visitDate: "2026-12-28",
+    slot: "오전",
+    status: "confirmed",
+    name_en: "Biointron",
+    name_zh: "百英生物",
+    type: "항체 연구개발 서비스 기업 (CRO)",
+    intro: "상하이에 본사를 둔 항체 연구개발 서비스 기업으로, 항체 신약 개발 초기 단계에 필요한 발굴·최적화·생산 서비스를 제공합니다. VHH 항체 발굴, Single B Cell Screening, Hybridoma Sequencing 같은 발굴 서비스와 Affinity Maturation, Antibody Humanization 같은 항체 엔지니어링을 함께 다룹니다. 고처리량 재조합 항체 생산, 이중항체 발현, CHO-K1 안정 세포주 구축, 항체 개발 가능성(Developability) 평가도 서비스 범위에 포함됩니다.",
+    keywords: ["Antibody Discovery", "VHH", "Single B Cell Screening", "Antibody Humanization", "HTP Recombinant Antibody Production", "Developability Assessment"],
+    notes: [
+      "자체 신약을 개발하는 회사가 아니라, 고객사의 항체 연구를 지원하는 서비스 기업이라는 점을 염두에 두면 좋습니다.",
+      "공식 홈페이지는 소량 항체를 빠르게 발현·정제해 주는 RushMab™ 패키지와 자동화 생산 공정을 강조합니다.",
+      "공식 홈페이지 기준 본사는 상하이이며, 미국(Piscataway, NJ · Cambridge, MA)에도 오피스가 있습니다.",
+    ],
+    address: "No. 1–9, Lane 99, Shenmei Road, Pudong New District, Shanghai, China",
+    address_zh: "",
+    mapKeyword: "百英生物 上海",
+    website: "https://www.biointron.com/",
+    sources: [
+      { label: "Biointron · Services", url: "https://www.biointron.com/services/" },
+      { label: "百英生物 (중문 사이트)", url: "https://www.biointron.com.cn" },
+    ],
   },
   {
-    id: "sanofi-china",
-    place_id: "sanofi-china-shanghai",
-    status: "sample",
-    real: true,
-    realLabel: "REAL ORGANIZATION",
-    sampleLabel: "SAMPLE VISIT",
-    name_ko: "사노피 차이나 (Sanofi China)",
-    summary: {
-      oneLine: "글로벌 제약회사 사노피의 중국 법인 — Day 2 SAMPLE Visit A 검증용",
-      keywords: ["글로벌 제약", "백신·스페셜티케어", "프랑스 본사", "중국 R&D·생산 거점"],
-      whyVisit: "TBD — 방문 목적·의제는 아직 정해지지 않았습니다.",
-    },
-    detail: {
-      founded: "1973년 프랑스에서 설립 (Sanofi) · 중국 진출은 수십 년 전부터",
-      headquarters: "글로벌 본사: 프랑스 파리 · 중국 본부: 상하이",
-      business: "백신, 스페셜티케어, 일반의약품 등을 다루는 글로벌 제약회사. 중국 내 대규모 R&D·생산 거점 보유",
-      listing: "유로넥스트 파리(SAN), 나스닥(SNY) 상장",
-      shanghaiSites: "상하이 지역에 R&D·생산 관련 거점 보유 — 이번 방문 대상 사업장·상세 주소는 아직 정해지지 않았습니다.",
-      whatToWatch: "TBD — 방문이 확정되면 이 자리에 정리할 예정입니다.",
-      source: "일반에 공개된 기업 개요 수준 정보 (2026년 9월 기준, 상세 검증은 방문 확정 후 진행 예정)",
-      prepQuestions: "TBD",
-    },
+    id: "med-fine-capital",
+    visitDate: "2026-12-28",
+    slot: "오후",
+    status: "confirmed",
+    name_en: "Med-Fine Capital",
+    name_zh: "幂方健康基金",
+    type: "헬스케어·생명과학 전문 투자기관",
+    intro: "상하이에 본사를 둔 의약·헬스케어 및 생명과학 분야 전문 투자기관입니다. 공식 홈페이지는 운영팀이 헬스케어 산업 배경과 벤처캐피털 투자 경험을 함께 갖추고 있다고 소개합니다. 방문 자료 기준으로 바이오테크, 진단, 의료기기, 의료서비스 등 헬스케어 전반에 투자합니다.",
+    keywords: ["Healthcare Investment", "Life Sciences", "Venture Capital", "Biotech"],
+    notes: [
+      "회사 방문과 달리 투자자 관점에서 중국 바이오 산업의 자금 흐름, 기업 성장 단계, 투자 판단 기준을 들어볼 수 있는 방문처입니다.",
+      "공식 홈페이지는 중국어로 운영되며, 중국어 명칭은 幂方健康基金(幂方资本)으로 표기됩니다.",
+    ],
+    address: "Room 3605, SK Tower, No. 150 Yaoyuan Road, Pudong District, Shanghai, China",
+    address_zh: "",
+    mapKeyword: "幂方健康基金 上海",
+    website: "https://www.medfinecapital.com/",
+    sources: [
+      { label: "Med-Fine Capital · 공식 홈페이지", url: "https://www.medfinecapital.com/" },
+    ],
   },
   {
-    id: "zai-lab",
-    place_id: "zai-lab-shanghai",
-    status: "sample",
-    real: true,
-    realLabel: "REAL ORGANIZATION",
-    sampleLabel: "SAMPLE VISIT",
-    name_ko: "자이랩 (Zai Lab)",
-    summary: {
-      oneLine: "상하이 소재 바이오제약기업 (혁신 신약 도입·개발) — Day 2 SAMPLE Visit B 검증용",
-      keywords: ["바이오제약", "라이선스 인 모델", "나스닥·홍콩거래소 상장", "상하이 소재"],
-      whyVisit: "TBD — 방문 목적·의제는 아직 정해지지 않았습니다.",
-    },
-    detail: {
-      founded: "2013년 설립 (상하이 소재 바이오제약기업)",
-      headquarters: "중국 상하이",
-      business: "글로벌 혁신 신약을 중국 시장에 도입(라이선스 인)·개발·상업화하고, 최근에는 자체 신약 개발도 확대하는 바이오제약기업",
-      listing: "나스닥(ZLAB), 홍콩거래소(9688) 상장",
-      shanghaiSites: "상하이에 본사 및 R&D 조직 보유 — 이번 방문 대상 사업장·상세 주소는 아직 정해지지 않았습니다.",
-      whatToWatch: "TBD — 방문이 확정되면 이 자리에 정리할 예정입니다.",
-      source: "일반에 공개된 기업 개요 수준 정보 (2026년 9월 기준, 상세 검증은 방문 확정 후 진행 예정)",
-      prepQuestions: "TBD",
-    },
+    id: "harbour-biomed",
+    visitDate: "2026-12-28",
+    slot: "오후",
+    status: "confirmed",
+    name_en: "Harbour BioMed",
+    name_zh: "和铂医药",
+    type: "항체 치료제 개발 바이오제약 기업 (HKEX: 02142)",
+    intro: "면역·염증 질환과 종양학 등을 중심으로 항체 치료제를 발굴·개발하는 글로벌 바이오제약 기업입니다. 전인간(fully human) 단일클론항체를 만드는 형질전환 마우스 플랫폼 Harbour Mice®를 보유하며, 일반 항체(H2L2)와 중쇄 단독 항체(HCAb) 두 형식을 모두 생성합니다. 이를 바탕으로 HCAb 기반 면역세포 인게이저 이중항체 기술 HBICE®와 다중특이 항체 기술 HCAb PLUS™를 운영합니다.",
+    keywords: ["Harbour Mice®", "HCAb", "HBICE®", "HCAb PLUS™", "Immunology", "Oncology"],
+    notes: [
+      "홍콩증권거래소 상장사(HKEX: 02142)입니다.",
+      "12월 30일 방문하는 Nona Biosciences가 Harbour BioMed의 100% 자회사입니다. 두 방문을 이어서 보면 '자체 신약 개발'과 '플랫폼 기반 연구 서비스'가 어떻게 나뉘는지 비교할 수 있습니다.",
+      "공식 홈페이지는 Hu-mAtrIx™ AI 플랫폼 기반의 전인간 HCAb 생성형 AI 모델도 소개합니다.",
+    ],
+    address: "6F, Tower B, Fenglin International Phase I, No. 388 Fenglin Road, Xuhui District, Shanghai, China",
+    address_zh: "",
+    mapKeyword: "和铂医药 上海",
+    website: "https://www.harbourbiomed.com/",
+    sources: [
+      { label: "Harbour BioMed · About", url: "https://www.harbourbiomed.com/about" },
+    ],
   },
   {
-    id: "henlius-biotech",
-    place_id: "henlius-biotech-shanghai",
-    status: "sample",
-    real: true,
-    realLabel: "REAL ORGANIZATION",
-    sampleLabel: "SAMPLE VISIT",
-    name_ko: "상하이 헨리우스 바이오텍 (Shanghai Henlius Biotech)",
-    summary: {
-      oneLine: "바이오시밀러·항체 신약 개발기업 (Fosun Pharma 계열) — Day 4 SAMPLE Visit C 검증용",
-      keywords: ["바이오시밀러", "항체 신약", "종양학", "홍콩거래소 상장"],
-      whyVisit: "TBD — 방문 목적·의제는 아직 정해지지 않았습니다.",
-    },
-    detail: {
-      founded: "2010년 설립 (Fosun Pharma 계열 바이오제약기업)",
-      headquarters: "중국 상하이",
-      business: "바이오시밀러 및 혁신 항체 신약(종양학 중심) 개발·생산 기업",
-      listing: "홍콩거래소(2696) 상장",
-      shanghaiSites: "상하이 소재 R&D·생산시설 보유 — 이번 방문 대상 사업장·상세 주소는 아직 정해지지 않았습니다.",
-      whatToWatch: "TBD — 방문이 확정되면 이 자리에 정리할 예정입니다.",
-      source: "일반에 공개된 기업 개요 수준 정보 (2026년 9월 기준, 상세 검증은 방문 확정 후 진행 예정)",
-      prepQuestions: "TBD",
-    },
+    id: "sjtu-minhang",
+    visitDate: "2026-12-29",
+    slot: "오전",
+    status: "confirmed",
+    name_en: "Shanghai Jiao Tong University (Minhang Campus)",
+    name_zh: "上海交通大学（闵行校区）",
+    type: "연구중심 종합대학",
+    intro: "중국의 주요 연구중심 대학 중 하나로, 이번 방문지는 상하이 민항구(闵行区)에 있는 민항 캠퍼스입니다. 생명과학, 의공학, 공학 분야의 연구 역량을 갖추고 있습니다. 방문할 구체적인 학과·연구실은 아직 공지되지 않았습니다.",
+    keywords: ["Research University", "Life Sciences", "Biomedical Engineering", "Engineering"],
+    notes: [
+      "방문 학과·연구실·프로그램은 미정(TBD)입니다. 확정되면 이 카드에 반영됩니다.",
+      "주소는 SJTU School of Life Sciences and Biotechnology 공식 페이지에 게재된 캠퍼스 주소입니다.",
+    ],
+    address: "800 Dongchuan Road, Minhang District, Shanghai, China",
+    address_zh: "上海市闵行区东川路800号",
+    mapKeyword: "上海市闵行区东川路800号",
+    website: "https://en.sjtu.edu.cn/",
+    sources: [
+      { label: "SJTU · 공식 홈페이지", url: "https://en.sjtu.edu.cn/" },
+      { label: "SJTU · 캠퍼스 주소", url: "https://life.sjtu.edu.cn/en/data/list/address" },
+    ],
   },
   {
-    id: "alibaba-cloud",
-    place_id: "alibaba-cloud-shanghai",
-    status: "sample",
-    real: true,
-    realLabel: "REAL ORGANIZATION",
-    sampleLabel: "SAMPLE VISIT",
-    name_ko: "알리바바 클라우드 (Alibaba Cloud) · DX·AI 산업 방문",
-    summary: {
-      oneLine: "알리바바그룹의 클라우드·AI 인프라 사업부 — Day 4 SAMPLE Visit D 검증용 (DX·AI 산업 방문 대체 후보 포함)",
-      keywords: ["클라우드 컴퓨팅", "AI 인프라", "알리바바그룹", "DX·AI 산업"],
-      whyVisit: "TBD — 방문 목적·의제는 아직 정해지지 않았습니다.",
+    id: "wuxi-biologics-shanghai",
+    visitDate: "2026-12-29",
+    slot: "오후",
+    status: "confirmed",
+    name_en: "WuXi Biologics Shanghai",
+    name_zh: "药明生物",
+    type: "바이오의약품 CRDMO (위탁 연구·개발·생산) 기업",
+    intro: "바이오의약품의 발굴(Research), 공정·분석 개발(Development), cGMP 생산(Manufacturing)까지 한 회사 안에서 제공하는 글로벌 CRDMO 기업입니다. 공식 홈페이지에 따르면 동물세포(Mammalian)와 미생물(Microbial) 생산 시스템을 모두 다루며, 중국·미국·아일랜드·독일·싱가포르에 연구·개발·생산 거점을 운영합니다.",
+    facility: {
+      title: "Shanghai Fengxian 시설",
+      text: "Shanghai Fengxian은 공식 홈페이지 사업장 목록에 올라 있는 상하이 거점 중 하나입니다(상하이에는 Waigaoqiao FTZ, Lingang 등 별도 거점도 있음). 2018년 회사 발표에 따르면 펑셴 부지는 바이오의약품 발굴·개발과 임상·상업 생산을 한 곳에 통합하는 혁신 센터로 계획되었습니다. 실제 방문 건물과 견학 범위는 아직 확인되지 않았습니다.",
     },
-    detail: {
-      founded: "2009년 설립 (알리바바그룹의 클라우드 컴퓨팅 사업부)",
-      headquarters: "중국 항저우(그룹 본사) · 상하이 등 복수 거점",
-      business: "클라우드 컴퓨팅·AI 인프라 서비스를 제공하는 아시아 최대 클라우드 사업자 중 하나",
-      listing: "알리바바그룹(BABA) 산하 사업부문 — 알리바바그룹은 뉴욕증권거래소·홍콩거래소 상장",
-      shanghaiSites: "상하이 지역 오피스/이노베이션 센터 등 — 이번 방문 대상 장소는 아직 정해지지 않았습니다. 유사한 DX·AI 산업 방문지로 대체될 수 있습니다.",
-      whatToWatch: "TBD — 방문이 확정되면 이 자리에 정리할 예정입니다.",
-      source: "일반에 공개된 기업 개요 수준 정보 (2026년 9월 기준, 상세 검증은 방문 확정 후 진행 예정)",
-      prepQuestions: "TBD",
-    },
+    keywords: ["CRDMO", "Biologics", "Process Development", "cGMP Manufacturing", "Quality"],
+    notes: [
+      "방문지는 장쑤성 우시(无锡)시가 아니라 상하이 펑셴구(奉贤区)입니다.",
+      "같은 날 저녁 WuXi Biologics와 저녁 식사가 예정되어 있습니다.",
+      "공정개발, 생산시설, 품질관리, 글로벌 제조 운영 관점에서 질문을 준비해 두면 좋습니다.",
+    ],
+    address: "1951 Huifeng West Road, Fengxian District, Shanghai, China",
+    address_zh: "上海市奉贤区汇丰西路1951号",
+    mapKeyword: "上海市奉贤区汇丰西路1951号",
+    website: "https://www.wuxibiologics.com/",
+    sources: [
+      { label: "WuXi Biologics · Locations & Facilities", url: "https://www.wuxibiologics.com/locations-facilities/" },
+      { label: "WuXi Biologics · 2018 Fengxian 착공 발표", url: "https://www.wuxibiologics.com/?p=1075" },
+    ],
+  },
+  {
+    id: "nona-biosciences",
+    visitDate: "2026-12-30",
+    slot: "오전",
+    status: "confirmed",
+    name_en: "Nona Biosciences",
+    name_zh: "诺纳生物",
+    type: "항체 기반 바이오의약품 발굴·전임상 연구 서비스 기업",
+    intro: "항체 기반 바이오의약품의 아이디어 단계부터 IND 신청까지('Idea to IND') 이어지는 전임상 연구 서비스를 제공하는 바이오테크 기업입니다. Harbour Mice® 플랫폼으로 전인간 항체(H2L2·HCAb)를 발굴하고, 항원 준비·동물 면역, 항체 스크리닝, 리드 엔지니어링, 개발 가능성 및 약리 평가를 수행합니다. 이중·다중항체(HBICE®), ADC, CAR 기반 세포치료 등 차세대 모달리티 개발도 지원합니다.",
+    keywords: ["Idea to IND", "Harbour Mice®", "Antibody Screening", "Antibody Engineering", "Bispecific / Multispecific", "ADC"],
+    notes: [
+      "Harbour BioMed(和铂医药)의 100% 자회사로 2022년 11월 출범했습니다(Harbour BioMed 공식 발표). Harbour BioMed는 Nona를 자사 기술과 전문성을 외부에 개방하는 사업 축으로 소개합니다.",
+      "28일 방문하는 Harbour BioMed와 같은 플랫폼(Harbour Mice®)을 쓰므로, 두 방문을 연결해서 준비하면 좋습니다.",
+    ],
+    address: "6F, No. 987 Cailun Road, Pilot Free Trade Zone, Shanghai, China",
+    address_zh: "",
+    mapKeyword: "诺纳生物 上海",
+    website: "https://nonabio.com/",
+    sources: [
+      { label: "Nona Biosciences · Our Company", url: "https://nonabio.com/our-company/" },
+      { label: "Harbour BioMed · Nona 출범 발표 (2022.11)", url: "https://www.biospace.com/harbour-biomed-launches-nona-biosciences-ideas-to-ind-preclinical-solutions-business-to-accelerate-global-biotherapeutic-innovation" },
+    ],
   },
 ];
 
@@ -715,200 +664,89 @@ const SOUVENIR_ITEMS = [
   { id: "souv-caramel-sunflower-seeds", status: "candidate", name_ko: "caramel sunflower seeds", name_en: "caramel sunflower seeds", name_zh: "", priceRange: "TBD", note: "위시리스트 후보 품목입니다.", shop_ids: [] },
 ];
 
-// ===== SAMPLE Dinners (v0.4 신설) =====
-// 공식 일정처럼 동작하는 SAMPLE 단체 저녁식사 2건입니다.
-// 실제 식당은 아직 결정되지 않아 restaurantName은 "TBD"입니다 — 임의로 만들지 않습니다.
-// 실제 식당이 확정되면 이 스키마 그대로 이름/중국어명/주소/예약 정보를 채울 수 있습니다.
-const SAMPLE_DINNERS = [
-  {
-    id: "dinner-01",
-    day: 1,
-    date: "2026-12-27",
-    label: "SAMPLE Dinner 01 · 양꼬치",
-    status: "sample",
-    food_id: "food-yangchuan",
-    restaurantName: "TBD",
-    restaurantName_zh: "",
-    address_zh: "",
-    meetingTime: "18:30 SAMPLE (로비 집합)",
-    reservationTime: "19:00 SAMPLE",
-    partySize: 24,
-    reservationHolder: "TBD",
-    reservationStatus: "tbd",
-    menu: "TBD (양꼬치 단체 코스 예상)",
-    price: "TBD",
-    location_id: null,
-    note: "실제 식당은 아직 결정되지 않았습니다. SAMPLE 데이터로 화면 동작만 확인합니다.",
-  },
-  {
-    id: "dinner-02",
-    day: 4,
-    date: "2026-12-30",
-    label: "SAMPLE Dinner 02 · 베이징덕",
-    status: "sample",
-    food_id: "food-peking-duck",
-    restaurantName: "TBD",
-    restaurantName_zh: "",
-    address_zh: "",
-    meetingTime: "18:00 SAMPLE (Visit D 종료 후 이동)",
-    reservationTime: "18:30 SAMPLE",
-    partySize: 24,
-    reservationHolder: "TBD",
-    reservationStatus: "tbd",
-    menu: "TBD (베이징덕 단체 코스 예상)",
-    price: "TBD",
-    location_id: null,
-    note: "실제 식당은 아직 결정되지 않았습니다. 이 저녁식사가 끝나는 시점을 공식 일정 종료로 봅니다 (이후 개인 자유활동은 공식 일정에 포함하지 않습니다).",
-  },
-];
+// ===== SAMPLE Dinners — v0.9에서 비움 =====
+// 과거 SAMPLE 단체 저녁식사(시각 포함)는 공식 일정이 아니므로 제거했습니다.
+// main.js의 getDinnerById()가 참조하므로 빈 배열로 유지합니다.
+const SAMPLE_DINNERS = [];
 
-// ===== Itinerary: 2026-12-27 ~ 2026-12-31 (실제 여행 기간) =====
-// v0.4 — 5일 전체에 SAMPLE schedule[]을 채워 Today/Itinerary 화면이
-// 24명 SAMPLE 트립 기준으로 실제로 작동하는지 검증합니다.
-// ⚠️ 아래 시간·방문기관·식당·자유시간은 전부 SAMPLE이며 학교의 공식 확정 일정이
-// 아닙니다. 실제 방문기관/식당/시간이 확정되면 이 배열을 교체합니다.
-//
-// schedule[] 각 항목: { time, title, type, org_id?, location_id?, dinner_id?, note? }
-//   v0.6.1 — 실제 체크인/버스 탑승 상태는 Private Participant Portal(Google Apps
-//   Script)에서만 확인합니다. GitHub 쪽 schedule[]은 참고용 항목 목록일 뿐입니다.
+// ===== Itinerary: 2026-12-27 ~ 2026-12-31 · 공식 일정 (공개용) =====
+// v0.9 — 학교 공식 일정표 기준. 공개 페이지이므로 다음 원칙을 지킵니다.
+//   - 구체적인 시각(방문·항공·집합·체크인·버스·식사·이동 소요시간)은 넣지 않습니다.
+//     slot에는 "오전" / "오후" / "저녁" 같은 대략적인 시간대만 씁니다.
+//   - 호텔명·주소·체크인 시간은 넣지 않습니다(숙소 정보는 Private Portal에서만).
+//   - 미확정 액티비티(단체석식, 선택/단체 Activity 등)는 넣지 않습니다.
+//   - 같은 시간대의 방문처는 공식 일정표 순서대로 나열합니다.
+// items[]: { slot: "오전"|"오후"|"저녁"|null, title, type, org_id? }
 const ITINERARY = [
   {
     day: 1,
     date: "2026-12-27",
     weekday: "일",
     label: "Day 1",
-    status: "sample",
-    title: "SAMPLE Day 1 · 상하이 도착 & 호텔 체크인 (전부 SAMPLE · 미확정)",
-    meetup: { time: "09:00 SAMPLE", place_id: "icn-airport", departureTime: "11:00 SAMPLE", transport: "항공편 (SAMPLE)" },
-    officialSchedule: { status: "sample", note: "출국 → 상하이 도착 → H+ Hotel 체크인 → SAMPLE Dinner 01(양꼬치) → 야간 산책(난징동루·와이탄)" },
-    visit: { status: "sample", note: "방문기관 일정 없음 (도착일)" },
-    meal: { status: "sample", note: "SAMPLE Dinner 01 · 양꼬치 (식당 미정 · TBD)" },
-    accommodation: { status: "sample", note: "H+ Hotel · REAL HOTEL · SAMPLE ACCOMMODATION · NOT CONFIRMED" },
-    freeTime: { status: "tbd", note: "별도 자유시간 없음 (저녁 SAMPLE 일정 진행)" },
-    schedule: [
-      { time: "09:00", title: "인천공항 집결 · 출국 수속 (SAMPLE)", type: "TRAVEL", location_id: "icn-airport" },
-      { time: "11:00", title: "인천 → 상하이 항공편 출발 (SAMPLE)", type: "TRAVEL" },
-      { time: "12:20", title: "상하이 푸동공항 도착 (SAMPLE)", type: "TRAVEL", location_id: "pudong-airport" },
-      { time: "13:30", title: "H+ Hotel 도착 (SAMPLE)", type: "HOTEL", location_id: "hplus-hotel" },
-      { time: "14:00", title: "호텔 체크인 (Hotel Check-in)", type: "ACTION", location_id: "hplus-hotel" },
-      { time: "14:30", title: "각자 Room Assignment 확인 (My Trip → Private Portal)", type: "INFO" },
-      { time: "18:30", title: "로비 집합 (저녁 식사 이동)", type: "MEETUP", location_id: "hplus-hotel" },
-      { time: "19:00", title: "SAMPLE Dinner 01 · 양꼬치 단체 저녁", type: "MEAL", dinner_id: "dinner-01" },
-      { time: "20:30", title: "저녁식사 후 SAMPLE 야경 산책 · 난징동루", type: "FREE", location_id: "see-nanjing-road" },
-      { time: "21:15", title: "SAMPLE 야경 산책 · 와이탄 (The Bund)", type: "FREE", location_id: "see-bund" },
-      { time: "22:00", title: "호텔 복귀", type: "HOTEL", location_id: "hplus-hotel" },
+    status: "confirmed",
+    title: "상하이 도착",
+    summary: "항공 이동 · 상하이 도착 및 체크인",
+    officialSchedule: { status: "confirmed", note: "항공 이동 → 상하이 도착 및 체크인" },
+    items: [
+      { slot: null, title: "항공 이동", type: "TRAVEL" },
+      { slot: null, title: "상하이 도착 및 체크인", type: "HOTEL" },
     ],
-    hotel_place_id: "hplus-hotel",
-    meals: { breakfast: null, lunch: null, dinner: "dinner-01" },
-    isFreeTime: false,
   },
   {
     day: 2,
     date: "2026-12-28",
     weekday: "월",
     label: "Day 2",
-    status: "sample",
-    title: "SAMPLE Day 2 · Sanofi China · Zai Lab 방문 (전부 SAMPLE · 미확정)",
-    meetup: { time: "08:30 SAMPLE", place_id: "hplus-hotel", departureTime: "09:00 SAMPLE", transport: "전용버스 (SAMPLE)" },
-    officialSchedule: { status: "sample", note: "호텔 출발 → SAMPLE Visit A(Sanofi China) → 점심 TBD → SAMPLE Visit B(Zai Lab) → 17:00 이후 자유시간 또는 선택적 그룹투어" },
-    visit: { status: "sample", note: "SAMPLE Visit A: Sanofi China · SAMPLE Visit B: Zai Lab (모두 REAL ORGANIZATION · SAMPLE VISIT · NOT CONFIRMED)" },
-    meal: { status: "sample", note: "점심 TBD · 저녁은 자유시간/선택 투어에 따라 개인 식사" },
-    accommodation: { status: "sample", note: "H+ Hotel · REAL HOTEL · SAMPLE ACCOMMODATION · NOT CONFIRMED" },
-    freeTime: {
-      status: "candidate",
-      note: "17:00 이후 자유시간 또는 선택적 그룹투어 — 둘 다 가능성이 있으며 아직 확정되지 않았습니다.",
-      options: ["자유시간 (개별 활동)", "선택적 그룹투어 (참가비 별도 · 확정 아님)"],
-    },
-    schedule: [
-      { time: "08:30", title: "호텔 로비 집합", type: "MEETUP", location_id: "hplus-hotel" },
-      { time: "09:00", title: "호텔 출발", type: "TRAVEL" },
-      { time: "09:30", title: "SAMPLE Visit A · Sanofi China", type: "VISIT", org_id: "sanofi-china" },
-      { time: "12:00", title: "점심 · Lunch: TBD", type: "MEAL" },
-      { time: "14:00", title: "SAMPLE Visit B · Zai Lab", type: "VISIT", org_id: "zai-lab" },
-      { time: "16:30", title: "호텔 · 시내 복귀", type: "TRAVEL", location_id: "hplus-hotel" },
-      { time: "17:00", title: "자유시간 OR 선택적 그룹투어 (미확정)", type: "FREE", note: "공식 일정 종료 후 자유시간 또는 선택적 그룹투어 중 아직 정해지지 않았습니다." },
+    status: "confirmed",
+    title: "기업 방문 3곳",
+    summary: "Biointron → Med-Fine Capital → Harbour BioMed",
+    officialSchedule: { status: "confirmed", note: "Biointron → Med-Fine Capital → Harbour BioMed" },
+    items: [
+      { slot: "오전", title: "Biointron 방문", type: "VISIT", org_id: "biointron" },
+      { slot: "오후", title: "Med-Fine Capital 방문", type: "VISIT", org_id: "med-fine-capital" },
+      { slot: "오후", title: "Harbour BioMed 방문", type: "VISIT", org_id: "harbour-biomed" },
     ],
-    hotel_place_id: "hplus-hotel",
-    meals: { breakfast: null, lunch: null, dinner: null },
-    isFreeTime: true,
   },
   {
     day: 3,
     date: "2026-12-29",
     weekday: "화",
     label: "Day 3",
-    status: "sample",
-    title: "SAMPLE Day 3 · 우시(Wuxi) 장거리 이동일 (전부 SAMPLE · 미확정)",
-    meetup: { time: "07:30 SAMPLE", place_id: "hplus-hotel", departureTime: "08:00 SAMPLE", transport: "우시행 버스 (SAMPLE)" },
-    officialSchedule: { status: "sample", note: "H+ Hotel 로비 집합 → 우시행 버스 탑승 → WuXi Biologics(우시) 방문 → 점심 TBD → 오후 SAMPLE 프로그램 → 상하이 복귀 버스 → 저녁 공식 일정 없음" },
-    visit: { status: "sample", note: "SAMPLE Visit: WuXi Biologics (Wuxi) — REAL ORGANIZATION · SAMPLE VISIT · NOT CONFIRMED" },
-    meal: { status: "sample", note: "점심 TBD (3가지 가능성) · 저녁 공식 일정 없음", lunchOptions: ["현지 식당", "방문기관 제공", "도시락 · 테이크아웃"] },
-    accommodation: { status: "sample", note: "H+ Hotel · REAL HOTEL · SAMPLE ACCOMMODATION · NOT CONFIRMED (당일 저녁 상하이 복귀)" },
-    freeTime: { status: "candidate", note: "저녁 공식 일정 없음 — 자유 식사/휴식 (확정 아님)" },
-    schedule: [
-      { time: "07:30", title: "H+ Hotel 로비 집합", type: "MEETUP", location_id: "hplus-hotel" },
-      { time: "08:00", title: "우시행 버스 탑승 (Wuxi Outbound Bus)", type: "ACTION" },
-      { time: "10:00", title: "SAMPLE Visit · WuXi Biologics (Wuxi)", type: "VISIT", org_id: "wuxi-biologics" },
-      { time: "12:00", title: "점심 · Lunch Plan: TBD (3가지 가능성)", type: "MEAL", note: "① 현지 식당 ② 방문기관 제공 ③ 도시락 · 테이크아웃 — 아직 미정입니다." },
-      { time: "13:30", title: "오후 SAMPLE 공식 프로그램 (세부 미정)", type: "PROGRAM" },
-      { time: "17:30", title: "상하이 복귀 버스 탑승 (Wuxi Return Bus)", type: "ACTION" },
-      { time: "19:30", title: "H+ Hotel 도착", type: "HOTEL", location_id: "hplus-hotel" },
-      { time: "19:30", title: "저녁 공식 일정 없음 (자유 식사)", type: "FREE" },
+    status: "confirmed",
+    title: "SJTU · WuXi Biologics Shanghai",
+    summary: "Shanghai Jiao Tong University → WuXi Biologics Shanghai (펑셴) · 저녁 식사",
+    officialSchedule: { status: "confirmed", note: "Shanghai Jiao Tong University (Minhang Campus) → WuXi Biologics Shanghai (펑셴구) → WuXi Biologics 저녁 식사" },
+    items: [
+      { slot: "오전", title: "Shanghai Jiao Tong University (Minhang Campus) 방문", type: "VISIT", org_id: "sjtu-minhang" },
+      { slot: "오후", title: "WuXi Biologics Shanghai 방문", type: "VISIT", org_id: "wuxi-biologics-shanghai" },
+      { slot: "저녁", title: "WuXi Biologics 저녁 식사", type: "MEAL" },
     ],
-    hotel_place_id: "hplus-hotel",
-    meals: { breakfast: null, lunch: null, dinner: null },
-    isFreeTime: true,
   },
   {
     day: 4,
     date: "2026-12-30",
     weekday: "수",
     label: "Day 4",
-    status: "sample",
-    title: "SAMPLE Day 4 · Henlius · Alibaba Cloud 방문 & 베이징덕 (전부 SAMPLE · 미확정)",
-    meetup: { time: "08:30 SAMPLE", place_id: "hplus-hotel", departureTime: "09:00 SAMPLE", transport: "전용버스 (SAMPLE)" },
-    officialSchedule: { status: "sample", note: "호텔 출발 → SAMPLE Visit C(Henlius) → 점심 TBD → SAMPLE Visit D(Alibaba Cloud/DX·AI) → SAMPLE Dinner 02(베이징덕) → 저녁식사 종료 시점에 공식 일정 종료" },
-    visit: { status: "sample", note: "SAMPLE Visit C: Shanghai Henlius Biotech · SAMPLE Visit D: Alibaba Cloud/DX·AI (모두 REAL ORGANIZATION · SAMPLE VISIT · NOT CONFIRMED)" },
-    meal: { status: "sample", note: "점심 TBD · SAMPLE Dinner 02 · 베이징덕 (식당 미정 · TBD)" },
-    accommodation: { status: "sample", note: "H+ Hotel · REAL HOTEL · SAMPLE ACCOMMODATION · NOT CONFIRMED" },
-    freeTime: { status: "tbd", note: "저녁식사 종료 후 개인 자유활동 (음주 등 비공식 활동은 공식 일정에 포함하지 않습니다)" },
-    schedule: [
-      { time: "08:30", title: "호텔 로비 집합", type: "MEETUP", location_id: "hplus-hotel" },
-      { time: "09:00", title: "호텔 출발", type: "TRAVEL" },
-      { time: "09:30", title: "SAMPLE Visit C · Shanghai Henlius Biotech", type: "VISIT", org_id: "henlius-biotech" },
-      { time: "12:00", title: "점심 · Lunch: TBD", type: "MEAL" },
-      { time: "14:00", title: "SAMPLE Visit D · Alibaba Cloud / DX·AI 산업 방문", type: "VISIT", org_id: "alibaba-cloud" },
-      { time: "18:30", title: "SAMPLE Dinner 02 · 베이징덕 단체 저녁", type: "MEAL", dinner_id: "dinner-02" },
-      { time: "20:30", title: "공식 일정 종료 (저녁식사 종료 시점 기준 · 이후 개인 자유활동)", type: "END" },
+    status: "confirmed",
+    title: "Nona Biosciences",
+    summary: "Nona Biosciences 방문",
+    officialSchedule: { status: "confirmed", note: "Nona Biosciences" },
+    items: [
+      { slot: "오전", title: "Nona Biosciences 방문", type: "VISIT", org_id: "nona-biosciences" },
     ],
-    hotel_place_id: "hplus-hotel",
-    meals: { breakfast: null, lunch: null, dinner: "dinner-02" },
-    isFreeTime: false,
   },
   {
     day: 5,
     date: "2026-12-31",
     weekday: "목",
     label: "Day 5",
-    status: "sample",
-    title: "SAMPLE Day 5 · 체크아웃 & 귀국 (전부 SAMPLE · 미확정)",
-    meetup: { time: "10:30 SAMPLE", place_id: "hplus-hotel", departureTime: "11:00 SAMPLE", transport: "공항 이동 버스 (SAMPLE)" },
-    officialSchedule: { status: "sample", note: "오전 자유시간 → 체크아웃 → 로비 집합 → 푸동공항 이동 → 13:10 상하이 → 서울 출발편 (SAMPLE)" },
-    visit: { status: "tbd", note: "방문기관 일정 없음 (귀국일)" },
-    meal: { status: "tbd", note: "공식 식사 일정 없음 (이동일)" },
-    accommodation: { status: "sample", note: "H+ Hotel 체크아웃 (SAMPLE)" },
-    freeTime: { status: "candidate", note: "오전 자유시간 (확정 아님)" },
-    schedule: [
-      { time: "08:00", title: "오전 자유시간", type: "FREE" },
-      { time: "10:00", title: "호텔 체크아웃 (Check-out)", type: "HOTEL", location_id: "hplus-hotel" },
-      { time: "10:30", title: "로비 집합", type: "MEETUP", location_id: "hplus-hotel" },
-      { time: "11:00", title: "푸동공항 이동", type: "TRAVEL", location_id: "pudong-airport" },
-      { time: "13:10", title: "상하이 푸동 → 서울(인천) 출발편 (SAMPLE)", type: "TRAVEL", location_id: "pudong-airport" },
-      { time: "—", title: "Field Trip 종료", type: "END" },
+    status: "confirmed",
+    title: "귀국",
+    summary: "귀국",
+    officialSchedule: { status: "confirmed", note: "귀국" },
+    items: [
+      { slot: null, title: "귀국", type: "TRAVEL" },
     ],
-    hotel_place_id: "hplus-hotel",
-    meals: { breakfast: null, lunch: null, dinner: null },
-    isFreeTime: true,
   },
 ];
 

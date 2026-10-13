@@ -4,6 +4,26 @@ KAIST BIM Shanghai Field Trip(2026.12.27~12.31)을 위한 **공개 여행 안내
 "상하이에서 무엇을 하고, 무엇을 준비하고, 어디를 볼 수 있는가"에만 집중하며, 실제 참가자 운영
 (체크인·버스 탑승·룸 배정·택시팀·정산 등)은 별도의 Private Participant Portal에서 처리합니다.
 
+## 📅 v0.9.0 — SCHEDULE 공식 일정 반영 (Schedule/Home만 수정)
+
+2026.12.27~31 학교 공식 일정표를 공개 SCHEDULE에 반영했습니다. 헤더·내비·색·타이포·카드 스타일,
+Shanghai Guide, PREP, MY TRIP(Private Portal 연결), Apps Script/Google Sheets는 건드리지 않았습니다.
+
+- **방문 순서:** 12/28 Biointron → Med-Fine Capital → Harbour BioMed · 12/29 Shanghai Jiao Tong University
+  (Minhang Campus) → WuXi Biologics Shanghai(펑셴구, 우시시 아님) → WuXi Biologics 저녁 식사 · 12/30 Nona Biosciences ·
+  12/27 항공 이동/상하이 도착 및 체크인 · 12/31 귀국.
+- **공개 원칙:** 구체적인 시각(방문·항공·집합·체크인·버스·식사·이동 소요시간)은 화면뿐 아니라 `js/data-trip.js`
+  데이터에도 넣지 않습니다(CSS로 숨기지 않음). 오전/오후/저녁 시간대만 씁니다. 호텔명·주소·체크인 시간,
+  미확정 액티비티(단체석식, 선택/단체 Activity)도 표시하지 않습니다.
+- **SCHEDULE 구성:** 01 DAY BY DAY(날짜별 시간대 + 방문처) → 02 FIELD VISITS(방문 순서대로 접이식 소개 카드:
+  기관 성격, 소개, 핵심 기술, 방문 전에 알아두기, 방문지 주소, 주소 복사, 高德地图 검색, 공식 홈페이지, 출처).
+  방문처 이름을 누르면 해당 카드가 펼쳐집니다. `itinerary.html#org-<id>` 딥링크도 동작합니다.
+- **데이터:** `ITINERARY[].items[]`(slot/title/type/org_id), `ORGS[]`(공식 방문처 6곳, 배열 순서 = 방문 순서).
+  과거 SAMPLE 방문기관 5곳·SAMPLE 저녁식사·`host-orgs/*.html` 상세 페이지는 삭제했고,
+  `host-orgs.html`은 새 방문처 목록(→ Schedule 카드)으로 바뀌었습니다.
+- **지도:** Shanghai Guide와 같은 高德地图 URI 검색(키·좌표 없음). 중국어 주소가 제공된 SJTU·WuXi는 그 주소로,
+  나머지는 공식 중국어 명칭 + 上海로 검색합니다(제공된 영문 주소를 임의로 중국어로 번역하지 않음).
+
 ## 🗺 v0.8.0 — Shanghai Guide 지역 중심 구조 + 실사 이미지 확대 (Guide만 수정)
 
 `guide.html`의 정보 구조와 카드 이미지만 바꿨습니다. 헤더·내비·색·타이포·카드 스타일, HOME/SCHEDULE/PREP/MY TRIP,
@@ -112,7 +132,7 @@ v0.7 "Shanghai Guide FINAL"에서 이미 만들어진 것 (이번 라운드에�
 | | Schedule (+ Home, Prep) | Shanghai Guide |
 | --- | --- | --- |
 | 데이터 파일 | `js/data-trip.js` | `js/data-guide.js` (완전 독립) |
-| 성격 | 이번 Field Trip의 **일정** — 날짜·집합시간·방문기관·SAMPLE 저녁식사 | 상하이의 **정보 라이브러리** — 언제든 참고할 수 있는 볼거리/먹거리/쇼핑/기념품 |
+| 성격 | 이번 Field Trip의 **일정** — 날짜·시간대(오전/오후/저녁)·방문기관 (시각·숙소 정보 없음) | 상하이의 **정보 라이브러리** — 언제든 참고할 수 있는 볼거리/먹거리/쇼핑/기념품 |
 | 상태 표현 | `confirmed`/`candidate`/`tbd`/`demo`/`sample` 배지를 계속 사용 (일정이 아직 확정 전이라는 뜻이므로 의도적으로 유지) | CANDIDATE/후보/SAMPLE/TBD/VERIFY/NOT CONFIRMED 같은 "확정 여부" 표현을 쓰지 않음 |
 | 주요 배열 | `ITINERARY`, `PLACES`, `ORGS`, `SAMPLE_DINNERS`, `FOOD_ITEMS`, `RESTAURANTS`, `SOUVENIR_ITEMS`, `PREP` | `GUIDE_SPOTS`(55곳), `GUIDE_SOUVENIRS`(33개 품목), `GUIDE_RESEARCH_NOTES` + `GUIDE_RESEARCH_NOTES_EXTENDED`(미검증 장소, 화면에 렌더링하지 않음) |
 | 화면 | `index.html`, `itinerary.html`, `prep.html` | `guide.html` (SEE/EAT/SHOP/SOUVENIRS/MAP) |
@@ -209,21 +229,13 @@ Home의 My Trip CTA, Schedule 상단의 My Trip 링크는 모두 `goToPrivatePor
 로그인 방법(재학생: 학번 뒤 4자리 / 그 외 참가자: 별도 안내된 4자리 코드) 안내와 "실제 코드 값을
 GitHub에 저장하지 않는다"는 보안 설명은 사용자 화면이 아니라 이 README에만 남겨둡니다.
 
-## ⚠️ Schedule/Home/Prep은 여전히 SAMPLE MODE입니다 (Shanghai Guide는 해당 없음)
+## ⚠️ Schedule/Home은 공식 일정 기준입니다 (v0.9) · 공개 범위 주의
 
-날짜(2026.12.27~12.31)는 확정이지만, Schedule/Home 화면에 보이는 방문기관·동선·식당은 기능
-검증을 위한 SAMPLE입니다. 실제 공식 일정이 확정되면 `js/data-trip.js` 데이터만 교체하면 되도록
-만들어졌습니다. (Shanghai Guide는 일정과 무관한 정보 라이브러리라서 이 SAMPLE 표시 대상이
-아닙니다 — 위 "Shanghai Guide와 Schedule — 데이터가 분리되어 있습니다" 참고.)
+Schedule/Home의 날짜별 일정과 방문기관은 학교 공식 일정표 기준입니다. 다만 공개 저장소이므로 구체적인
+시각·호텔명·주소·참가자 정보는 넣지 않으며, 이런 운영 정보는 Private Participant Portal에서만 다룹니다.
 
-- H+ Hotel, Sanofi China, Zai Lab, WuXi Biologics, Shanghai Henlius Biotech, Alibaba Cloud는
-  전부 **실존하는** 호텔/기관입니다. 하지만 KAIST BIM Field Trip의 **실제 확정 숙소/방문기관이
-  아닙니다.** 화면 어디서나 `REAL HOTEL`/`REAL ORGANIZATION` · `SAMPLE ACCOMMODATION`/
-  `SAMPLE VISIT` · `NOT CONFIRMED` 배지를 함께 표시해, "실존 여부"와 "확정 여부"를 항상
-  구분합니다.
-- 상단 **DEMO MODE** strip(수업 과제 프로토타입 표시)은 HOME/SCHEDULE/PREP에서 그대로
-  유지합니다. Shanghai Guide 페이지만 "FIELD GUIDE · Information Reference"로 문구를
-  바꿨습니다(장소 정보 자체가 가짜처럼 보이지 않도록 — 이 페이지의 성격이 다르기 때문).
+- `PLACES`의 H+ Hotel 항목은 v0.4 때의 SAMPLE 데이터로 남아 있지만 Schedule/Home 어디에도 표시되지 않습니다.
+- 상단 strip은 HOME/SCHEDULE/Field Visits(`host-orgs.html`)에서 "OFFICIAL SCHEDULE — Guide 장소는 참고용"(일정·방문기관은 공식 확정, Shanghai Guide 장소는 참고용 후보라는 구분)으로 바꿨습니다. PREP은 기존 DEMO MODE 문구 그대로, Shanghai Guide는 기존 FIELD GUIDE 문구 그대로입니다.
 
 ## 미리보기 (로컬에서 바로 열어보기)
 
@@ -235,10 +247,9 @@ GitHub에 저장하지 않는다"는 보안 설명은 사용자 화면이 아니
   역할별로 메뉴가 달라지지 않고, 모든 방문자가 동일한 메뉴를 봅니다.
 - **HOME**은 Hero(D-Day) + Trip at a Glance(Day 1~5 아주 짧은 요약) + My Trip 단일 CTA로만
   구성됩니다. 화면은 오늘 날짜를 기준으로 자동으로 Phase(출국 전/Day N/종료 후)를 전환합니다.
-- **SCHEDULE**은 상세 시간표가 아니라 Day별 "대략적인 이동 흐름"만 보여줍니다(예: `DAY 1: Hotel
-  → Welcome Dinner → Nanjing East Road → The Bund`). 정확한 시간·집합 장소·버스 탑승 정보는 MY
-  TRIP을 거쳐 Private Portal에서만 확인합니다. 각 Day 카드의 방문기관 칩을 누르면 그 기관의 상세
-  프로필(`host-orgs/`)로 이동합니다.
+- **SCHEDULE**은 상세 시간표가 아니라 Day별 시간대(오전/오후/저녁)와 방문 순서만 보여주고, 아래에
+  방문기관 소개 카드(접이식)를 둡니다. 정확한 시간·집합 장소·버스 탑승 정보는 MY TRIP을 거쳐 Private
+  Portal에서만 확인합니다.
 - **SHANGHAI GUIDE**는 이제 SEE/EAT/SHOP/SOUVENIRS/MAP 5탭 구조이며, `js/data-guide.js`의
   독립 데이터(`GUIDE_SPOTS` 55곳, `GUIDE_SOUVENIRS` 33개 품목)를 사용합니다. 자세한 사용법은 위
   "🔎 Shanghai Guide 사용법" 참고.
@@ -248,26 +259,20 @@ GitHub에 저장하지 않는다"는 보안 설명은 사용자 화면이 아니
 - **MY TRIP**은 별도 페이지가 아닙니다. 상단·하단 내비게이션의 MY TRIP, Home의 My Trip CTA,
   Schedule 상단의 My Trip 링크를 누르면 `goToPrivatePortal()`(`js/main.js`)이
   `participantPortalUrl()`로 **같은 탭에서 바로** 이동시킵니다.
-- `host-orgs.html`, `host-orgs/*.html`은 최상단 내비게이션에는 없지만 Schedule의 방문기관 칩을
-  통해 계속 접근할 수 있어 그대로 유지합니다.
+- `host-orgs.html`은 최상단 내비게이션에는 없는 방문처 목록 페이지로, 각 카드는 Schedule의 해당
+  기관 소개 카드(`itinerary.html#org-<id>`)로 이동합니다. (v0.9에서 `host-orgs/*.html` 상세 페이지는 삭제)
 
 ## 폴더 구조
 
 ```
 shanghai-field-trip-hub/
 ├── index.html               HOME — Hero + Trip at a Glance + My Trip CTA (날짜 기반 자동 Phase)
-├── itinerary.html            SCHEDULE — Day별 대략적인 이동 흐름 요약 (상세 시간표 없음)
+├── itinerary.html            SCHEDULE — Day별 시간대·방문 순서 + 방문기관 소개 카드 (시각 없음)
 ├── guide.html                SHANGHAI GUIDE — 지역 선택 → 지역 지도 → 카테고리 → 카드 (v0.8).
 │                              js/data-guide.js만 읽음(js/data-trip.js와 완전 분리)
 ├── prep.html                 PREP — BEFORE YOU FLY(기본 펼침) + 5개 카테고리 accordion
 │                              (ESSENTIAL APPS/PAYMENT/CONNECTIVITY/PACKING·POWER/LOCAL TIPS)
-├── host-orgs.html             Field Visits 전체 목록 (내비게이션에는 없음 · Schedule에서 링크)
-├── host-orgs/
-│   ├── wuxi-biologics.html      방문기관 상세 페이지 (REAL ORGANIZATION · SAMPLE VISIT)
-│   ├── sanofi-china.html        〃
-│   ├── zai-lab.html             〃
-│   ├── henlius-biotech.html     〃
-│   └── alibaba-cloud.html       〃
+├── host-orgs.html             Field Visits 목록 (내비게이션에는 없음 · 카드 → Schedule 소개 카드)
 ├── css/
 │   └── style.css              공통 스타일 (외부 폰트·CDN 없음, 반응형, White + Navy 디자인).
 │                              guide.html 전용 스타일(카드/필터/검색/MAP 핀/COPY 버튼/카테고리별
@@ -276,8 +281,8 @@ shanghai-field-trip-hub/
 │   ├── config.js                Private Participant Portal(Google Apps Script) 연결 URL을 한
 │   │                          곳에서만 관리 (`APP_CONFIG.participantPortalUrl`). 실제 참가자
 │   │                          데이터·개인 4자리 코드·secret은 이 파일에 절대 넣지 않음
-│   ├── data-trip.js             Schedule/Home/Prep 콘텐츠 데이터 (일정/장소/방문기관/SAMPLE
-│   │                          저녁식사/Prep 정보). Shanghai Guide는 이 파일을 더 이상 읽지 않음
+│   ├── data-trip.js             Schedule/Home/Prep 콘텐츠 데이터 (공식 일정/방문기관/장소/
+│   │                          Prep 정보). Shanghai Guide는 이 파일을 더 이상 읽지 않음
 │   ├── data-guide.js            ★ Shanghai Guide 전용 독립 데이터 (v0.7 신설). GUIDE_SPOTS(56),
 │   │                          GUIDE_SOUVENIRS(33), GUIDE_RESEARCH_NOTES + _EXTENDED(미검증,
 │   │                          화면 미노출), AREA_CLUSTERS(MAP 탭용 8개 지역)
@@ -305,12 +310,11 @@ shanghai-field-trip-hub/
 ## 데이터 수정 방법 (앞으로 정보가 확정될 때마다)
 
 **Schedule / Home / Prep**은 `js/data-trip.js` 한 파일만 고치면 됩니다.
-- 일정(`ITINERARY[]`), 장소(호텔/공항/관광지/방문기관 위치), 방문기관 소개(`ORGS`), SAMPLE
-  저녁식사(`SAMPLE_DINNERS`), 준비 정보(`PREP`)가 모두 이 파일에 있습니다.
-- 예: 호텔이 확정되면 `PLACES` 배열의 `hplus-hotel` 항목 이름·중국어 이름·주소·상태(`status`)를
-  실제 정보로 교체하면 됩니다.
-- Day별 이동 흐름을 바꾸려면 `ITINERARY[].officialSchedule.note`만 수정하면 Schedule 화면에
-  바로 반영됩니다.
+- 일정(`ITINERARY[]`), 방문기관 소개·주소·지도(`ORGS`), 장소(`PLACES`), 준비 정보(`PREP`)가 모두
+  이 파일에 있습니다.
+- Day별 일정은 `ITINERARY[].items[]`(`slot`: 오전/오후/저녁, `title`, `type`, 방문처면 `org_id`)를 고치면
+  Schedule 화면에, `ITINERARY[].summary`를 고치면 Home의 Trip at a Glance에 반영됩니다.
+- ⚠️ 공개 저장소이므로 구체적인 시각, 호텔명·주소, 참가자 정보는 넣지 마세요.
 
 **Shanghai Guide**는 `js/data-guide.js` 한 파일만 고치면 됩니다.
 - 새 장소를 추가하거나 정보를 갱신하려면 `GUIDE_SPOTS[]`에 항목을 추가/수정하세요
@@ -330,17 +334,17 @@ shanghai-field-trip-hub/
 자동으로 표시됩니다 (`main.js`의 `realSampleTagsHtml`/`statusOrRealTagsHtml`). 이 상태 체계는
 Shanghai Guide에는 적용하지 않습니다.
 
-새 방문기관을 추가하려면 `ORGS`에 항목을 추가하고, `host-orgs/` 폴더에 그 기관의 id로 새 HTML
-파일을 하나 만들면 됩니다 (기존 파일을 복사해서 `data-org-id`만 바꾸는 방식이 가장 빠릅니다).
+새 방문기관을 추가하려면 `ORGS`에 항목을 추가하고(배열 순서 = 방문 순서), 해당 Day의
+`ITINERARY[].items[]`에 `org_id`로 연결하면 됩니다. 별도 HTML 파일은 필요 없습니다.
 
 ## 실제 데이터 교체 가이드 (REAL DATA REPLACEMENT GUIDE)
 
 | 바꿀 내용 | 파일 / 데이터 영역 | 비고 |
 | --- | --- | --- |
-| Day별 이동 흐름 요약 | `js/data-trip.js` → `ITINERARY[].officialSchedule.note` | Schedule 화면이 이 필드를 그대로 표시함 |
-| 집합 시간 | `js/data-trip.js` → `ITINERARY[].meetup` | 정확한 시간·장소는 원칙적으로 Private Portal에서만 안내하며, 이 필드는 참고용 |
+| Day별 일정 | `js/data-trip.js` → `ITINERARY[].items[]` / `summary` | 시간대(오전/오후/저녁)만 · 시각 금지 |
+| 집합 시간·장소 | Private Portal (Apps Script) | v0.9부터 공개 데이터에 두지 않음 |
 | 호텔 정보 | `js/data-trip.js` → `PLACES[]`의 `category: "hotel"` 항목 (지금은 `hplus-hotel`) | `status`를 `confirmed`로, `real`/`realLabel`/`sampleLabel` 제거 |
-| 방문기관 정보 | `js/data-trip.js` → `ORGS[]` + `host-orgs/*.html` | |
+| 방문기관 정보 | `js/data-trip.js` → `ORGS[]` | 소개·주소·지도 검색어(`mapKeyword`)·공식 링크·출처 |
 | Shanghai Guide 장소·식당·매장·기념품 | `js/data-guide.js` → `GUIDE_SPOTS[]`/`GUIDE_SOUVENIRS[]` | `guide.html`이 이 데이터를 그대로 읽으므로 별도 HTML 수정 불필요 |
 | 미검증 Guide 장소가 확인되면 | `js/data-guide.js` → `GUIDE_RESEARCH_NOTES`/`_EXTENDED`에서 `GUIDE_SPOTS[]`로 이동 | 이동 전까지는 화면에 노출하지 않음 |
 | 장소의 중국어명·주소 | 해당 파일의 각 장소 객체의 `name_zh`/`address`(Guide) 또는 `address_zh`(Schedule) | |
@@ -394,9 +398,8 @@ Shanghai Guide에는 적용하지 않습니다.
   되지만, URL이 있다고 해서 인증 없이 개인정보가 노출되면 안 됩니다 — 로그인·개인정보 검증은
   항상 Apps Script 쪽에서만 이루어지며, 이 프로젝트는 "GitHub → Private Portal 이동"까지만
   담당합니다.
-- `js/data-trip.js`의 H+ Hotel · Sanofi China · Zai Lab · WuXi Biologics · Shanghai Henlius
-  Biotech · Alibaba Cloud는 실존하는 호텔/기관이지만, 이 프로젝트에서는 기능 검증용 SAMPLE
-  데이터로만 사용됩니다. 실제로 확정되기 전까지는 절대 "확정된 일정"처럼 안내하지 마세요.
+- `js/data-trip.js`의 `ITINERARY`/`ORGS`는 공식 일정 기준 공개용 데이터입니다. 구체적인 시각, 호텔명·주소,
+  미확정 액티비티는 넣지 마세요. `PLACES`의 H+ Hotel은 화면에 쓰이지 않는 과거 SAMPLE 항목입니다.
 - `js/data-guide.js`의 `GUIDE_SPOTS`/`GUIDE_SOUVENIRS`는 사용자가 직접 수집·검증해 제공한
   장소/품목만 담았습니다. 확인되지 않은 중국어명·주소·영업시간·가격은 임의로 채우지 않고 빈
   값으로 남겨두었으며, 정확한 상호를 특정하지 못한 자료는 `GUIDE_RESEARCH_NOTES`/

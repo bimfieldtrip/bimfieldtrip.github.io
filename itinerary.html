@@ -11,7 +11,7 @@
 <body data-page="itinerary">
 <a class="skip-link" href="#main">본문 바로가기</a>
 
-<div class="demo-strip"><span class="demo-strip__dot"></span><strong>DEMO MODE</strong>&nbsp;— Course Prototype &middot; Dummy Data</div>
+<div class="demo-strip"><span class="demo-strip__dot"></span><strong>OFFICIAL SCHEDULE</strong>&nbsp;— Guide 장소는 참고용</div>
 
 <header class="site-header">
   <div class="site-header__bar">
@@ -29,49 +29,125 @@
   <div class="page-head">
     <div class="kicker">SCHEDULE</div>
     <h1>Schedule</h1>
-    <p class="page-head__desc">2026.12.27 ~ 12.31, 실제 Field Trip 기간입니다. 아래는 Day별 대략적인 이동 흐름입니다. 정확한 시간·집합 장소·버스 탑승 정보는 로그인 후 <a href="#" onclick="goToPrivatePortal(event)">My Trip</a>(Private Participant Portal)에서 확인하세요.</p>
+    <p class="page-head__desc">2026.12.27 ~ 12.31 공식 일정입니다. 공개 페이지에는 날짜별 방문 순서와 오전·오후·저녁 시간대만 표시합니다. 정확한 시간·집합 장소·숙소 정보는 로그인 후 <a href="#" onclick="goToPrivatePortal(event)">My Trip</a>(Private Participant Portal)에서 확인하세요.</p>
   </div>
 
-  <div class="notice notice--tbd"><strong>SAMPLE MODE</strong> — 날짜(기간)는 확정입니다. 아래 방문기관·동선은 기능 검증을 위한 SAMPLE이며, 실제 공식 일정이 확정되면 교체됩니다.</div>
-
-  <p class="text-faint mono" style="margin:0 0 10px; font-size:.76rem;">방문기관 상세 프로필은 각 Day 카드의 기관 이름을 누르거나 <a href="host-orgs.html">Field Visits 전체 목록</a>에서 확인하세요.</p>
-
+  <div class="manifest-title"><span class="manifest-title__num">01</span>DAY BY DAY<span class="manifest-title__line"></span></div>
+  <p class="text-faint mono" style="margin:0 0 10px; font-size:.76rem;">방문처 이름을 누르면 아래 소개 카드로 이동합니다.</p>
   <div id="itinerary-root" class="grid"></div>
+
+  <div class="manifest-title" id="field-visits"><span class="manifest-title__num">02</span>FIELD VISITS<span class="manifest-title__line"></span></div>
+  <p class="text-faint mono" style="margin:0 0 10px; font-size:.76rem;">방문 순서대로 정리했습니다. 카드를 눌러 소개·주소·지도를 펼쳐 보세요.</p>
+  <div id="orgs-root"></div>
 </main>
 
-<footer class="site-footer">SHANGHAI FIELD TRIP HUB · v0.6.3 · PORTAL LINK HOTFIX</footer>
+<footer class="site-footer">SHANGHAI FIELD TRIP HUB · v0.9.0 · OFFICIAL SCHEDULE</footer>
 <nav class="bottom-nav" data-bottom-nav aria-label="주요 메뉴 (모바일)"></nav>
 
 <script src="js/config.js"></script>
 <script src="js/data-trip.js"></script>
 <script src="js/main.js"></script>
 <script>
-  // v0.6 — Schedule은 더 이상 상세 시간표(Hour-by-hour)나 Trip Map schematic을
-  // 그리지 않습니다. 각 Day의 officialSchedule.note는 이미 "A → B → C" 형태의
-  // 짧은 동선 요약으로 작성되어 있어(data-trip.js), 새 데이터를 만들지 않고
-  // 그대로 재사용합니다. 정확한 시간·집합 장소·버스 탑승 상태는 My Trip(Private
-  // Participant Portal)에서만 확인합니다.
-  function orgChipsForDay(day) {
-    const orgIds = [...new Set((day.schedule || []).filter((s) => s.org_id).map((s) => s.org_id))];
-    const orgs = orgIds.map((id) => ORGS.find((o) => o.id === id)).filter(Boolean);
-    if (!orgs.length) return "";
-    return `<div class="btn-row" style="margin-top:10px;">${orgs.map((o) => `<a class="btn btn--sm" href="host-orgs/${o.id}.html">${o.name_ko.split("(")[0].trim()} ${icon("chevron")}</a>`).join("")}</div>`;
+  // v0.9 — 공식 일정(ITINERARY)과 방문기관 소개(ORGS)를 한 화면에 표시합니다.
+  // 공개 페이지이므로 시각은 데이터에도 화면에도 없습니다(오전/오후/저녁 시간대만).
+  // 지도는 Shanghai Guide와 같은 高德地图 URI 검색 방식(API 키·좌표 없이 검색어만)을 씁니다.
+  const ORG_BY_ID = Object.fromEntries(ORGS.map((o) => [o.id, o]));
+
+  function orgAmapUrl(org) {
+    if (!org.mapKeyword) return "";
+    const params = new URLSearchParams({ keyword: org.mapKeyword, city: "310000", view: "map", src: "bimfieldtrip", callnative: "1" });
+    return "https://uri.amap.com/search?" + params.toString();
+  }
+
+  function formatDay(iso) {
+    const day = ITINERARY.find((d) => d.date === iso);
+    const [, m, d] = iso.split("-").map(Number);
+    return `${m}/${d}${day ? " (" + day.weekday + ")" : ""}`;
+  }
+
+  function itemHtml(item) {
+    const slot = item.slot ? `<span class="sched-item__slot">${item.slot}</span>` : `<span class="sched-item__slot sched-item__slot--empty"></span>`;
+    const org = item.org_id ? ORG_BY_ID[item.org_id] : null;
+    const body = org
+      ? `<a class="sched-item__org" href="#org-${org.id}" data-open-org="${org.id}">${org.name_en}</a><span class="sched-item__sub">방문 · ${org.name_zh}</span>`
+      : `<span class="sched-item__text">${item.title}</span>`;
+    return `<li class="sched-item${org ? " sched-item--visit" : ""}">${slot}<div class="sched-item__body">${body}</div></li>`;
   }
 
   function renderItinerary() {
-    const root = document.getElementById("itinerary-root");
-    root.innerHTML = ITINERARY.map((day) => `
-      <div class="card">
+    document.getElementById("itinerary-root").innerHTML = ITINERARY.map((day) => `
+      <div class="card" id="day-${day.day}">
         <div class="day-card__header">
           <div><span class="day-card__label">${day.label}</span><span class="day-card__date"> &middot; ${day.date} (${day.weekday})</span></div>
           ${statusBadge(day.status)}
         </div>
-        <p class="text-muted" style="margin-bottom:0;">${(day.officialSchedule && day.officialSchedule.note) || day.title}</p>
-        ${orgChipsForDay(day)}
+        <ol class="sched-list">${day.items.map(itemHtml).join("")}</ol>
       </div>
     `).join("");
   }
-  document.addEventListener("DOMContentLoaded", renderItinerary);
+
+  function orgCardHtml(org, i) {
+    const amap = orgAmapUrl(org);
+    const copyAddr = org.address_zh || org.address;
+    return `
+      <details class="details-box org-visit" id="org-${org.id}">
+        <summary>
+          <span class="org-visit__num mono">${String(i + 1).padStart(2, "0")}</span>
+          <span class="org-visit__head">
+            <span class="org-visit__name">${org.name_en}</span>
+            <span class="org-visit__meta mono">${formatDay(org.visitDate)} ${org.slot} · ${org.name_zh}</span>
+          </span>
+        </summary>
+        <div class="org-visit__body">
+          <p class="org-visit__type">${org.type}</p>
+          <p class="org-visit__intro">${org.intro}</p>
+          <div class="keyword-list">${org.keywords.map((k) => `<span class="keyword-chip">${k}</span>`).join("")}</div>
+          ${org.facility ? `<div class="org-visit__facility"><div class="org-visit__label">${org.facility.title}</div><p>${org.facility.text}</p></div>` : ""}
+          <div class="org-visit__label">방문 전에 알아두기</div>
+          <ul class="org-visit__notes">${org.notes.map((n) => `<li>${n}</li>`).join("")}</ul>
+          <div class="zh-block" style="margin-top:14px;">
+            <div class="zh-block__label">ADDRESS · 방문지 주소</div>
+            ${org.address_zh ? `<div class="zh-block__text">${org.address_zh}</div>` : `<div class="zh-block__text">${org.name_zh}</div>`}
+            <div class="zh-block__addr">${org.address}</div>
+          </div>
+          <div class="btn-row" style="margin-top:12px;">
+            <button class="btn btn--sm" type="button" data-copy="${escapeAttr(copyAddr)}">${icon("copy")}<span>${org.address_zh ? "中文 주소 복사" : "주소 복사"}</span></button>
+            ${org.address_zh ? `<button class="btn btn--sm" type="button" data-copy="${escapeAttr(org.address)}">${icon("copy")}<span>영문 주소 복사</span></button>` : ""}
+            ${amap ? `<a class="btn btn--sm" href="${amap}" target="_blank" rel="noopener">${icon("pin")}<span>高德地图</span></a>` : ""}
+            <a class="btn btn--sm" href="${org.website}" target="_blank" rel="noopener">공식 홈페이지 ${icon("chevron")}</a>
+          </div>
+          <p class="text-faint mono org-visit__source">SOURCE — ${org.sources.map((s) => `<a href="${s.url}" target="_blank" rel="noopener">${s.label}</a>`).join(" · ")}</p>
+        </div>
+      </details>
+    `;
+  }
+
+  function renderOrgs() {
+    document.getElementById("orgs-root").innerHTML = ORGS.map(orgCardHtml).join("");
+  }
+
+  // 일정의 방문처 이름 또는 URL 해시(#org-...)로 들어오면 해당 카드를 펼치고 이동합니다.
+  function openOrgFromHash() {
+    const id = decodeURIComponent(location.hash.slice(1));
+    if (!id.startsWith("org-")) return;
+    const el = document.getElementById(id);
+    if (!el) return;
+    el.open = true;
+    el.scrollIntoView({ block: "start" });
+  }
+
+  document.addEventListener("DOMContentLoaded", () => {
+    renderItinerary();
+    renderOrgs();
+    openOrgFromHash();
+  });
+  window.addEventListener("hashchange", openOrgFromHash);
+  document.addEventListener("click", (e) => {
+    const a = e.target.closest("[data-open-org]");
+    if (!a) return;
+    const el = document.getElementById("org-" + a.getAttribute("data-open-org"));
+    if (el) el.open = true;
+  });
 </script>
 </body>
 </html>

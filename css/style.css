@@ -971,3 +971,31 @@ main [hidden] { display: none !important; }
 .guide-fold > summary::after { content: "+"; font-family: var(--font-mono); color: var(--navy-700); margin-left: 4px; }
 .guide-fold[open] > summary::after { content: "\2212"; }
 .guide-fold__count { font-family: var(--font-mono); color: var(--ink-faint); font-weight: 600; }
+
+/* ---------- Schedule v0.9 — 공식 일정 (시간대 + 방문처) ---------- */
+.sched-list { list-style: none; margin: 0; padding: 0; }
+.sched-item { display: flex; align-items: baseline; gap: 12px; padding: 9px 0; border-top: 1px solid var(--line); }
+.sched-item:first-child { border-top: 0; padding-top: 2px; }
+.sched-item__slot { flex: 0 0 3.2em; font-family: var(--font-mono); font-size: 0.74rem; font-weight: 700; color: var(--navy-600); }
+.sched-item__body { min-width: 0; display: flex; flex-wrap: wrap; align-items: baseline; gap: 2px 8px; }
+.sched-item__text { color: var(--ink); font-size: 0.96rem; }
+.sched-item__org { font-weight: 800; font-size: 1.02rem; color: var(--navy-900); text-decoration: none; border-bottom: 1px solid var(--line); word-break: break-word; }
+.sched-item__org:hover { border-bottom-color: var(--navy-600); }
+.sched-item__sub { font-size: 0.8rem; color: var(--ink-faint); }
+
+.org-visit { scroll-margin-top: 70px; background: var(--surface); }
+.org-visit + .org-visit { margin-top: 10px; }
+.org-visit[open] { background: var(--bg-soft); }
+.org-visit summary { display: flex; align-items: flex-start; gap: 10px; }
+.org-visit summary::before { margin-top: 1px; }
+.org-visit__num { color: var(--navy-600); font-size: 0.8rem; font-weight: 700; padding-top: 2px; }
+.org-visit__head { display: flex; flex-direction: column; gap: 2px; min-width: 0; }
+.org-visit__name { font-size: 1rem; font-weight: 800; color: var(--navy-900); word-break: break-word; }
+.org-visit__meta { font-size: 0.74rem; font-weight: 600; color: var(--ink-faint); }
+.org-visit__body { margin-top: 14px; }
+.org-visit__type { margin: 0 0 6px; font-size: 0.8rem; font-weight: 700; color: var(--navy-700); }
+.org-visit__intro { margin: 0; color: var(--ink); font-size: 0.94rem; line-height: 1.65; }
+.org-visit__label { margin-top: 16px; font-size: 0.72rem; font-weight: 700; color: var(--ink-faint); text-transform: uppercase; letter-spacing: 0.05em; }
+.org-visit__facility p { margin: 5px 0 0; font-size: 0.92rem; color: var(--ink); line-height: 1.6; }
+.org-visit__notes { margin: 6px 0 0; padding-left: 1.1em; font-size: 0.9rem; color: var(--ink-dim); line-height: 1.6; }
+.org-visit__source { margin: 12px 0 0; font-size: 0.7rem; word-break: break-word; }

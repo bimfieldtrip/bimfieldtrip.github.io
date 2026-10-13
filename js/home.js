@@ -73,12 +73,9 @@ function heroForPhase(phase) {
   `);
 }
 
-// day.title은 "SAMPLE Day N · <짧은 요약> (전부 SAMPLE · 미확정)" 형식으로 이미
-// 작성되어 있습니다 — 그 가운데 짧은 요약만 뽑아 Trip at a Glance에 재사용하고,
-// 형식이 다르면(예상치 못한 데이터) 원래 title을 그대로 보여줍니다.
+// v0.9 — 공식 일정의 day.summary(시각·호텔명 없는 짧은 동선 요약)를 그대로 보여줍니다.
 function shortDayTitle(day) {
-  const m = day.title && day.title.match(/·\s*(.+?)\s*\(/);
-  return m ? m[1] : day.title;
+  return day.summary || day.title;
 }
 
 function tripAtGlanceHtml() {
@@ -88,14 +85,14 @@ function tripAtGlanceHtml() {
       ${ITINERARY.map((day) => `
         <div class="card">
           <div class="day-card__header">
-            <div><span class="day-card__label">${day.label}</span><span class="day-card__date"> &middot; ${day.date}</span></div>
+            <div><span class="day-card__label">${day.label}</span><span class="day-card__date"> &middot; ${day.date} (${day.weekday})</span></div>
             ${statusBadge(day.status)}
           </div>
           <p class="text-muted" style="margin-bottom:0;">${shortDayTitle(day)}</p>
         </div>
       `).join("")}
     </div>
-    <p class="text-faint mono" style="margin-top:10px; font-size:.72rem;">자세한 동선과 방문기관은 <a href="itinerary.html">Schedule</a>에서 확인하세요.</p>
+    <p class="text-faint mono" style="margin-top:10px; font-size:.72rem;">방문 순서와 기관 소개는 <a href="itinerary.html">Schedule</a>에서 확인하세요.</p>
   `;
 }
 
