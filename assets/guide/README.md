@@ -2,13 +2,15 @@
 
 이미지 우선순위: **실사(라이선스 확인) > 장소를 묘사한 완성 일러스트 > 기존 SVG placeholder**
 
-- `photos/` — Wikimedia Commons 실사의 웹용 16:10 WebP derivative(1280×800). `python3 tools/fetch_guide_photos.py`로 생성하고, `js/data-guide.js`의 `GUIDE_LOCAL_PHOTOS`를 `true`로 바꾸면 사용됩니다. 그 전에는 Commons 공식 썸네일 CDN(thumb.wikimedia.org)에서 불러옵니다.
+- `photos/` — Wikimedia Commons 실사의 웹용 16:10 WebP 사본(1280×800). **v0.11.1부터 4장(`bund`, `mms-shanghai`, `shanghai-first-food-store`, `hugongguan`)은 repo에 포함되어 바로 표시됩니다**(`GUIDE_IMAGE_MANIFEST`의 `file` 필드). 나머지 27장은 기존처럼 Commons 공식 썸네일 CDN(thumb.wikimedia.org)에서 불러오며, 필요하면 `python3 tools/fetch_guide_photos.py`로 사본을 만들고 `GUIDE_LOCAL_PHOTOS`를 `true`로 바꿀 수 있습니다.
 - `illustrations/` — ILLUSTRATION_NEEDED 장소용 AI 일러스트(16:10). 제작 목록은 [ILLUSTRATION_BRIEF.md](ILLUSTRATION_BRIEF.md)에 있습니다.
 - 전체 장소별 점검 결과는 [IMAGE_AUDIT.md](IMAGE_AUDIT.md)에 있습니다.
 
 SNS(Instagram/Xiaohongshu)·블로그·Google 이미지 검색 결과·라이선스 미확인 사진은 넣지 않습니다. Google 이미지 검색은 카드의 **PHOTOS ↗** 링크로만 연결합니다.
 
-## 실사 출처 · 라이선스 (2026-09-29 Commons API로 확인)
+## 실사 출처 · 라이선스 (2026-09-29 Commons API로 확인 · v0.11.1 4장은 2026-10-17 재확인)
+
+CC BY-SA 사진을 잘라 만든 사본은 원본과 같은 CC BY-SA 라이선스로 배포하며, 카드 크레딧에 `(cropped)`로 수정 사실을 표시합니다.
 
 CC BY / CC BY-SA 사진은 **저작자·라이선스 표기가 의무**입니다. 카드 우하단 크레딧(클릭 시 Commons 파일 페이지)으로 표기하고 있으니 지우지 마세요. CC BY-SA 사진을 잘라 쓴 derivative(photos/*.webp)도 같은 CC BY-SA 조건이 적용됩니다.
 
@@ -24,7 +26,7 @@ CC BY / CC BY-SA 사진은 **저작자·라이선스 표기가 의무**입니다
 | photos/columbia-circle.webp | gs-columbia-circle | [Columbia Country Club 06.jpg](https://commons.wikimedia.org/wiki/File:Columbia_Country_Club_06.jpg) | WQL | CC BY-SA 4.0 |
 | photos/andaz-itc.webp | gs-andaz-itc | [XuJiaHui-Complexe Shanghai ITC.jpg](https://commons.wikimedia.org/wiki/File:XuJiaHui-Complexe_Shanghai_ITC.jpg) | ShanghaiDream | CC0 |
 | photos/tian-an-1000-trees.webp | gs-tian-an-1000-trees | [1000 Trees 20251127.jpg](https://commons.wikimedia.org/wiki/File:1000_Trees_20251127.jpg) | Supanut Arunoprayote | CC BY 4.0 |
-| photos/bund.webp | gs-existing-bund | [Shanghai skyline from the bund.jpg](https://commons.wikimedia.org/wiki/File:Shanghai_skyline_from_the_bund.jpg) | — | CC0 |
+| photos/bund.webp | gs-existing-bund | [HSBC Building and Custom House, Shanghai at night 20260417.jpg](https://commons.wikimedia.org/wiki/File:HSBC_Building_and_Custom_House,_Shanghai_at_night_20260417.jpg) | DvTor8303 | [CC0](https://creativecommons.org/publicdomain/zero/1.0/) |
 | photos/nanjing-east-road.webp | gs-existing-nanjing-east-road | [2014.11.15.181406 Nanjing Road Pedestrian Zone Shanghai.jpg](https://commons.wikimedia.org/wiki/File:2014.11.15.181406_Nanjing_Road_Pedestrian_Zone_Shanghai.jpg) | Hermann Luyken | CC0 |
 | photos/peoples-square.webp | gs-existing-peoples-square | [People's Square Shanghai November 2017 001.jpg](https://commons.wikimedia.org/wiki/File:People's_Square_Shanghai_November_2017_001.jpg) | King of Hearts | CC BY-SA 4.0 |
 | photos/oriental-pearl.webp | gs-existing-oriental-pearl | [ShanghaiPearlTower.jpg](https://commons.wikimedia.org/wiki/File:ShanghaiPearlTower.jpg) | — | Public Domain |
@@ -42,3 +44,23 @@ CC BY / CC BY-SA 사진은 **저작자·라이선스 표기가 의무**입니다
 | photos/xujiahui-cathedral.webp | gs-existing-xujiahui-cathedral | [Xujiahui Cathedral, 2019-10-19 04.jpg](https://commons.wikimedia.org/wiki/File:Xujiahui_Cathedral,_2019-10-19_04.jpg) | Siyuwj | CC BY-SA 4.0 |
 | photos/zhujiajiao.webp | gs-existing-zhujiajiao | [Zhujiajiao ancient water town, Nr. Shanghai, China - 1.jpg](https://commons.wikimedia.org/wiki/File:Zhujiajiao_ancient_water_town,_Nr._Shanghai,_China_-_1.jpg) | Lloyd Tudor | CC BY-SA 4.0 |
 | photos/wuzhen.webp | gs-existing-wuzhen | [One of the waterways in Wuzhen Ancient Town.jpg](https://commons.wikimedia.org/wiki/File:One_of_the_waterways_in_Wuzhen_Ancient_Town.jpg) | Wanderingchina | CC BY 4.0 |
+
+## v0.11.1 — repo에 포함한 사진 4장 (2026-10-17)
+
+| 로컬 파일 | 카드 | 표시 | Commons 원본 | 저작자 | 촬영일 | 라이선스 | 수정 |
+|---|---|---|---|---|---|---|---|
+| photos/mms-shanghai.webp | M&M'S 上海 | 매장 정면 | [Shanghai M&M'S Facade.jpg](https://commons.wikimedia.org/wiki/File:Shanghai_M%26M%27S_Facade.jpg) (6138×4092) | Mepatm (본인 촬영) | 2018-09-16 | [CC BY-SA 4.0](https://creativecommons.org/licenses/by-sa/4.0/) | 16:10 크롭 + 1280×800 축소 · WebP. 사본도 CC BY-SA 4.0 |
+| photos/shanghai-first-food-store.webp | 上海第一食品商店 | 매장 외관 | [Shanghai First Foodhall 20250501.jpg](https://commons.wikimedia.org/wiki/File:Shanghai_First_Foodhall_20250501.jpg) (5184×3456) | Suicasmo (본인 촬영) | 2025-05-01 | [CC0](https://creativecommons.org/publicdomain/zero/1.0/) | 16:10 크롭 + 1280×800 축소 · WebP |
+| photos/hugongguan.webp | 沪公馆 | **건물 외관 · 外滩22号** | [Butterfield & Swire.jpg](https://commons.wikimedia.org/wiki/File:Butterfield_%26_Swire.jpg) (2107×1403) | Fayhoo (본인 촬영) | 2015-01 이전 (Commons 업로드일 2015-01-25) | [CC BY-SA 3.0](https://creativecommons.org/licenses/by-sa/3.0/) | 16:10 크롭 + 1280×800 축소 · WebP. 사본도 CC BY-SA 3.0 |
+| photos/bund.webp | 외탄 (카드 + 지역 선택 타일) | 장소 | [HSBC Building and Custom House, Shanghai at night 20260417.jpg](https://commons.wikimedia.org/wiki/File:HSBC_Building_and_Custom_House,_Shanghai_at_night_20260417.jpg) (3767×2799) | DvTor8303 (본인 촬영) | 2026-04-17 | [CC0](https://creativecommons.org/publicdomain/zero/1.0/) | 16:10 크롭 + 1280×800 축소 · WebP |
+
+장소 일치 근거
+- M&M'S: Commons 분류 "M&M's World" · "East Nanjing Road". 2026-04-17 世茂广场 사진(DvTor8303, CC0)에서도 같은 정면 디자인 확인.
+- 上海第一食品商店: Commons 분류 "Shanghai First Foodhall", 사진에 매장 세로 간판. 건물 전체가 이 매장.
+- 沪公馆: 원본 설명 "太古洋行旧址 中山东二路22号" = 카드 주소(中山东二路22号 2楼). 사진 안 도로 표지판 "新永安路"(건물 모퉁이 도로).
+- 외탄: 해관 시계탑 · HSBC 빌딩, 촬영 GPS 31.241161, 121.486050(외탄 앞 황푸강).
+
+교체된 사진: 기존 외탄 사진 `Shanghai skyline from the bund.jpg`는 Commons의 출처·저작자 칸이 모두 pxfuel.com 주소뿐이어서 실제 촬영자와 라이선스를 확인할 수 없어 v0.11.1에서 교체했습니다.
+
+검토했지만 적용하지 않은 후보: MINISO LAND(Flickr CC BY-NC 2.0 — 비상업 조건 판단을 보수적으로 보류), 李百蟹(沪公馆과 같은 외탄 22호 건물 → 반복 방지), monogram(世茂广场 사진에 M&M'S 정면이 크게 보여 오해 소지 · 같은 건물 반복), 点都德(사무동 외관만 보여 B1 식당을 설명하지 못함).
+

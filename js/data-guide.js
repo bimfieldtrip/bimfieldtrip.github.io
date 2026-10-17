@@ -464,7 +464,7 @@ const GUIDE_SPOTS = [
   // 아래 19곳은 기존에 이미 저장되어 있던 장소이며, 검증되지 않은 candidate/TBD
   // 표현만 제거했습니다. area는 지명 자체가 속한 지역을 근거로 한 스케매틱
   // 지도용 근사 분류이며, 정확한 주소/영업시간은 표시하지 않습니다.
-  { id: "gs-existing-bund", tab: "see", category: "SEE", area: "NANJING EAST · BUND", name: "The Bund", name_zh: "外滩", address: "", hours: "", note: "상하이를 대표하는 강변 산책로 · 야경 명소.", image: "https://thumb.wikimedia.org/wikipedia/commons/thumb/6/64/Shanghai_skyline_from_the_bund.jpg/1280px-Shanghai_skyline_from_the_bund.jpg", image_alt: "Pudong skyline seen from the Bund, Shanghai", image_source_url: "https://commons.wikimedia.org/wiki/File:Shanghai_skyline_from_the_bund.jpg", image_credit: "", image_license: "CC0", image_search_query: "外滩 The Bund Shanghai"},
+  { id: "gs-existing-bund", tab: "see", category: "SEE", area: "NANJING EAST · BUND", name: "The Bund", name_zh: "外滩", address: "", hours: "", note: "상하이를 대표하는 강변 산책로 · 야경 명소.", image: "assets/guide/photos/bund.webp", image_alt: "The Bund at night — Customs House clock tower and HSBC Building lit up along the Huangpu River", image_source_url: "https://commons.wikimedia.org/wiki/File:HSBC_Building_and_Custom_House,_Shanghai_at_night_20260417.jpg", image_credit: "Photo: DvTor8303", image_license: "CC0", image_search_query: "外滩 The Bund Shanghai"},
   { id: "gs-existing-nanjing-east-road", tab: "see", category: "SEE", area: "NANJING EAST · BUND", name: "Nanjing East Road", name_zh: "南京东路", address: "", hours: "", note: "와이탄과 이어지는 대표 쇼핑가.", image_search_query: "南京东路步行街 上海"},
   { id: "gs-existing-peoples-square", tab: "see", category: "SEE", area: "OTHER", name: "People's Square", name_zh: "人民广场", address: "", hours: "", note: "상하이 도심 중앙 광장 · 지하철 환승 거점.", image_search_query: "人民广场 People's Square Shanghai"},
   { id: "gs-existing-oriental-pearl", tab: "see", category: "SEE", area: "LUJIAZUI", name: "Oriental Pearl Tower", name_zh: "东方明珠", address: "", hours: "", note: "푸동 스카이라인의 상징적인 전망 타워.", image: "https://upload.wikimedia.org/wikipedia/commons/thumb/e/e9/ShanghaiPearlTower.jpg/960px-ShanghaiPearlTower.jpg", image_alt: "Oriental Pearl Tower, Shanghai", image_source_url: "https://commons.wikimedia.org/wiki/File:ShanghaiPearlTower.jpg", image_credit: "", image_license: "Public Domain", image_search_query: "东方明珠 Oriental Pearl Tower Shanghai"},
@@ -624,12 +624,15 @@ const GUIDE_LOCAL_PHOTOS = false;
 
 // ===== GUIDE_IMAGE_MANIFEST — spot별 대표 이미지 (v0.8 audit 결과) =====
 // kind: "photo"        → 재사용 라이선스를 Commons API로 직접 확인한 실사 (저작자·라이선스 기록)
+//                        file: 있으면 repo 안 웹용 사본(16:10, 1280x800 WebP)을 표시 (v0.11.1: 4장). license_url · date · modified 로
+//                        라이선스 링크 · 촬영일 · 수정(크롭) 내용을 기록. CC BY-SA 사진은 credit 에 "(cropped)" 를 붙여 카드에도 수정 사실을 표시.
+//                        context: 카드 좌상단 라벨 (예: "건물 외관 · 外滩22号" = 매장 자체가 아니라 입점 건물 사진)
 //       "illustration" → ILLUSTRATION_NEEDED. 사용 가능한 실사가 없어 AI 일러스트로 교체할 대상.
 //                        file 경로에 이미지를 넣고 ready: true 로 바꾸면 카드에 자동 반영됩니다.
 //                        그 전까지는 기존 inline SVG placeholder를 그대로 유지합니다(교체 대상 표시).
 // 브리프(장소 특징·비율·파일명)는 assets/guide/ILLUSTRATION_BRIEF.md 참고.
 const GUIDE_IMAGE_MANIFEST = {
-  // ---------- REAL PHOTO (Wikimedia Commons, 라이선스 확인 2026-09-29) ----------
+  // ---------- REAL PHOTO (Wikimedia Commons, 라이선스 확인 2026-09-29 · v0.11.1 4장 2026-10-17 재확인) ----------
   "gs-the-louis": { kind: "photo", commons: "The Louis, Louis Vuitton Flagship Store 20251128.jpg", thumb: "https://thumb.wikimedia.org/wikipedia/commons/thumb/9/92/The_Louis%2C_Louis_Vuitton_Flagship_Store_20251128.jpg/1280px-The_Louis%2C_Louis_Vuitton_Flagship_Store_20251128.jpg", credit: "Supanut Arunoprayote", license: "CC BY 4.0", alt: "The Louis, Louis Vuitton flagship ship-shaped building, Shanghai" },
   "gs-starbucks-reserve-roastery": { kind: "photo", commons: "Starbucks Reserve Roastery Shanghai 02.jpg", thumb: "https://thumb.wikimedia.org/wikipedia/commons/thumb/4/43/Starbucks_Reserve_Roastery_Shanghai_02.jpg/1280px-Starbucks_Reserve_Roastery_Shanghai_02.jpg", credit: "Codas", license: "CC BY-SA 4.0", alt: "Interior of Starbucks Reserve Roastery Shanghai with the copper roasting cask" },
   "gs-the-stage": { kind: "photo", commons: "White Magnolia Plaza, view from Shangqiu road.jpg", thumb: "https://thumb.wikimedia.org/wikipedia/commons/thumb/0/0f/White_Magnolia_Plaza%2C_view_from_Shangqiu_road.jpg/960px-White_Magnolia_Plaza%2C_view_from_Shangqiu_road.jpg", credit: "DmitryKvasov", license: "CC0", alt: "White Magnolia Plaza tower, North Bund — the building that houses The Stage observation deck", context: "WHITE MAGNOLIA PLAZA · EXTERIOR", focus: "50% 0%" },
@@ -640,7 +643,7 @@ const GUIDE_IMAGE_MANIFEST = {
   "gs-columbia-circle": { kind: "photo", commons: "Columbia Country Club 06.jpg", thumb: "https://thumb.wikimedia.org/wikipedia/commons/thumb/0/08/Columbia_Country_Club_06.jpg/1280px-Columbia_Country_Club_06.jpg", credit: "WQL", license: "CC BY-SA 4.0", alt: "The turquoise outdoor pool of the former Columbia Country Club at Columbia Circle" },
   "gs-andaz-itc": { kind: "photo", commons: "XuJiaHui-Complexe Shanghai ITC.jpg", thumb: "https://thumb.wikimedia.org/wikipedia/commons/thumb/e/eb/XuJiaHui-Complexe_Shanghai_ITC.jpg/960px-XuJiaHui-Complexe_Shanghai_ITC.jpg", credit: "ShanghaiDream", license: "CC0", alt: "Shanghai ITC tower complex in Xujiahui, home of Andaz Shanghai ITC", context: "SHANGHAI ITC · EXTERIOR", focus: "50% 0%" },
   "gs-tian-an-1000-trees": { kind: "photo", commons: "1000 Trees 20251127.jpg", thumb: "https://thumb.wikimedia.org/wikipedia/commons/thumb/0/06/1000_Trees_20251127.jpg/1280px-1000_Trees_20251127.jpg", credit: "Supanut Arunoprayote", license: "CC BY 4.0", alt: "Tian An 1000 Trees, Shanghai", focus: "50% 40%" },
-  "gs-existing-bund": { kind: "photo", commons: "Shanghai skyline from the bund.jpg", thumb: "https://thumb.wikimedia.org/wikipedia/commons/thumb/6/64/Shanghai_skyline_from_the_bund.jpg/1280px-Shanghai_skyline_from_the_bund.jpg", credit: "", license: "CC0", alt: "Pudong skyline seen from the Bund, Shanghai" },
+  "gs-existing-bund": { kind: "photo", file: "assets/guide/photos/bund.webp", commons: "HSBC Building and Custom House, Shanghai at night 20260417.jpg", thumb: "https://thumb.wikimedia.org/wikipedia/commons/thumb/f/f0/HSBC_Building_and_Custom_House%2C_Shanghai_at_night_20260417.jpg/1280px-HSBC_Building_and_Custom_House%2C_Shanghai_at_night_20260417.jpg", credit: "DvTor8303", license: "CC0", license_url: "https://creativecommons.org/publicdomain/zero/1.0/", date: "2026-04-17", modified: "16:10 crop + resize 1280x800 (WebP)", alt: "The Bund at night — Customs House clock tower and HSBC Building lit up along the Huangpu River" }, // v0.11.1: 출처 불명(pxfuel) 사진 교체
   "gs-existing-nanjing-east-road": { kind: "photo", commons: "2014.11.15.181406 Nanjing Road Pedestrian Zone Shanghai.jpg", thumb: "https://thumb.wikimedia.org/wikipedia/commons/thumb/9/94/2014.11.15.181406_Nanjing_Road_Pedestrian_Zone_Shanghai.jpg/1280px-2014.11.15.181406_Nanjing_Road_Pedestrian_Zone_Shanghai.jpg", credit: "Hermann Luyken", license: "CC0", alt: "Nanjing Road pedestrian street at night with neon signs" },
   "gs-existing-peoples-square": { kind: "photo", commons: "People's Square Shanghai November 2017 001.jpg", thumb: "https://thumb.wikimedia.org/wikipedia/commons/thumb/1/1a/People%27s_Square_Shanghai_November_2017_001.jpg/1280px-People%27s_Square_Shanghai_November_2017_001.jpg", credit: "King of Hearts", license: "CC BY-SA 4.0", alt: "People's Square, Shanghai" },
   "gs-existing-oriental-pearl": { kind: "photo", commons: "ShanghaiPearlTower.jpg", thumb: "https://thumb.wikimedia.org/wikipedia/commons/thumb/e/e9/ShanghaiPearlTower.jpg/960px-ShanghaiPearlTower.jpg", credit: "", license: "Public Domain", alt: "Oriental Pearl Tower, Shanghai", focus: "50% 30%" },
@@ -681,11 +684,11 @@ const GUIDE_IMAGE_MANIFEST = {
   "gs-popmart": { kind: "illustration", file: "assets/guide/illustrations/popmart.webp", ready: false },
   "gs-miniso-land": { kind: "illustration", file: "assets/guide/illustrations/miniso-land.webp", ready: false },
   "gs-toptoy": { kind: "illustration", file: "assets/guide/illustrations/toptoy.webp", ready: false },
-  "gs-shanghai-first-food-store": { kind: "illustration", file: "assets/guide/illustrations/shanghai-first-food-store.webp", ready: false },
-  "gs-mms-shanghai": { kind: "illustration", file: "assets/guide/illustrations/mms-shanghai.webp", ready: false },
+  "gs-shanghai-first-food-store": { kind: "photo", file: "assets/guide/photos/shanghai-first-food-store.webp", commons: "Shanghai First Foodhall 20250501.jpg", thumb: "https://thumb.wikimedia.org/wikipedia/commons/thumb/9/98/Shanghai_First_Foodhall_20250501.jpg/1280px-Shanghai_First_Foodhall_20250501.jpg", credit: "Suicasmo", license: "CC0", license_url: "https://creativecommons.org/publicdomain/zero/1.0/", date: "2025-05-01", modified: "16:10 crop + resize 1280x800 (WebP)", alt: "Shanghai First Foodhall (上海第一食品商店) store building on East Nanjing Road" }, // v0.11.1 신규 실사 · 매장 외관
+  "gs-mms-shanghai": { kind: "photo", file: "assets/guide/photos/mms-shanghai.webp", commons: "Shanghai M&M'S Facade.jpg", thumb: "https://thumb.wikimedia.org/wikipedia/commons/thumb/1/11/Shanghai_M%26M%27S_Facade.jpg/1280px-Shanghai_M%26M%27S_Facade.jpg", credit: "Mepatm (cropped)", license: "CC BY-SA 4.0", license_url: "https://creativecommons.org/licenses/by-sa/4.0/", date: "2018-09-16", modified: "16:10 crop + resize 1280x800 (WebP) — CC BY-SA 4.0으로 재배포", alt: "M&M'S store front on East Nanjing Road, Shanghai" }, // v0.11.1 신규 실사 · 매장 정면
   "gs-monogram": { kind: "illustration", file: "assets/guide/illustrations/monogram.webp", ready: false },
   "gs-libaixie": { kind: "illustration", file: "assets/guide/illustrations/libaixie.webp", ready: false },
-  "gs-hugongguan": { kind: "illustration", file: "assets/guide/illustrations/hugongguan.webp", ready: false },
+  "gs-hugongguan": { kind: "photo", file: "assets/guide/photos/hugongguan.webp", commons: "Butterfield & Swire.jpg", thumb: "https://upload.wikimedia.org/wikipedia/commons/0/00/Butterfield_%26_Swire.jpg", credit: "Fayhoo (cropped)", license: "CC BY-SA 3.0", license_url: "https://creativecommons.org/licenses/by-sa/3.0/", date: "2015-01 (Commons 업로드일)", modified: "16:10 crop + resize 1280x800 (WebP) — CC BY-SA 3.0으로 재배포", context: "건물 외관 · 外滩22号", alt: "No. 22 The Bund (former Butterfield & Swire building) — the building that houses Hu Gong Guan (2F)" }, // v0.11.1 신규 실사 · 입점 건물 외관
   "gs-diandude": { kind: "illustration", file: "assets/guide/illustrations/diandude.webp", ready: false },
   "gs-feidachu": { kind: "illustration", file: "assets/guide/illustrations/feidachu.webp", ready: false },
   "gs-existing-panlong-tiandi": { kind: "illustration", file: "assets/guide/illustrations/panlong-tiandi.webp", ready: false },
@@ -699,8 +702,9 @@ GUIDE_SPOTS.forEach((s) => {
   if (!m) return;
   if (m.kind === "photo") {
     const slug = s.id.replace(/^gs-(existing-)?/, "");
-    s.image = m.thumb;
-    s.image_local = "assets/guide/photos/" + slug + ".webp";
+    // v0.11.1: file 이 있으면 repo 안 사본(assets/guide/photos)을 바로 사용 — 나머지 사진은 기존처럼 Commons 썸네일
+    s.image = m.file || m.thumb;
+    s.image_local = m.file || "assets/guide/photos/" + slug + ".webp";
     s.image_alt = m.alt || s.image_alt || s.name;
     s.image_source_url = "https://commons.wikimedia.org/wiki/File:" + encodeURIComponent(m.commons.replace(/ /g, "_")).replace(/%2C/g, ",").replace(/%28/g, "(").replace(/%29/g, ")");
     s.image_credit = m.credit ? "Photo: " + m.credit : "";
