@@ -721,6 +721,126 @@ GUIDE_SPOTS.forEach((s) => {
   }
 });
 
+// ===== GUIDE_DISPLAY_NAMES — 카드 화면 표시용 장소명 (v0.11.4) =====
+// [1줄 대표 제목, 2줄 중국어명]. 2줄이 null 이면 기존 name_zh 를 그대로 쓰고, "" 이면 2줄을 표시하지 않습니다.
+// 1줄과 2줄이 같으면 화면에서 자동으로 2줄을 생략합니다.
+// ⚠️ 화면 표시 전용입니다. 기존 name · name_zh · aliases · address 는 바꾸지 않습니다 —
+//    高德地图 검색어 · COPY NAME/ADDRESS · Google 이미지 검색어 · 지도 핀 라벨 · 검색은 계속 기존 필드를 씁니다.
+const GUIDE_DISPLAY_NAMES = {
+  "gs-the-louis": ["The Louis", null],
+  "gs-starbucks-reserve-roastery": ["스타벅스 리저브 로스터리", "星巴克臻选上海烘焙工坊"],
+  "gs-henjiuyiqian-yangroushuan": ["很久以前羊肉串", null],
+  "gs-the-stage": ["The Stage", null],
+  "gs-manner-coffee-guoke": ["Manner Coffee", null],
+  "gs-north-bund": ["북와이탄", null],
+  "gs-13demarzo-cafe-anfu": ["13DE MARZO CAFÉ", null],
+  "gs-harmay-wukang": ["HARMAY", null],
+  "gs-photowith": ["PHOTOWITH", null],
+  "gs-to-summer": ["To Summer", null],
+  "gs-tagi": ["TAGI.", null],
+  "gs-gathering": ["GATHERING", "集雅"],
+  "gs-pane-yongyuan": ["PANE", null],
+  "gs-mondaysleepingclub": ["MondaySleepingClub", null],
+  "gs-wukang-mansion": ["우캉맨션", null],
+  "gs-wukang-road": ["우캉루", null],
+  "gs-anfu-road": ["안푸루", null],
+  "gs-columbia-circle": ["Columbia Circle", null],
+  "gs-tonton": ["TonTon", ""],
+  "gs-sanlifang-dirty": ["三立方", ""],
+  "gs-renhe-guan": ["人和馆", null],
+  "gs-andaz-itc": ["Andaz Shanghai ITC", null],
+  "gs-rooftop-bar-andaz": ["The Rooftop Bar", ""],
+  "gs-dongge-andaz": ["东阁", ""],
+  "gs-tian-an-1000-trees": ["천수", null],
+  "gs-charlietown": ["CHARLIETOWN", null],
+  "gs-qingzhi-handcream": ["青稚护手霜", null],
+  "gs-popmart": ["POP MART", null],
+  "gs-miniso-land": ["MINISO LAND", null],
+  "gs-toptoy": ["TOP TOY", null],
+  "gs-shanghai-first-food-store": ["上海第一食品商店", ""],
+  "gs-mms-shanghai": ["M&M'S Shanghai", ""],
+  "gs-monogram": ["monogram", null],
+  "gs-libaixie": ["李百蟹", null],
+  "gs-hugongguan": ["沪公馆", null],
+  "gs-diandude": ["점도덕", null],
+  "gs-feidachu": ["费大厨辣椒炒肉", null],
+  "gs-existing-bund": ["와이탄", null],
+  "gs-existing-nanjing-east-road": ["난징동루", null],
+  "gs-existing-peoples-square": ["인민광장", null],
+  "gs-existing-oriental-pearl": ["동방명주", null],
+  "gs-existing-lujiazui": ["루자쭈이", null],
+  "gs-existing-shanghai-tower": ["상하이타워", null],
+  "gs-existing-xintiandi": ["신천지", null],
+  "gs-existing-tianzifang": ["티엔즈팡", null],
+  "gs-existing-yuyuan": ["예원", null],
+  "gs-existing-jingan-temple": ["정안사", null],
+  "gs-existing-korean-provisional-govt": ["대한민국 임시정부 청사", null],
+  "gs-existing-longhua": ["용화사와 용화탑", null],
+  "gs-existing-m50": ["M50", ""],
+  "gs-existing-pudong-art-museum": ["푸동미술관", null],
+  "gs-existing-xujiahui-library": ["쉬자후이 서원", "徐家汇书院"],
+  "gs-existing-xujiahui-cathedral": ["쉬자후이 성당", null],
+  "gs-existing-zhujiajiao": ["주자자오", "朱家角"],
+  "gs-existing-wuzhen": ["우전", null],
+  "gs-existing-panlong-tiandi": ["Panlong Tiandi", null],
+};
+// 표기 통일로 화면에서 빠진 대체 표기를 검색 별칭으로 보존합니다(기존 aliases 뒤에 덧붙임, 중복 제외).
+const GUIDE_EXTRA_ALIASES = {
+  "gs-existing-zhujiajiao": [
+    "주가각",
+    "주자자오"
+  ],
+  "gs-gathering": [
+    "GATHERING"
+  ],
+  "gs-existing-xujiahui-library": [
+    "쉬자후이 서원",
+    "쉬자후이 도서관"
+  ],
+  "gs-wukang-mansion": [
+    "우캉대루"
+  ],
+  "gs-existing-tianzifang": [
+    "톈쯔팡"
+  ],
+  "gs-existing-jingan-temple": [
+    "징안쓰"
+  ],
+  "gs-existing-longhua": [
+    "룽화사",
+    "룽화탑",
+    "용화사",
+    "용화탑"
+  ],
+  "gs-rooftop-bar-andaz": [
+    "루프탑",
+    "루프탑 바"
+  ],
+  "gs-sanlifang-dirty": [
+    "Mahlkönig Dirty",
+    "더티커피",
+    "Dirty 커피"
+  ],
+  "gs-starbucks-reserve-roastery": [
+    "스타벅스 리저브 로스터리",
+    "星巴克臻选上海烘焙工坊"
+  ],
+  "gs-mms-shanghai": [
+    "M&M'S Shanghai",
+    "엠앤엠즈"
+  ]
+};
+GUIDE_SPOTS.forEach((s) => {
+  const d = GUIDE_DISPLAY_NAMES[s.id];
+  if (d) { s.title = d[0]; s.title_zh = d[1] === null ? (s.name_zh || "") : d[1]; }
+  const extra = GUIDE_EXTRA_ALIASES[s.id];
+  if (extra) {
+    const base = Array.isArray(s.aliases) ? s.aliases.slice() : (s.aliases ? [s.aliases] : []);
+    extra.forEach((a) => { if (!base.includes(a)) base.push(a); });
+    s.aliases = base;
+  }
+});
+
 // ===== GUIDE_REGIONS — 지역 중심 탐색 (v0.8) =====
 // areas: 기존 AREA_CLUSTERS id를 그대로 묶습니다(spot.area 값은 바꾸지 않음).
 // include: area가 "OTHER"였던 spot을 실제 위치에 맞는 지역으로 편입.

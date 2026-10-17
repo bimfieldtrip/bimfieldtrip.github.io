@@ -1,8 +1,17 @@
-# Shanghai Field Trip Hub — v0.11.3 · Shanghai Guide 이미지 56곳 완료
+# Shanghai Field Trip Hub — v0.11.4 · Shanghai Guide 장소명 2줄 표기 통일
 
 KAIST BIM Shanghai Field Trip(2026.12.27~12.31)을 위한 **공개 여행 안내 허브**입니다.
 "상하이에서 무엇을 하고, 무엇을 준비하고, 어디를 볼 수 있는가"에만 집중하며, 실제 참가자 운영
 (체크인·버스 탑승·룸 배정·택시팀·정산 등)은 별도의 Private Participant Portal에서 처리합니다.
+
+## 🏷 v0.11.4 — Shanghai Guide 장소명 2줄 표기 통일 (Guide만 수정)
+
+- **카드 제목을 2줄로 통일:** 1줄 = 대표 장소명(한국어 통용명 → 널리 쓰이는 공식 영문 브랜드 → 불확실하면 원명), 2줄 = 중국어 원명(지점 포함).
+  두 줄이 같으면 2줄은 표시하지 않습니다. 예: 와이탄 / 外滩 · POP MART / 泡泡玛特全球旗舰店 · 점도덕 / 点都德（中海环宇荟店）.
+- **화면 표시 전용 필드:** `js/data-guide.js`의 `GUIDE_DISPLAY_NAMES`(id → [title, title_zh])가 실행 시 `title`·`title_zh`를 붙입니다.
+  기존 `name`·`name_zh`·`aliases`·`address`는 그대로이며, 高德地图 검색 · COPY NAME/ADDRESS · Google 이미지 검색 · 지도 핀 라벨은 계속 기존 필드를 씁니다.
+- **검색:** 새 대표 제목도 검색되고, 화면에서 빠진 대체 표기는 `GUIDE_EXTRA_ALIASES`로 보존했습니다(주가각 · 우캉대루 · 톈쯔팡 · 징안쓰 · 룽화사/룽화탑 · 쉬자후이 도서관 · 루프탑 · Mahlkönig Dirty 등).
+- 장소 ID · 딥링크 · 이미지 56장 · AI 이미지 라벨 · 지역/필터/지도 핀 · 기념품 연결은 바뀌지 않았습니다. 기념품 "구매처" 링크만 같은 대표 제목으로 표시됩니다.
 
 ## 🖼 v0.11.3 — Shanghai Guide 이미지 56곳 완료 (Guide만 수정)
 

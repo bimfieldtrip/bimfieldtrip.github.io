@@ -89,7 +89,7 @@
   </section>
 </main>
 
-<footer class="site-footer">SHANGHAI FIELD TRIP HUB · v0.8.0 · SHANGHAI GUIDE · REGION-FIRST</footer>
+<footer class="site-footer">SHANGHAI FIELD TRIP HUB · v0.11.4 · SHANGHAI GUIDE · REGION-FIRST</footer>
 <nav class="bottom-nav" data-bottom-nav aria-label="주요 메뉴 (모바일)"></nav>
 
 <script src="js/config.js"></script>
@@ -116,7 +116,7 @@
   function spotSearchText(spot) {
     const r = regionOf(spot);
     return [
-      spot.name, spot.name_ko, spot.name_zh, spot.note, spot.tip,
+      spot.name, spot.name_ko, spot.name_zh, spot.title, spot.title_zh, spot.note, spot.tip,
       r ? r.name_ko + " " + r.name_en : "",
       Array.isArray(spot.aliases) ? spot.aliases.join(" ") : spot.aliases,
       Array.isArray(spot.signature) ? spot.signature.join(" ") : spot.signature,
@@ -517,6 +517,18 @@
     return rows.join("");
   }
 
+  // ---------- 장소명 2줄 표시 (v0.11.4) ----------
+  // 1줄: 대표 제목(title) · 2줄: 중국어 원명(title_zh). 화면 표시 전용 — name/name_zh는 검색·지도·복사에 그대로 사용.
+  // title이 없으면 예전처럼 name / name_zh를 씁니다. 두 줄이 같으면(공백 무시) 2줄은 생략합니다.
+  function guideDisplayTitle(spot) { return spot.title || spot.name; }
+  function guideTitleHtml(spot) {
+    const t = guideDisplayTitle(spot);
+    const zh = spot.title !== undefined ? (spot.title_zh || "") : (spot.name_zh || "");
+    const same = (a, b) => String(a).replace(/\s+/g, "") === String(b).replace(/\s+/g, "");
+    return `<div class="guide-card__name">${t}</div>` +
+      (zh && !same(zh, t) ? `<div class="guide-card__name-zh" lang="zh-CN">${zh}</div>` : "");
+  }
+
   // ---------- 공용 Guide 카드 템플릿 ----------
   // [대표 이미지] → 카테고리 · 지역 → 장소명 / 중국어명 → 설명 → 중국어 주소 → 高德地图 · NAME · ADDRESS · PHOTOS ↗ → MORE
   function guideCardHtml(spot, num) {
@@ -537,8 +549,7 @@
             <div class="guide-card__category">${num ? `<span class="guide-card__num guide-card__num--${cat}">${num}</span>` : ""}${spot.category}</div>
             <div class="guide-card__area">${region ? region.name_en : spot.area}</div>
           </div>
-          <div class="guide-card__name">${spot.name}</div>
-          ${spot.name_zh && spot.name_zh !== spot.name ? `<div class="guide-card__name-zh">${spot.name_zh}</div>` : ""}
+          ${guideTitleHtml(spot)}
           ${spot.note ? `<div class="guide-card__note">${spot.note}</div>` : ""}
           ${spot.address ? `<div class="guide-card__addr">${icon("pin")} ${spot.address}</div>` : ""}
           <div class="guide-card__actions">
@@ -739,7 +750,7 @@
   function souvenirCardHtml(item) {
     const shops = (item.shop_ids || []).map((id) => spotById(id)).filter(Boolean);
     const shopHtml = shops.length
-      ? "구매처: " + shops.map((s) => `<a href="#spot=${escapeAttr(s.id)}">${s.name}</a>`).join(", ")
+      ? "구매처: " + shops.map((s) => `<a href="#spot=${escapeAttr(s.id)}">${guideDisplayTitle(s)}</a>`).join(", ")
       : "구매처: 상하이 현지 매장 (지점은 방문 당일 확인)";
     return `
       <article class="guide-card guide-card--text">
