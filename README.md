@@ -1,8 +1,17 @@
-# Shanghai Field Trip Hub — v0.11.2 · Shanghai Guide AI 이미지 10곳
+# Shanghai Field Trip Hub — v0.11.3 · Shanghai Guide 이미지 56곳 완료
 
 KAIST BIM Shanghai Field Trip(2026.12.27~12.31)을 위한 **공개 여행 안내 허브**입니다.
 "상하이에서 무엇을 하고, 무엇을 준비하고, 어디를 볼 수 있는가"에만 집중하며, 실제 참가자 운영
 (체크인·버스 탑승·룸 배정·택시팀·정산 등)은 별도의 Private Participant Portal에서 처리합니다.
+
+## 🖼 v0.11.3 — Shanghai Guide 이미지 56곳 완료 (Guide만 수정)
+
+**실사 31장 + AI 콘셉트 이미지 25장 = 56곳 전체.** SVG placeholder를 쓰는 카드는 이제 없습니다(이미지 로드 실패 시에만 자동으로 placeholder로 돌아감).
+
+- **추가 15곳:** 很久以前羊肉串 · CHARLIETOWN · 东阁 · 集雅 GATHERING · MINISO LAND · MondaySleepingClub · monogram · PANE · PHOTOWITH · 青稚护手霜 · 人和馆 · The Rooftop Bar · 三立方 · TAGI. · TOP TOY
+  (`assets/guide/illustrations/*.webp`, `js/data-guide.js`의 `ready: true, ai: true`).
+- 장소별 **단독 생성본**만 사용했습니다(콜라주를 자르거나 확대한 이미지 아님). 업종·상품·입점 형태(몰 내부 등)를 반영했고, 간판·로고·브랜드 글자·실제 캐릭터는 넣지 않았습니다.
+- 모든 AI 카드에 `AI 이미지 · 실제 사진 아님` 배지가 붙습니다. 실사 31장과 v0.11.2의 AI 10장은 바꾸지 않았습니다.
 
 ## 🖼 v0.11.2 — Shanghai Guide AI 콘셉트 이미지 10곳 (Guide만 수정)
 
