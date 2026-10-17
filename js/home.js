@@ -53,7 +53,6 @@ function heroForPhase(phase) {
     ], `
       <div class="hero__route">SEOUL (ICN) &rarr; SHANGHAI (PVG)</div>
       <div class="dday"><span class="dday__num">D&minus;${dday > 0 ? dday : 0}</span><span class="dday__label">Until Departure</span></div>
-      <div class="status-strip status-strip--prep"><span class="status-strip__dot"></span>PREP MODE</div>
     `);
   }
   if (phase.type === "day") {

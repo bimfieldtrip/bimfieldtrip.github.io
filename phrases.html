@@ -1,0 +1,299 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=5" />
+<title>중국어 회화 · KAIST BIM Shanghai Field Trip Hub</title>
+<meta name="description" content="상하이 여행 중 바로 쓰는 중국어 회화 — 듣기 · 복사 · 크게 보기" />
+<meta name="theme-color" content="#ffffff" />
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns=%27http://www.w3.org/2000/svg%27 viewBox=%270 0 100 100%27%3E%3Ccircle cx=%2750%27 cy=%2750%27 r=%2746%27 fill=%27%23ffffff%27 stroke=%27%231a2c5c%27 stroke-width=%274%27/%3E%3Ccircle cx=%2750%27 cy=%2730%27 r=%277%27 fill=%27%231a2c5c%27/%3E%3Ccircle cx=%2728%27 cy=%2770%27 r=%277%27 fill=%27%234863b5%27/%3E%3Ccircle cx=%2772%27 cy=%2770%27 r=%277%27 fill=%27%234863b5%27/%3E%3C/svg%3E" />
+<link rel="stylesheet" href="css/style.css" />
+</head>
+<body data-page="phrases">
+<a class="skip-link" href="#main">본문 바로가기</a>
+
+<div class="demo-strip"><span class="demo-strip__dot"></span><strong>PHRASEBOOK</strong>&nbsp;— 여행 중 바로 쓰는 중국어</div>
+
+<header class="site-header">
+  <div class="site-header__bar">
+    <a class="brand" href="index.html">
+      <span class="brand__mark" data-brand-mark></span>
+      <span class="brand__text">KAIST BIM</span>
+      <span class="brand__sub">Shanghai Field Trip Hub</span>
+    </a>
+    <button class="nav-toggle" data-nav-toggle aria-label="메뉴 열기" aria-expanded="false"></button>
+  </div>
+  <nav class="site-nav" data-site-nav aria-label="주요 메뉴"><ul class="site-nav__list"></ul></nav>
+</header>
+
+<main id="main" class="container">
+  <div class="page-head">
+    <div class="kicker">IN THE FIELD</div>
+    <h1>중국어 회화</h1>
+    <p class="page-head__desc">상황을 고르고 문장을 들려주거나 화면을 보여주세요. 한글 발음은 참고용이니 실제 발음은 듣기 버튼으로 확인하세요.</p>
+  </div>
+
+  <div class="notice notice--tbd" id="speech-notice" hidden></div>
+
+  <div class="filter-bar phrase-cats" id="phrase-cats" role="tablist" aria-label="회화 카테고리"></div>
+
+  <section id="phrase-panel" aria-live="polite"></section>
+
+  <div class="card phrase-papago">
+    <div style="font-weight:800; margin-bottom:4px;">번역이 더 필요하면 파파고</div>
+    <p class="text-muted" style="margin-bottom:10px; font-size:.88rem;">위 문장의 <strong>복사</strong> 버튼으로 중국어를 복사한 뒤, 파파고에 붙여넣어 번역하거나 이어서 대화할 수 있어요.</p>
+    <a class="btn btn--sm" href="https://papago.naver.com/" target="_blank" rel="noopener">파파고 열기 ↗</a>
+  </div>
+</main>
+
+<footer class="site-footer">SHANGHAI FIELD TRIP HUB · v0.10.0 · 중국어 회화</footer>
+<nav class="bottom-nav" data-bottom-nav aria-label="주요 메뉴 (모바일)"></nav>
+
+<script src="js/config.js"></script>
+<script src="js/main.js"></script>
+<script src="js/data-phrases.js"></script>
+<script>
+  // 중국어 회화 (v0.10) — 서버 호출 없이 브라우저 기능만 사용합니다.
+  //  · 음성: Web Speech API(speechSynthesis), lang zh-CN 우선. 유료 API · 오디오 파일 없음.
+  //  · 복사: Clipboard API → execCommand fallback → 그래도 안 되면 문장을 선택 상태로 만들어 직접 복사 안내.
+  //  · 크게 보기: 기존 SHOW DRIVER 모달(openDriverModal, main.js)을 그대로 재사용.
+
+  function escHtml(str) {
+    return String(str).replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;");
+  }
+  function findPhrase(catId, idx) {
+    const cat = PHRASE_CATEGORIES.find((c) => c.id === catId);
+    return cat ? cat.phrases[idx] : null;
+  }
+
+  // ---------------- 음성 재생 ----------------
+  const speech = {
+    supported: typeof window !== "undefined" && "speechSynthesis" in window && typeof window.SpeechSynthesisUtterance !== "undefined",
+    voice: null,
+    token: 0,        // 마지막으로 요청한 재생 번호 — 이전 재생의 onend가 새 재생 상태를 지우지 않도록
+    activeBtn: null,
+  };
+
+  function normLang(l) { return String(l || "").replace(/_/g, "-").toLowerCase(); }
+  function pickZhVoice() {
+    if (!speech.supported) return null;
+    const voices = window.speechSynthesis.getVoices() || [];
+    // 1) 중국 본토(zh-CN) 2) 간체/보통화 표기 3) 대만 보통화(zh-TW) — 광둥어(zh-HK, yue)는 제외
+    return voices.find((v) => normLang(v.lang) === "zh-cn")
+      || voices.find((v) => /^(zh-hans|cmn)/.test(normLang(v.lang)))
+      || voices.find((v) => normLang(v.lang) === "zh-tw")
+      || null;
+  }
+  function refreshVoice() { speech.voice = pickZhVoice(); }
+
+  function setPlaying(btn, on) {
+    if (!btn) return;
+    btn.classList.toggle("is-playing", on);
+    btn.setAttribute("aria-pressed", on ? "true" : "false");
+    const label = btn.querySelector("[data-label]");
+    if (label) label.textContent = on ? "정지" : "듣기";
+  }
+
+  function stopSpeech() {
+    speech.token++;
+    if (speech.supported) window.speechSynthesis.cancel();
+    setPlaying(speech.activeBtn, false);
+    speech.activeBtn = null;
+  }
+
+  function speakZh(text, btn) {
+    if (!speech.supported) { showSpeechNotice("unsupported"); return; }
+    // 재생 중인 같은 버튼을 다시 누르면 정지(토글). 다른 문장이면 이전 음성을 끊고 새로 재생.
+    const sameBtn = speech.activeBtn === btn && btn.classList.contains("is-playing");
+    stopSpeech();
+    if (sameBtn) return;
+
+    const myToken = ++speech.token;
+    if (!speech.voice) refreshVoice();
+    const u = new SpeechSynthesisUtterance(text);
+    u.lang = "zh-CN";
+    if (speech.voice) u.voice = speech.voice;
+    u.rate = 0.85;   // 여행자용으로 약간 느리게
+    u.onend = u.onerror = () => {
+      if (myToken !== speech.token) return;
+      setPlaying(btn, false);
+      speech.activeBtn = null;
+    };
+    speech.activeBtn = btn;
+    setPlaying(btn, true);
+    try {
+      if (window.speechSynthesis.paused) window.speechSynthesis.resume();
+      window.speechSynthesis.speak(u);
+    } catch (e) {
+      setPlaying(btn, false);
+      speech.activeBtn = null;
+      showSpeechNotice("unsupported");
+    }
+  }
+
+  function showSpeechNotice(kind) {
+    const el = document.getElementById("speech-notice");
+    if (!el) return;
+    if (kind === "unsupported") {
+      el.innerHTML = "<strong>이 브라우저에서는 음성 재생을 지원하지 않습니다</strong> — 문장을 복사해 파파고에서 듣거나, 화면의 중국어를 직접 보여주세요.";
+    } else if (kind === "novoice") {
+      el.innerHTML = "<strong>이 기기에서 중국어 음성을 찾지 못했어요</strong> — 듣기를 눌러도 소리가 없거나 다른 언어로 읽히면, 기기 설정에서 중국어(중국 본토) 음성을 추가하거나 문장을 복사해 파파고에서 들어보세요.";
+    }
+    el.hidden = false;
+  }
+
+  // 음성 목록은 비동기로 늦게 채워지는 브라우저가 많아(voiceschanged), 잠시 기다린 뒤 판단합니다.
+  function initSpeech() {
+    if (!speech.supported) { showSpeechNotice("unsupported"); return; }
+    refreshVoice();
+    if (typeof window.speechSynthesis.addEventListener === "function") {
+      window.speechSynthesis.addEventListener("voiceschanged", refreshVoice);
+    } else {
+      window.speechSynthesis.onvoiceschanged = refreshVoice;
+    }
+    setTimeout(() => {
+      refreshVoice();
+      const voices = window.speechSynthesis.getVoices() || [];
+      // 목록 자체가 비어 있으면(일부 iOS 버전) 판단할 수 없으므로 안내하지 않고 lang=zh-CN으로 재생을 시도합니다.
+      if (voices.length > 0 && !speech.voice) showSpeechNotice("novoice");
+    }, 1500);
+    // 페이지를 떠나거나 백그라운드로 가면 재생을 멈춥니다.
+    window.addEventListener("pagehide", stopSpeech);
+    document.addEventListener("visibilitychange", () => { if (document.hidden) stopSpeech(); });
+  }
+
+  // ---------------- 복사 ----------------
+  function flashCopied(btn, text) {
+    const label = btn.querySelector("[data-label]");
+    btn.classList.add("is-copied");
+    if (label) label.textContent = text;
+    clearTimeout(btn._copyTimer);
+    btn._copyTimer = setTimeout(() => {
+      btn.classList.remove("is-copied");
+      if (label) label.textContent = "복사";
+    }, 1600);
+  }
+
+  function legacyCopy(text) {
+    const ta = document.createElement("textarea");
+    ta.value = text;
+    ta.setAttribute("readonly", "");          // iOS에서 키보드가 뜨지 않도록
+    ta.style.position = "fixed"; ta.style.top = "0"; ta.style.left = "0";
+    ta.style.opacity = "0"; ta.style.fontSize = "16px"; // iOS 자동 확대 방지
+    document.body.appendChild(ta);
+    ta.focus(); ta.select();
+    try { ta.setSelectionRange(0, text.length); } catch (e) { /* 일부 브라우저 미지원 */ }
+    let ok = false;
+    try { ok = document.execCommand("copy"); } catch (e) { ok = false; }
+    document.body.removeChild(ta);
+    return ok;
+  }
+
+  // 복사가 불가능한 환경: 중국어 문장을 선택 상태로 만들어 길게 눌러 직접 복사할 수 있게 합니다.
+  function selectForManualCopy(zhEl) {
+    if (!zhEl || !window.getSelection) return;
+    const range = document.createRange();
+    range.selectNodeContents(zhEl);
+    const sel = window.getSelection();
+    sel.removeAllRanges(); sel.addRange(range);
+  }
+
+  function copyZh(text, btn, zhEl) {
+    const fail = () => { selectForManualCopy(zhEl); flashCopied(btn, "길게 눌러 복사"); btn.classList.remove("is-copied"); };
+    const ok = () => flashCopied(btn, "복사됨");
+    if (navigator.clipboard && window.isSecureContext) {
+      navigator.clipboard.writeText(text).then(ok).catch(() => (legacyCopy(text) ? ok() : fail()));
+    } else {
+      legacyCopy(text) ? ok() : fail();
+    }
+  }
+
+  // ---------------- 화면 ----------------
+  const ICON_PLAY = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M4 9.5v5h3.5L12 18.5v-13L7.5 9.5H4z"/><path d="M15.5 9a4 4 0 0 1 0 6"/><path d="M18 6.5a7.5 7.5 0 0 1 0 11"/></svg>';
+  const ICON_EXPAND = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M4 9V4h5M20 9V4h-5M4 15v5h5M20 15v5h-5"/></svg>';
+
+  function phraseCardHtml(catId, p, i) {
+    return `
+      <article class="card phrase-card">
+        <div class="phrase-card__ko">${escHtml(p.ko)}</div>
+        <div class="phrase-card__zh" lang="zh-CN" data-zh>${escHtml(p.zh)}</div>
+        <div class="phrase-card__pron">
+          <span class="phrase-card__kr">${escHtml(p.kr)}</span>
+          <span class="phrase-card__py" lang="zh-Latn-pinyin">${escHtml(p.pinyin)}</span>
+        </div>
+        ${p.tip ? `<div class="phrase-card__tip">${escHtml(p.tip)}</div>` : ""}
+        <div class="phrase-card__actions">
+          <button class="copy-btn phrase-btn phrase-btn--play" type="button" data-speak="${catId}:${i}" aria-pressed="false"${speech.supported ? "" : " disabled"}>${ICON_PLAY}<span data-label>듣기</span></button>
+          <button class="copy-btn phrase-btn" type="button" data-copy-zh="${catId}:${i}">${icon("copy")}<span data-label>복사</span></button>
+          <button class="copy-btn phrase-btn" type="button" data-show="${catId}:${i}">${ICON_EXPAND}<span>크게 보기</span></button>
+        </div>
+      </article>`;
+  }
+
+  let activeCat = PHRASE_CATEGORIES[0].id;
+
+  function renderCats() {
+    document.getElementById("phrase-cats").innerHTML = PHRASE_CATEGORIES.map((c) => `
+      <button class="filter-chip ${c.id === activeCat ? "is-active" : ""}" type="button" role="tab" aria-selected="${c.id === activeCat}" data-cat="${c.id}">${c.short}</button>
+    `).join("");
+  }
+
+  function renderPanel() {
+    const cat = PHRASE_CATEGORIES.find((c) => c.id === activeCat) || PHRASE_CATEGORIES[0];
+    document.getElementById("phrase-panel").innerHTML = `
+      <div class="manifest-title" style="margin-top:6px;"><span class="manifest-title__num">${String(PHRASE_CATEGORIES.indexOf(cat) + 1).padStart(2, "0")}</span>${cat.label}<span class="manifest-title__line"></span></div>
+      ${cat.note ? `<div class="notice notice--private" style="margin-top:0;"><strong>${escHtml(cat.note)}</strong></div>` : ""}
+      <div class="grid grid--2">${cat.phrases.map((p, i) => phraseCardHtml(cat.id, p, i)).join("")}</div>
+    `;
+  }
+
+  function setCat(id, opts) {
+    if (!PHRASE_CATEGORIES.some((c) => c.id === id)) return;
+    stopSpeech();
+    activeCat = id;
+    renderCats();
+    renderPanel();
+    try { history.replaceState(null, "", "#cat=" + id); } catch (e) { /* file:// 등 */ }
+    if (opts && opts.scroll) {
+      const bar = document.getElementById("phrase-cats");
+      const top = bar.getBoundingClientRect().top + window.scrollY - 100;
+      if (window.scrollY > top) window.scrollTo(0, top);
+    }
+  }
+
+  document.addEventListener("click", (e) => {
+    const chip = e.target.closest("[data-cat]");
+    if (chip) { setCat(chip.getAttribute("data-cat"), { scroll: true }); return; }
+
+    const speakBtn = e.target.closest("[data-speak]");
+    if (speakBtn) {
+      const [c, i] = speakBtn.getAttribute("data-speak").split(":");
+      const p = findPhrase(c, Number(i));
+      if (p) speakZh(p.zh, speakBtn);
+      return;
+    }
+    const copyBtn = e.target.closest("[data-copy-zh]");
+    if (copyBtn) {
+      const [c, i] = copyBtn.getAttribute("data-copy-zh").split(":");
+      const p = findPhrase(c, Number(i));
+      if (p) copyZh(p.zh, copyBtn, copyBtn.closest(".phrase-card").querySelector("[data-zh]"));
+      return;
+    }
+    const showBtn = e.target.closest("[data-show]");
+    if (showBtn) {
+      const [c, i] = showBtn.getAttribute("data-show").split(":");
+      const p = findPhrase(c, Number(i));
+      if (p) openDriverModal(escHtml(p.ko), escHtml(p.zh), escHtml(p.pinyin));
+    }
+  });
+
+  document.addEventListener("DOMContentLoaded", () => {
+    const m = /cat=([a-z]+)/.exec(location.hash || "");
+    if (m && PHRASE_CATEGORIES.some((c) => c.id === m[1])) activeCat = m[1];
+    renderCats();
+    renderPanel();
+    initSpeech();
+  });
+</script>
+</body>
+</html>

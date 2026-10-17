@@ -685,7 +685,7 @@ const ITINERARY = [
     label: "Day 1",
     status: "confirmed",
     title: "상하이 도착",
-    summary: "항공 이동 · 상하이 도착 및 체크인",
+    summary: "항공 이동 · 상하이 도착 및 체크인 → 단체 저녁식사",
     officialSchedule: { status: "confirmed", note: "항공 이동 → 상하이 도착 및 체크인" },
     items: [
       { slot: null, title: "항공 이동", type: "TRAVEL" },
@@ -729,7 +729,7 @@ const ITINERARY = [
     label: "Day 4",
     status: "confirmed",
     title: "Nona Biosciences",
-    summary: "Nona Biosciences 방문",
+    summary: "Nona Biosciences → 단체 액티비티 및 저녁식사",
     officialSchedule: { status: "confirmed", note: "Nona Biosciences" },
     items: [
       { slot: "오전", title: "Nona Biosciences 방문", type: "VISIT", org_id: "nona-biosciences" },
@@ -756,12 +756,13 @@ const ITINERARY = [
 // ⚠️ 아래 앱/서비스/팁은 사용자가 직접 제공한 내용만 사용했습니다 — 새로운 앱이나
 // 서비스를 임의로 조사해 추가하지 않았습니다. Disney 관련 내용은 포함하지 않습니다.
 const PREP_STATUS_LABEL = {
-  essential: "ESSENTIAL",
-  optional: "OPTIONAL",
-  backup: "BACKUP",
-  travelerTip: "TRAVELER TIP",
-  checkBeforeDeparture: "CHECK BEFORE DEPARTURE",
-  reference: "REFERENCE",
+  // v0.10 — 참가자가 한국인이므로 라벨을 한국어로 표시합니다(키·CSS 클래스는 그대로).
+  essential: "필수",
+  optional: "선택",
+  backup: "백업",
+  travelerTip: "여행자 팁",
+  checkBeforeDeparture: "출국 전 확인",
+  reference: "참고",
 };
 
 const PREP = {
@@ -821,6 +822,18 @@ const PREP = {
       note: "Alipay 사용에 문제가 있을 경우를 대비한 백업 옵션입니다. 앱 UI나 서비스 방식은 바뀔 수 있으므로 출국 전 재확인이 필요하며, 공식 확정 기능은 아닙니다.",
       status: "backup",
     },
+    // v0.10 — 네이버페이 추가. 네이버 공식 보도자료(2023.09 · 2023.11 · 2024.12 · 2025.06) 기준으로
+    // 확인된 내용만 적었습니다. 모든 매장에서 되는 것이 아니며, 앱 UI·지원 범위는 바뀔 수 있습니다.
+    naverPay: {
+      title: "네이버페이 QR 결제 (백업)",
+      steps: [
+        "네이버페이 앱 하단 가운데 QR 결제(카메라) 버튼",
+        "매장에 있는 결제 QR 코드 스캔",
+        "금액 입력 후 결제하기",
+      ],
+      note: "위챗페이 · 유니온페이 · 알리페이플러스 QR을 받는 매장에서 쓸 수 있으며, 모든 매장에서 되는 것은 아닙니다. 네이버페이 머니 · 포인트로 결제되고(별도 환전 없음), 잔액이 부족하면 연결된 충전 계좌에서 1만 원 단위로 자동 충전됩니다. 앱 화면과 지원 범위는 바뀔 수 있으니 출국 전 재확인하세요.",
+      status: "backup",
+    },
   },
 
   connectivity: {
@@ -836,29 +849,31 @@ const PREP = {
   },
 
   powerBank: {
-    title: "POWER BANK RECOMMENDED",
+    title: "보조배터리 준비",
     note: "지도 · 결제 · Taxi 호출 · 메신저 · 번역 등으로 휴대폰 사용량이 많다는 점을 고려해 보조배터리 준비를 권장합니다.",
-    caution: "Check airline carry-on rules before departure.",
+    caution: "출국 전 이용 항공사의 보조배터리 기내 반입 규정을 확인하세요.",
     status: "checkBeforeDeparture",
   },
 
   gettingAround: [
-    { id: "taxi-didi", title: "TAXI / DIDI", note: "길에서 임의로 택시를 잡기보다는 앱 호출 Taxi / Didi 활용을 권장합니다.", status: "travelerTip" },
-    { id: "subway", title: "SUBWAY", note: "상하이 내 이동 시 선택 가능한 수단입니다.", status: "travelerTip" },
-    { id: "city-tour-bus", title: "CITY TOUR BUS", note: "관광 목적 이동 시 선택지 중 하나입니다.", status: "travelerTip" },
+    { id: "taxi-didi", title: "택시 / DiDi", note: "길에서 임의로 택시를 잡기보다는 앱 호출 Taxi / Didi 활용을 권장합니다.", status: "travelerTip" },
+    { id: "subway", title: "지하철 (Subway)", note: "상하이 내 이동 시 선택 가능한 수단입니다.", status: "travelerTip" },
+    { id: "city-tour-bus", title: "시티투어 버스", note: "관광 목적 이동 시 선택지 중 하나입니다.", status: "travelerTip" },
   ],
   gettingAroundNote: "특정 교통수단 하나가 항상 최선이라고 단정할 수 없어, 상황에 맞게 선택할 수 있도록 안내합니다.",
 
   emergencyCash: {
-    title: "EMERGENCY CASH",
+    title: "비상용 현금",
     note: "휴대폰 문제 · 배터리 문제 · 통신 오류 · 결제 오류 등을 대비해 소액의 현금을 비상용으로 준비할 수 있습니다.",
-    example: "TRAVELER EXAMPLE · about 500 CNY",
+    example: "여행자 예시 · 약 500 CNY",
     status: "travelerTip",
   },
 
   localTips: [
-    { id: "green-hat", title: "GREEN HAT", note: "중국 문화에서 초록색 모자는 특정 부정적 의미와 연결될 수 있어, 굳이 착용하지 않는 것을 추천하는 여행 팁입니다.", status: "travelerTip" },
-    { id: "cold-drinks", title: "COLD DRINKS", note: "차가운 음료를 원할 경우 차갑게 요청하거나 얼음을 별도로 요청해야 하는 상황이 있을 수 있습니다.", status: "travelerTip" },
-    { id: "restaurant-extra-charges", title: "RESTAURANT EXTRA CHARGES", note: "일부 식당에서는 식기 · 포장된 휴지 · 물티슈가 별도 비용으로 계산될 수 있으니, 사용 전 또는 계산 시 영수증을 확인하세요. 모든 식당에 적용되는 규칙은 아닙니다.", status: "travelerTip" },
+    { id: "green-hat", title: "초록색 모자는 피하기", note: "중국 문화에서 초록색 모자는 특정 부정적 의미와 연결될 수 있어, 굳이 착용하지 않는 것을 추천하는 여행 팁입니다.", status: "travelerTip" },
+    { id: "cold-drinks", title: "차가운 음료 주문", note: "차가운 음료를 원할 경우 차갑게 요청하거나 얼음을 별도로 요청해야 하는 상황이 있을 수 있습니다.", status: "travelerTip" },
+    { id: "restaurant-extra-charges", title: "식당 추가 요금", note: "일부 식당에서는 식기 · 포장된 휴지 · 물티슈가 별도 비용으로 계산될 수 있으니, 사용 전 또는 계산 시 영수증을 확인하세요. 모든 식당에 적용되는 규칙은 아닙니다.", status: "travelerTip" },
+    // v0.10 — 근거: 《中华人民共和国道路交通安全法》 제51조 (gov.cn 공보). 벌금·단속 내용은 넣지 않습니다.
+    { id: "taxi-seatbelt", title: "택시 뒷좌석도 안전벨트", note: "택시에서는 뒷좌석에 앉더라도 안전벨트를 착용하세요. 중국 도로교통안전법은 차량 주행 시 운전자와 탑승자 모두 안전벨트를 착용하도록 규정합니다. 차량 출발 전 안전벨트 착용 여부를 확인하는 것이 좋습니다.", status: "essential" },
   ],
 };

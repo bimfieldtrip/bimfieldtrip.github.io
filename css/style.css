@@ -999,3 +999,34 @@ main [hidden] { display: none !important; }
 .org-visit__facility p { margin: 5px 0 0; font-size: 0.92rem; color: var(--ink); line-height: 1.6; }
 .org-visit__notes { margin: 6px 0 0; padding-left: 1.1em; font-size: 0.9rem; color: var(--ink-dim); line-height: 1.6; }
 .org-visit__source { margin: 12px 0 0; font-size: 0.7rem; word-break: break-word; }
+
+/* ---------- Prep card header (v0.10 — 모바일 넘침 수정) ----------
+   제목과 상태 태그가 한 줄에 들어가지 않으면 태그를 다음 줄로 내립니다(데스크톱은 기존과 동일).
+   태그(.tag)는 기본이 white-space:nowrap이라 좁은 화면에서 카드 밖으로 밀려나던 것이 원인입니다. */
+.prep-card__head { flex-wrap: wrap; row-gap: 6px; }
+.prep-card__head > div:first-child { min-width: 0; overflow-wrap: anywhere; }
+.prep-card__head .tag { max-width: 100%; white-space: normal; }
+
+/* ---------- 중국어 회화 (v0.10 — phrases.html) ----------
+   기존 card / filter-chip / copy-btn / manifest-title 토큰만 재사용합니다. */
+.phrase-cats { margin-top: 4px; }
+.phrase-card { display: flex; flex-direction: column; gap: 6px; min-width: 0; }
+.phrase-card + .phrase-card { margin-top: 0; }
+.phrase-card__ko { font-weight: 800; font-size: 0.98rem; color: var(--navy-900); }
+.phrase-card__zh {
+  font-family: "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", "Noto Sans SC", "Noto Sans CJK SC", var(--font-display);
+  font-size: 1.6rem; font-weight: 700; line-height: 1.35; color: var(--navy-950);
+  overflow-wrap: anywhere; -webkit-user-select: text; user-select: text;
+}
+.phrase-card__pron { display: flex; flex-direction: column; gap: 1px; }
+.phrase-card__kr { font-size: 0.9rem; color: var(--ink); }
+.phrase-card__py { font-family: var(--font-mono); font-size: 0.8rem; color: var(--ink-dim); overflow-wrap: anywhere; }
+.phrase-card__tip { font-size: 0.8rem; color: var(--ink-faint); }
+.phrase-card__actions { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 6px; margin-top: 6px; }
+.phrase-btn { justify-content: center; min-height: 44px; padding: 8px 6px; white-space: nowrap; touch-action: manipulation; }
+.phrase-btn svg { width: 17px; height: 17px; }
+.phrase-btn[disabled] { opacity: 0.45; cursor: not-allowed; }
+.phrase-btn--play.is-playing { background: var(--grad-signal); border-color: transparent; color: #fff; }
+.phrase-papago { margin-top: 26px; }
+/* v0.10 — 하단 내비 한글 라벨("중국어 회화")이 글자 중간에서 끊기지 않고 단어 단위로 줄바꿈되도록 */
+.bottom-nav__link span { word-break: keep-all; text-align: center; }

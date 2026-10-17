@@ -27,6 +27,7 @@ const ICONS = {
   bag: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M6 8.5h12l1 12.5H5L6 8.5z"/><path d="M9 8.5V6.8a3 3 0 0 1 6 0v1.7"/></svg>',
   bed: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M3 18v-6.5A2 2 0 0 1 5 9.5h14a2 2 0 0 1 2 2V18"/><path d="M3 18v2.5M21 18v2.5"/><path d="M3 15h18"/><rect x="5.5" y="9.5" width="6" height="3.2" rx="1"/></svg>',
   camera: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M4 8.2A1.7 1.7 0 0 1 5.7 6.5h1.9l1-1.7h6.8l1 1.7h1.9A1.7 1.7 0 0 1 20 8.2v9.6a1.7 1.7 0 0 1-1.7 1.7H5.7A1.7 1.7 0 0 1 4 17.8V8.2z"/><circle cx="12" cy="12.8" r="3.4"/></svg>',
+  chat: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M4 5.5h16a1 1 0 0 1 1 1v9a1 1 0 0 1-1 1H10l-4.5 3.5V16.5H4a1 1 0 0 1-1-1v-9a1 1 0 0 1 1-1z"/><path d="M8 10h8M8 13h5"/></svg>',
   lock: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="5" y="11" width="14" height="9.5" rx="2.2"/><path d="M8 11V7.8a4 4 0 0 1 8 0V11"/></svg>',
 };
 
@@ -113,6 +114,8 @@ const NAV_ITEMS = [
   { id: "itinerary", label: "Schedule", href: "itinerary.html", icon: "route" },
   { id: "guide", label: "Shanghai Guide", href: "guide.html", icon: "pin" },
   { id: "prep", label: "Prep", href: "prep.html", icon: "prep" },
+  // v0.10 — 여행 중 바로 쓰는 중국어 회화(정적 페이지, 서버 요청 없음).
+  { id: "phrases", label: "중국어 회화", href: "phrases.html", icon: "chat" },
   // v0.6.2 — My Trip은 더 이상 내부 게이트웨이 페이지(my-trip.html, 삭제됨)를
   // 거치지 않습니다. 클릭하면 goToPrivatePortal()이 participantPortalUrl()로 같은
   // 탭에서 바로 이동시킵니다(portalLink: true로 표시, renderNav()에서 처리).

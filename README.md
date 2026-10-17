@@ -1,8 +1,23 @@
-# Shanghai Field Trip Hub — v0.8.0 · Shanghai Guide Region-First
+# Shanghai Field Trip Hub — v0.10.0 · 중국어 회화 탭 추가
 
 KAIST BIM Shanghai Field Trip(2026.12.27~12.31)을 위한 **공개 여행 안내 허브**입니다.
 "상하이에서 무엇을 하고, 무엇을 준비하고, 어디를 볼 수 있는가"에만 집중하며, 실제 참가자 운영
 (체크인·버스 탑승·룸 배정·택시팀·정산 등)은 별도의 Private Participant Portal에서 처리합니다.
+
+## 💬 v0.10.0 — HOME/PREP 정리 + 중국어 회화 탭 신설
+
+Schedule · Shanghai Guide(실사 이미지 · `js/data-guide.js` · `assets/`) · MY TRIP(Apps Script 연결, `js/config.js`)은 건드리지 않았습니다.
+
+- **HOME:** 상단 OFFICIAL SCHEDULE 주황 배너 삭제, Hero의 PREP MODE 표시 삭제(D-Day 유지),
+  Trip at a Glance Day 1 · Day 4 요약 문구 수정(`ITINERARY[].summary` — HOME에서만 사용).
+- **PREP:** 소개 문구 한 문장으로 정리, 상단 TRAVELER TIP 안내 삭제, 소제목 · 상태 라벨 한국어화,
+  결제 백업에 네이버페이 추가(네이버 공식 보도자료 기준), 현지 여행 팁에 택시 뒷좌석 안전벨트 추가
+  (도로교통안전법 제51조 기준, 벌금 미기재). 좁은 화면에서 상태 태그가 카드 밖으로 넘치던 문제를
+  `.prep-card__head`(줄바꿈 허용)로 수정.
+- **중국어 회화(`phrases.html`, `js/data-phrases.js`):** 6개 카테고리 25문장. 카드마다 한국어 · 간체자 ·
+  한글 발음 · 병음 + 듣기(Web Speech API, zh-CN) · 복사(중국어만) · 크게 보기(기존 SHOW DRIVER 모달 재사용).
+  파파고는 공식 사이트 링크만 제공. 정적 데이터만 사용하며 서버 요청이 없습니다. `#cat=<id>` 딥링크 지원.
+- **메뉴:** 상단·하단 내비게이션이 6개가 됐습니다 — HOME · SCHEDULE · SHANGHAI GUIDE · PREP · 중국어 회화 · MY TRIP.
 
 ## 📅 v0.9.0 — SCHEDULE 공식 일정 반영 (Schedule/Home만 수정)
 
@@ -195,7 +210,7 @@ v0.7 "Shanghai Guide FINAL"에서 이미 만들어진 것 (이번 라운드에�
 이 프로젝트는 두 개의 서로 다른 시스템으로 나뉘어 있습니다. **절대 섞지 마세요.**
 
 **PUBLIC — 이 저장소 (GitHub Pages)**
-- HOME · SCHEDULE · SHANGHAI GUIDE · PREP · MY TRIP(Private Portal로 바로 이동하는 링크) 5개 핵심 메뉴
+- HOME · SCHEDULE · SHANGHAI GUIDE · PREP · 중국어 회화 · MY TRIP(Private Portal로 바로 이동하는 링크) 6개 핵심 메뉴 (v0.10.0부터)
 - 공개 가능한 여행 정보: 여행이 무엇인지, Day별 대략적인 이동 흐름, 출국 전 준비, 상하이 정보
   라이브러리(SEE/EAT/SHOP/SOUVENIRS/MAP)
 - 실제 참가자를 흉내 내는 화면(Demo Persona, Group Ops 대시보드 등)은 존재하지 않습니다.
@@ -243,7 +258,7 @@ Schedule/Home의 날짜별 일정과 방문기관은 학교 공식 일정표 기
 동작합니다. (모든 데이터가 `<script>` 태그로 직접 로드되기 때문에 `file://`로 열어도 정상
 동작합니다.)
 
-- 상단·하단 내비게이션은 **HOME · SCHEDULE · SHANGHAI GUIDE · PREP · MY TRIP** 5개뿐입니다.
+- 상단·하단 내비게이션은 **HOME · SCHEDULE · SHANGHAI GUIDE · PREP · 중국어 회화 · MY TRIP** 6개뿐입니다 (v0.10.0부터).
   역할별로 메뉴가 달라지지 않고, 모든 방문자가 동일한 메뉴를 봅니다.
 - **HOME**은 Hero(D-Day) + Trip at a Glance(Day 1~5 아주 짧은 요약) + My Trip 단일 CTA로만
   구성됩니다. 화면은 오늘 날짜를 기준으로 자동으로 Phase(출국 전/Day N/종료 후)를 전환합니다.
@@ -272,6 +287,7 @@ shanghai-field-trip-hub/
 │                              js/data-guide.js만 읽음(js/data-trip.js와 완전 분리)
 ├── prep.html                 PREP — BEFORE YOU FLY(기본 펼침) + 5개 카테고리 accordion
 │                              (ESSENTIAL APPS/PAYMENT/CONNECTIVITY/PACKING·POWER/LOCAL TIPS)
+├── phrases.html              중국어 회화 — 6개 카테고리 25문장, 듣기 · 복사 · 크게 보기 (v0.10)
 ├── host-orgs.html             Field Visits 목록 (내비게이션에는 없음 · 카드 → Schedule 소개 카드)
 ├── css/
 │   └── style.css              공통 스타일 (외부 폰트·CDN 없음, 반응형, White + Navy 디자인).
@@ -286,7 +302,8 @@ shanghai-field-trip-hub/
 │   ├── data-guide.js            ★ Shanghai Guide 전용 독립 데이터 (v0.7 신설). GUIDE_SPOTS(56),
 │   │                          GUIDE_SOUVENIRS(33), GUIDE_RESEARCH_NOTES + _EXTENDED(미검증,
 │   │                          화면 미노출), AREA_CLUSTERS(MAP 탭용 8개 지역)
-│   ├── main.js                  공통 기능 (5개 고정 메뉴 내비게이션, 상태 배지, REAL+SAMPLE 이중
+│   ├── data-phrases.js          중국어 회화 문장 데이터 (PHRASE_CATEGORIES, v0.10)
+│   ├── main.js                  공통 기능 (6개 고정 메뉴 내비게이션, 상태 배지, REAL+SAMPLE 이중
 │   │                          라벨, 장소/식사 카드, participantPortalUrl()/isPortalConfigured()/
 │   │                          goToPrivatePortal())
 │   └── home.js                  HOME 화면 로직 — 날짜 기반 자동 Phase 판정(computeAutoPhase) +
