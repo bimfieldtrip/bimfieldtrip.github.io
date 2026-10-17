@@ -2,7 +2,9 @@
 
 대상: `js/data-guide.js`의 GUIDE_SPOTS 56곳 전체 (삭제·이름 변경 없음). 실사는 Wikimedia Commons API로 저작자·라이선스를 직접 확인한 것만 사용했습니다.
 
-**요약 (v0.11.1, 2026-10-17):** REAL PHOTO 31곳 · ILLUSTRATION_NEEDED 25곳 · INFO CARD 0곳
+**요약 (v0.11.2, 2026-10-17):** REAL PHOTO 31곳 · **AI IMAGE 10곳** · ILLUSTRATION_NEEDED 15곳 · INFO CARD 0곳
+
+> v0.11.2 변경: 실사를 구할 수 없는 10곳에 AI 생성 콘셉트 이미지 적용(카드에 "AI 이미지 · 실제 사진 아님" 표시). 업종·장면·입점 형태·브리프 조건을 검토해 통과한 것만 연결했고, 나머지 15곳은 기존 SVG placeholder 유지.
 
 > v0.11.1 변경: M&M'S 上海 · 上海第一食品商店 · 沪公馆(건물 외관) 실사 추가, 외탄 사진 교체(출처 불명 → CC0). 출처표는 [README.md](README.md) 하단 참고.
 > (v0.8 기준: REAL PHOTO 28곳 · ILLUSTRATION_NEEDED 28곳)
@@ -12,13 +14,13 @@
 | 장소명 | 현재 이미지 (변경 전) | 실사 확보 | 최종 권장 방식 | Google Images 검색어 | 비고 |
 |---|---|---|---|---|---|
 | 青稚护手霜（上海南京东路店） | SVG 선아이콘 placeholder | 불가 (재사용 가능한 실사 없음) | **ILLUSTRATION** (ILLUSTRATION_NEEDED) | `青稚护手霜（上海南京东路店） Shanghai` | 매장 실사 라이선스 없음 |
-| POP MART 泡泡玛特全球旗舰店 | SVG 선아이콘 placeholder | 불가 (재사용 가능한 실사 없음) | **ILLUSTRATION** (ILLUSTRATION_NEEDED) | `POP MART 泡泡玛特全球旗舰店 Shanghai` | 매장 실사 라이선스 없음 · 캐릭터 IP |
+| POP MART 泡泡玛特全球旗舰店 | SVG 선아이콘 placeholder | 불가 (재사용 가능한 실사 없음) | **AI IMAGE** (v0.11.2 · 실제 사진 아님 · illustrations/popmart.webp) | `POP MART 泡泡玛特全球旗舰店 Shanghai` | 매장 실사 라이선스 없음 · 캐릭터 IP |
 | MINISO LAND / 名创优品全球壹号店 | SVG 선아이콘 placeholder | 불가 (재사용 가능한 실사 없음) | **ILLUSTRATION** (ILLUSTRATION_NEEDED) | `MINISO LAND 名创优品全球壹号店 Shanghai` | 매장 실사 라이선스 없음 · 캐릭터 IP · v0.11.1: Flickr CC BY-NC 2.0 입구 사진(2024-12) 확인했으나 비상업 조건 판단 보류로 미적용 |
 | TOP TOY 上海全球旗舰店 | SVG 선아이콘 placeholder | 불가 (재사용 가능한 실사 없음) | **ILLUSTRATION** (ILLUSTRATION_NEEDED) | `TOP TOY 上海全球旗舰店 Shanghai` | 매장 실사 라이선스 없음 · 캐릭터 IP |
 | 上海第一食品商店 | SVG 선아이콘 placeholder | 가능 — CC0 · Suicasmo (2025-05-01) | **REAL PHOTO** (v0.11.1, 매장 외관) | `上海第一食品商店 Shanghai` | Commons: Shanghai First Foodhall 20250501.jpg · repo 사본 photos/shanghai-first-food-store.webp |
 | M&M'S 上海 | SVG 선아이콘 placeholder | 가능 — CC BY-SA 4.0 · Mepatm (2018-09-16) | **REAL PHOTO** (v0.11.1, 매장 정면) | `M&M'S 上海 Shanghai` | Commons: Shanghai M&M'S Facade.jpg · 2026-04 사진으로 현재 외관 동일 확인 · repo 사본 photos/mms-shanghai.webp |
 | monogram 墨格（上海世茂广场店） | SVG 선아이콘 placeholder | 불가 (재사용 가능한 실사 없음) | **ILLUSTRATION** (ILLUSTRATION_NEEDED) | `monogram 墨格（上海世茂广场店） Shanghai` | 매장 실사 라이선스 없음 · v0.11.1: 世茂广场 CC0 사진은 M&M'S 정면이 주로 보여 미적용 |
-| 李百蟹·蟹黄面·江景餐厅（外滩·豫园店） | SVG 선아이콘 placeholder | 불가 (재사용 가능한 실사 없음) | **ILLUSTRATION** (ILLUSTRATION_NEEDED) | `李百蟹·蟹黄面·江景餐厅（外滩·豫园店） Shanghai` | 매장 실사 라이선스 없음 · v0.11.1: 외탄 22호 건물 사진은 沪公馆에만 사용(반복 방지) |
+| 李百蟹·蟹黄面·江景餐厅（外滩·豫园店） | SVG 선아이콘 placeholder | 불가 (재사용 가능한 실사 없음) | **AI IMAGE** (v0.11.2 · 실제 사진 아님 · illustrations/libaixie.webp) | `李百蟹·蟹黄面·江景餐厅（外滩·豫园店） Shanghai` | 매장 실사 라이선스 없음 · v0.11.1: 외탄 22호 건물 사진은 沪公馆에만 사용(반복 방지) |
 | Hu Gong Guan / 沪公馆·上海菜（外滩豫园店） | SVG 선아이콘 placeholder | 가능 — CC BY-SA 3.0 · Fayhoo (입점 건물) | **REAL PHOTO** (v0.11.1, 건물 외관 · 外滩22号) | `Hu Gong Guan 沪公馆·上海菜（外滩豫园店） Shanghai` | Commons: Butterfield & Swire.jpg (太古洋行旧址 中山东二路22号) · repo 사본 photos/hugongguan.webp |
 | The Bund / 外滩 | Commons 실사 (hotlink) — 출처 불명(pxfuel) | 가능 — CC0 · DvTor8303 (2026-04-17) | **REAL PHOTO** (v0.11.1 교체) | `The Bund 外滩 Shanghai` | Commons: HSBC Building and Custom House, Shanghai at night 20260417.jpg · repo 사본 photos/bund.webp · 기존 Shanghai skyline from the bund.jpg 는 출처·저작자가 pxfuel 주소뿐이라 교체 |
 | Nanjing East Road / 南京东路 | SVG 선아이콘 placeholder | 가능 — CC0 · Hermann Luyken | **REAL PHOTO** | `Nanjing East Road 南京东路 Shanghai` | Commons: 2014.11.15.181406 Nanjing Road Pedestrian Zone Shanghai.jpg |
@@ -30,7 +32,7 @@
 | 장소명 | 현재 이미지 (변경 전) | 실사 확보 | 최종 권장 방식 | Google Images 검색어 | 비고 |
 |---|---|---|---|---|---|
 | The Stage 白玉兰观景台 | Commons 실사 (hotlink) | 가능 — CC0 · DmitryKvasov | **REAL PHOTO** | `The Stage 白玉兰观景台 Shanghai` | Commons: White Magnolia Plaza, view from Shangqiu road.jpg · 라벨 "WHITE MAGNOLIA PLAZA · EXTERIOR" · 기존 사진 498px 저해상도 → 교체 |
-| Manner Coffee（国客滨江店） | SVG 선아이콘 placeholder | 불가 (재사용 가능한 실사 없음) | **ILLUSTRATION** (ILLUSTRATION_NEEDED) | `Manner Coffee（国客滨江店） Shanghai` | 매장 실사 라이선스 없음 |
+| Manner Coffee（国客滨江店） | SVG 선아이콘 placeholder | 불가 (재사용 가능한 실사 없음) | **AI IMAGE** (v0.11.2 · 실제 사진 아님 · illustrations/manner-coffee-guoke.webp) | `Manner Coffee（国客滨江店） Shanghai` | 매장 실사 라이선스 없음 |
 | North Bund / 北外滩滨江 | SVG 선아이콘 placeholder | 가능 — CC BY-SA 4.0 · 钉钉 | **REAL PHOTO** | `North Bund 北外滩滨江 Shanghai` | Commons: The North Bund, Shanghai.jpg |
 
 ## 푸동 · 루자쭈이 (PUDONG · LUJIAZUI) — 4곳
@@ -46,8 +48,8 @@
 
 | 장소명 | 현재 이미지 (변경 전) | 실사 확보 | 최종 권장 방식 | Google Images 검색어 | 비고 |
 |---|---|---|---|---|---|
-| 点都德（中海环宇荟店） | SVG 선아이콘 placeholder | 불가 (재사용 가능한 실사 없음) | **ILLUSTRATION** (ILLUSTRATION_NEEDED) | `点都德（中海环宇荟店） Shanghai` | 매장 실사 라이선스 없음 · v0.11.1: 中海环宇荟 사무동 사진은 B1 식당을 설명하지 못해 미적용 |
-| 费大厨辣椒炒肉（新天地店） | SVG 선아이콘 placeholder | 불가 (재사용 가능한 실사 없음) | **ILLUSTRATION** (ILLUSTRATION_NEEDED) | `费大厨辣椒炒肉（新天地店） Shanghai` | 매장 실사 라이선스 없음 |
+| 点都德（中海环宇荟店） | SVG 선아이콘 placeholder | 불가 (재사용 가능한 실사 없음) | **AI IMAGE** (v0.11.2 · 실제 사진 아님 · illustrations/diandude.webp) | `点都德（中海环宇荟店） Shanghai` | 매장 실사 라이선스 없음 · v0.11.1: 中海环宇荟 사무동 사진은 B1 식당을 설명하지 못해 미적용 |
+| 费大厨辣椒炒肉（新天地店） | SVG 선아이콘 placeholder | 불가 (재사용 가능한 실사 없음) | **AI IMAGE** (v0.11.2 · 실제 사진 아님 · illustrations/feidachu.webp) | `费大厨辣椒炒肉（新天地店） Shanghai` | 매장 실사 라이선스 없음 |
 | Xintiandi / 新天地 | SVG 선아이콘 placeholder | 가능 — CC BY-SA 2.0 · Can Pac Swire | **REAL PHOTO** | `Xintiandi 新天地 Shanghai` | Commons: 新天地 = New Heaven & Earth (6033629189).jpg |
 | Tianzifang / 田子坊 | SVG 선아이콘 placeholder | 가능 — CC BY-SA 4.0 · 钉钉 | **REAL PHOTO** | `Tianzifang 田子坊 Shanghai` | Commons: Tianzifang 1.jpg |
 | Site of the Provisional Government of the Republic of Korea / 大韩民国临时政府旧址 | SVG 선아이콘 placeholder | 가능 — CC BY-SA 3.0 · Ericmetro | **REAL PHOTO** | `Site of the Provisional Government of the Republic of Korea 大韩民国临时政府旧址 Shanghai` | Commons: Entrance of Provisional Government of ROK in Shanghai.JPG |
@@ -65,10 +67,10 @@
 
 | 장소명 | 현재 이미지 (변경 전) | 실사 확보 | 최종 권장 방식 | Google Images 검색어 | 비고 |
 |---|---|---|---|---|---|
-| 13DE MARZO CAFÉ（上海安福路店） | SVG 선아이콘 placeholder | 불가 (재사용 가능한 실사 없음) | **ILLUSTRATION** (ILLUSTRATION_NEEDED) | `13DE MARZO CAFÉ（上海安福路店） Shanghai` | 매장 실사 라이선스 없음 |
-| HARMAY 上海武康路店 | SVG 선아이콘 placeholder | 불가 (재사용 가능한 실사 없음) | **ILLUSTRATION** (ILLUSTRATION_NEEDED) | `HARMAY 上海武康路店 Shanghai` | 매장 실사 라이선스 없음 |
+| 13DE MARZO CAFÉ（上海安福路店） | SVG 선아이콘 placeholder | 불가 (재사용 가능한 실사 없음) | **AI IMAGE** (v0.11.2 · 실제 사진 아님 · illustrations/13demarzo-cafe-anfu.webp) | `13DE MARZO CAFÉ（上海安福路店） Shanghai` | 매장 실사 라이선스 없음 |
+| HARMAY 上海武康路店 | SVG 선아이콘 placeholder | 불가 (재사용 가능한 실사 없음) | **AI IMAGE** (v0.11.2 · 실제 사진 아님 · illustrations/harmay-wukang.webp) | `HARMAY 上海武康路店 Shanghai` | 매장 실사 라이선스 없음 |
 | PHOTOWITH 自助照相馆 | SVG 선아이콘 placeholder | 불가 (재사용 가능한 실사 없음) | **ILLUSTRATION** (ILLUSTRATION_NEEDED) | `PHOTOWITH 自助照相馆 Shanghai` | 매장 실사 라이선스 없음 |
-| To Summer / 观夏闲庭 | SVG 선아이콘 placeholder | 불가 (재사용 가능한 실사 없음) | **ILLUSTRATION** (ILLUSTRATION_NEEDED) | `To Summer 观夏闲庭 Shanghai` | 매장 실사 라이선스 없음 |
+| To Summer / 观夏闲庭 | SVG 선아이콘 placeholder | 불가 (재사용 가능한 실사 없음) | **AI IMAGE** (v0.11.2 · 실제 사진 아님 · illustrations/to-summer.webp) | `To Summer 观夏闲庭 Shanghai` | 매장 실사 라이선스 없음 |
 | TAGI.（乌鲁木齐中路店） | SVG 선아이콘 placeholder | 불가 (재사용 가능한 실사 없음) | **ILLUSTRATION** (ILLUSTRATION_NEEDED) | `TAGI.（乌鲁木齐中路店） Shanghai` | 매장 실사 라이선스 없음 |
 | 集雅 GATHERING（乌鲁木齐中路店） / 集雅（乌鲁木齐中路店） | SVG 선아이콘 placeholder | 불가 (재사용 가능한 실사 없음) | **ILLUSTRATION** (ILLUSTRATION_NEEDED) | `GATHERING 集雅（乌鲁木齐中路店） Shanghai` | 매장 실사 라이선스 없음 |
 | PANE 永源路店 | SVG 선아이콘 placeholder | 불가 (재사용 가능한 실사 없음) | **ILLUSTRATION** (ILLUSTRATION_NEEDED) | `PANE 永源路店 Shanghai` | 매장 실사 라이선스 없음 |
@@ -82,7 +84,7 @@
 
 | 장소명 | 현재 이미지 (변경 전) | 실사 확보 | 최종 권장 방식 | Google Images 검색어 | 비고 |
 |---|---|---|---|---|---|
-| TonTon | SVG 선아이콘 placeholder | 불가 (재사용 가능한 실사 없음) | **ILLUSTRATION** (ILLUSTRATION_NEEDED) | `TonTon Shanghai` | 매장 실사 라이선스 없음 |
+| TonTon | SVG 선아이콘 placeholder | 불가 (재사용 가능한 실사 없음) | **AI IMAGE** (v0.11.2 · 실제 사진 아님 · illustrations/tonton.webp) | `TonTon Shanghai` | 매장 실사 라이선스 없음 |
 | 三立方 × Mahlkönig Dirty | SVG 선아이콘 placeholder | 불가 (재사용 가능한 실사 없음) | **ILLUSTRATION** (ILLUSTRATION_NEEDED) | `Mahlkönig Dirty 三立方 Shanghai` | 매장 실사 라이선스 없음 |
 | 人和馆·上海菜（徐汇店） | SVG 선아이콘 placeholder | 불가 (재사용 가능한 실사 없음) | **ILLUSTRATION** (ILLUSTRATION_NEEDED) | `人和馆·上海菜（徐汇店） Shanghai` | 매장 실사 라이선스 없음 |
 | Andaz Shanghai ITC / 上海徐家汇中心安达仕酒店 | SVG 선아이콘 placeholder | 가능 — CC0 · ShanghaiDream | **REAL PHOTO** | `Andaz Shanghai ITC 上海徐家汇中心安达仕酒店` | Commons: XuJiaHui-Complexe Shanghai ITC.jpg · 라벨 "SHANGHAI ITC · EXTERIOR" |
@@ -106,7 +108,7 @@
 |---|---|---|---|---|---|
 | Zhujiajiao Water Town / 朱家角 | SVG 선아이콘 placeholder | 가능 — CC BY-SA 4.0 · Lloyd Tudor | **REAL PHOTO** | `Zhujiajiao Water Town 朱家角 Shanghai` | Commons: Zhujiajiao ancient water town, Nr. Shanghai, China - 1.jpg |
 | Wuzhen Water Town / 乌镇 | SVG 선아이콘 placeholder | 가능 — CC BY 4.0 · Wanderingchina | **REAL PHOTO** | `Wuzhen Water Town 乌镇 Shanghai` | Commons: One of the waterways in Wuzhen Ancient Town.jpg |
-| Panlong Tiandi / 蟠龙天地 | SVG 선아이콘 placeholder | 불가 (재사용 가능한 실사 없음) | **ILLUSTRATION** (ILLUSTRATION_NEEDED) | `Panlong Tiandi 蟠龙天地 Shanghai` | Commons 검색 결과 없음 |
+| Panlong Tiandi / 蟠龙天地 | SVG 선아이콘 placeholder | 불가 (재사용 가능한 실사 없음) | **AI IMAGE** (v0.11.2 · 실제 사진 아님 · illustrations/panlong-tiandi.webp) | `Panlong Tiandi 蟠龙天地 Shanghai` | Commons 검색 결과 없음 |
 
 ## 요청 목록에 있었지만 현재 guide.html 데이터에 없는 장소
 

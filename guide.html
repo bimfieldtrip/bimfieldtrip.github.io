@@ -466,8 +466,9 @@
     // 완성된 일러스트가 준비된 경우
     if (spot.image_kind === "illustration" && spot.illustration_ready && spot.illustration_file) {
       return `<div class="guide-card__photo guide-card__photo--img guide-card__photo--illust" data-photo-spot="${escapeAttr(spot.id)}">` +
-        `<img src="${escapeAttr(spot.illustration_file)}" alt="${escapeAttr(spot.name)} — 일러스트" loading="lazy" decoding="async" data-fallback="" />` +
-        `<span class="guide-card__illust-tag">ILLUSTRATION</span>${guideHeroLinkHtml(spot)}</div>`;
+        `<img src="${escapeAttr(spot.illustration_file)}" alt="${escapeAttr(spot.name)} — AI 생성 콘셉트 이미지(실제 사진 아님)" loading="lazy" decoding="async" data-fallback="" />` +
+        // v0.11.2: AI 생성 이미지는 실제 매장 사진으로 오해되지 않도록 항상 눈에 띄는 라벨을 붙입니다.
+        `<span class="guide-card__illust-tag guide-card__illust-tag--ai">AI 이미지 · 실제 사진 아님</span>${guideHeroLinkHtml(spot)}</div>`;
     }
     if (!spot.image) return guidePlaceholderHtml(spot);
     const credit = guideCreditText(spot);

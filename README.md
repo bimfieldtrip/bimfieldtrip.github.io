@@ -1,8 +1,20 @@
-# Shanghai Field Trip Hub — v0.11.0 · 중국어 회화 MP3 음성
+# Shanghai Field Trip Hub — v0.11.2 · Shanghai Guide AI 이미지 10곳
 
 KAIST BIM Shanghai Field Trip(2026.12.27~12.31)을 위한 **공개 여행 안내 허브**입니다.
 "상하이에서 무엇을 하고, 무엇을 준비하고, 어디를 볼 수 있는가"에만 집중하며, 실제 참가자 운영
 (체크인·버스 탑승·룸 배정·택시팀·정산 등)은 별도의 Private Participant Portal에서 처리합니다.
+
+## 🖼 v0.11.2 — Shanghai Guide AI 콘셉트 이미지 10곳 (Guide만 수정)
+
+HOME · Schedule · PREP · 중국어 회화 · MY TRIP(Apps Script, `js/config.js`)과 기존 실사 31장은 건드리지 않았습니다.
+
+- **적용 10곳:** 13DE MARZO · HARMAY · To Summer · Manner Coffee · 李百蟹 · POP MART · 点都德 · 费大厨 · Panlong Tiandi · TonTon
+  (`assets/guide/illustrations/*.webp`, `js/data-guide.js`의 `ready: true, ai: true`).
+- **모두 AI 생성 콘셉트 이미지(실제 매장 사진 아님)** — 카드 좌하단에 `AI 이미지 · 실제 사진 아님` 배지가 항상 표시되고, alt 텍스트에도 같은 내용이 들어갑니다.
+  지역 대표 썸네일에는 쓰이지 않습니다(실사만 사용).
+- **보류 15곳**은 기존 SVG placeholder를 그대로 씁니다. 업종·장면 불일치, 잘못된 간판, 실제 캐릭터·로고, 실제 위치와 다른 배경, 콜라주를 잘라 업스케일한 저해상도 이미지는 넣지 않았습니다.
+  재제작 기준은 `assets/guide/ILLUSTRATION_BRIEF.md` 상단 참고.
+- 점검 기록: `assets/guide/IMAGE_AUDIT.md`(장소별 상태), `assets/guide/README.md`.
 
 ## 🔊 v0.11.0 — 중국어 회화 MP3 음성 + HOME 일정 카드 정리
 

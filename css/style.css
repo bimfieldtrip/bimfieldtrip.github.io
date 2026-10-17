@@ -1041,3 +1041,12 @@ main [hidden] { display: none !important; }
   .glance-grid { align-items: stretch; }
   .glance-grid > .glance-card { min-height: 8.5rem; }
 }
+
+/* ---------- Guide · AI 생성 이미지 라벨 (v0.11.2) ----------
+   실제 사진으로 오해되지 않도록 기존 ILLUSTRATION 라벨보다 크고 진하게 표시합니다(사진 위 어디서나 읽히도록 어두운 배경). */
+.guide-card__illust-tag--ai {
+  left: 8px; bottom: 8px; max-width: calc(100% - 16px);
+  padding: 4px 9px; background: rgba(11, 23, 48, 0.82); color: #fff;
+  font-family: var(--font-display); font-size: 0.7rem; font-weight: 800; letter-spacing: 0.01em;
+  white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+}

@@ -628,6 +628,9 @@ const GUIDE_LOCAL_PHOTOS = false;
 //                        라이선스 링크 · 촬영일 · 수정(크롭) 내용을 기록. CC BY-SA 사진은 credit 에 "(cropped)" 를 붙여 카드에도 수정 사실을 표시.
 //                        context: 카드 좌상단 라벨 (예: "건물 외관 · 外滩22号" = 매장 자체가 아니라 입점 건물 사진)
 //       "illustration" → ILLUSTRATION_NEEDED. 사용 가능한 실사가 없어 AI 일러스트로 교체할 대상.
+//                        v0.11.2: ready: true 인 항목은 AI 생성 콘셉트 이미지(실제 매장 사진 아님)이며,
+//                        카드에 "AI 이미지 · 실제 사진 아님" 라벨이 항상 표시됩니다. 업종·장면이 맞지 않거나
+//                        실제 캐릭터·로고가 그려진 이미지는 ready: false 로 보류(기존 SVG placeholder 유지).
 //                        file 경로에 이미지를 넣고 ready: true 로 바꾸면 카드에 자동 반영됩니다.
 //                        그 전까지는 기존 inline SVG placeholder를 그대로 유지합니다(교체 대상 표시).
 // 브리프(장소 특징·비율·파일명)는 assets/guide/ILLUSTRATION_BRIEF.md 참고.
@@ -665,33 +668,33 @@ const GUIDE_IMAGE_MANIFEST = {
   // ---------- ILLUSTRATION_NEEDED (라이선스가 확인된 실사 없음 → AI 일러스트 교체 대상) ----------
   // 현재는 기존 inline SVG placeholder를 유지합니다. file에 16:10 이미지를 넣고 ready: true로 바꾸세요.
   "gs-henjiuyiqian-yangroushuan": { kind: "illustration", file: "assets/guide/illustrations/henjiuyiqian-yangroushuan.webp", ready: false },
-  "gs-manner-coffee-guoke": { kind: "illustration", file: "assets/guide/illustrations/manner-coffee-guoke.webp", ready: false },
-  "gs-13demarzo-cafe-anfu": { kind: "illustration", file: "assets/guide/illustrations/13demarzo-cafe-anfu.webp", ready: false },
-  "gs-harmay-wukang": { kind: "illustration", file: "assets/guide/illustrations/harmay-wukang.webp", ready: false },
+  "gs-manner-coffee-guoke": { kind: "illustration", file: "assets/guide/illustrations/manner-coffee-guoke.webp", ready: true, ai: true }, // v0.11.2 AI 콘셉트 이미지 (패키지: manner.webp)
+  "gs-13demarzo-cafe-anfu": { kind: "illustration", file: "assets/guide/illustrations/13demarzo-cafe-anfu.webp", ready: true, ai: true }, // v0.11.2 AI 콘셉트 이미지 (패키지: 13-de-marzo.webp)
+  "gs-harmay-wukang": { kind: "illustration", file: "assets/guide/illustrations/harmay-wukang.webp", ready: true, ai: true }, // v0.11.2 AI 콘셉트 이미지 (패키지: harmay.webp)
   "gs-photowith": { kind: "illustration", file: "assets/guide/illustrations/photowith.webp", ready: false },
-  "gs-to-summer": { kind: "illustration", file: "assets/guide/illustrations/to-summer.webp", ready: false },
+  "gs-to-summer": { kind: "illustration", file: "assets/guide/illustrations/to-summer.webp", ready: true, ai: true }, // v0.11.2 AI 콘셉트 이미지 (패키지: to-summer.webp)
   "gs-tagi": { kind: "illustration", file: "assets/guide/illustrations/tagi.webp", ready: false },
   "gs-gathering": { kind: "illustration", file: "assets/guide/illustrations/gathering.webp", ready: false },
   "gs-pane-yongyuan": { kind: "illustration", file: "assets/guide/illustrations/pane-yongyuan.webp", ready: false },
   "gs-mondaysleepingclub": { kind: "illustration", file: "assets/guide/illustrations/mondaysleepingclub.webp", ready: false },
-  "gs-tonton": { kind: "illustration", file: "assets/guide/illustrations/tonton.webp", ready: false },
+  "gs-tonton": { kind: "illustration", file: "assets/guide/illustrations/tonton.webp", ready: true, ai: true }, // v0.11.2 AI 콘셉트 이미지 (패키지: tonton.webp · 베이커리)
   "gs-sanlifang-dirty": { kind: "illustration", file: "assets/guide/illustrations/sanlifang-dirty.webp", ready: false },
   "gs-renhe-guan": { kind: "illustration", file: "assets/guide/illustrations/renhe-guan.webp", ready: false },
   "gs-rooftop-bar-andaz": { kind: "illustration", file: "assets/guide/illustrations/rooftop-bar-andaz.webp", ready: false },
   "gs-dongge-andaz": { kind: "illustration", file: "assets/guide/illustrations/dongge-andaz.webp", ready: false },
   "gs-charlietown": { kind: "illustration", file: "assets/guide/illustrations/charlietown.webp", ready: false },
   "gs-qingzhi-handcream": { kind: "illustration", file: "assets/guide/illustrations/qingzhi-handcream.webp", ready: false },
-  "gs-popmart": { kind: "illustration", file: "assets/guide/illustrations/popmart.webp", ready: false },
+  "gs-popmart": { kind: "illustration", file: "assets/guide/illustrations/popmart.webp", ready: true, ai: true }, // v0.11.2 AI 콘셉트 이미지 (패키지: popmart.webp)
   "gs-miniso-land": { kind: "illustration", file: "assets/guide/illustrations/miniso-land.webp", ready: false },
   "gs-toptoy": { kind: "illustration", file: "assets/guide/illustrations/toptoy.webp", ready: false },
   "gs-shanghai-first-food-store": { kind: "photo", file: "assets/guide/photos/shanghai-first-food-store.webp", commons: "Shanghai First Foodhall 20250501.jpg", thumb: "https://thumb.wikimedia.org/wikipedia/commons/thumb/9/98/Shanghai_First_Foodhall_20250501.jpg/1280px-Shanghai_First_Foodhall_20250501.jpg", credit: "Suicasmo", license: "CC0", license_url: "https://creativecommons.org/publicdomain/zero/1.0/", date: "2025-05-01", modified: "16:10 crop + resize 1280x800 (WebP)", alt: "Shanghai First Foodhall (上海第一食品商店) store building on East Nanjing Road" }, // v0.11.1 신규 실사 · 매장 외관
   "gs-mms-shanghai": { kind: "photo", file: "assets/guide/photos/mms-shanghai.webp", commons: "Shanghai M&M'S Facade.jpg", thumb: "https://thumb.wikimedia.org/wikipedia/commons/thumb/1/11/Shanghai_M%26M%27S_Facade.jpg/1280px-Shanghai_M%26M%27S_Facade.jpg", credit: "Mepatm (cropped)", license: "CC BY-SA 4.0", license_url: "https://creativecommons.org/licenses/by-sa/4.0/", date: "2018-09-16", modified: "16:10 crop + resize 1280x800 (WebP) — CC BY-SA 4.0으로 재배포", alt: "M&M'S store front on East Nanjing Road, Shanghai" }, // v0.11.1 신규 실사 · 매장 정면
   "gs-monogram": { kind: "illustration", file: "assets/guide/illustrations/monogram.webp", ready: false },
-  "gs-libaixie": { kind: "illustration", file: "assets/guide/illustrations/libaixie.webp", ready: false },
+  "gs-libaixie": { kind: "illustration", file: "assets/guide/illustrations/libaixie.webp", ready: true, ai: true }, // v0.11.2 AI 콘셉트 이미지 (패키지: li-baixie.webp)
   "gs-hugongguan": { kind: "photo", file: "assets/guide/photos/hugongguan.webp", commons: "Butterfield & Swire.jpg", thumb: "https://upload.wikimedia.org/wikipedia/commons/0/00/Butterfield_%26_Swire.jpg", credit: "Fayhoo (cropped)", license: "CC BY-SA 3.0", license_url: "https://creativecommons.org/licenses/by-sa/3.0/", date: "2015-01 (Commons 업로드일)", modified: "16:10 crop + resize 1280x800 (WebP) — CC BY-SA 3.0으로 재배포", context: "건물 외관 · 外滩22号", alt: "No. 22 The Bund (former Butterfield & Swire building) — the building that houses Hu Gong Guan (2F)" }, // v0.11.1 신규 실사 · 입점 건물 외관
-  "gs-diandude": { kind: "illustration", file: "assets/guide/illustrations/diandude.webp", ready: false },
-  "gs-feidachu": { kind: "illustration", file: "assets/guide/illustrations/feidachu.webp", ready: false },
-  "gs-existing-panlong-tiandi": { kind: "illustration", file: "assets/guide/illustrations/panlong-tiandi.webp", ready: false },
+  "gs-diandude": { kind: "illustration", file: "assets/guide/illustrations/diandude.webp", ready: true, ai: true }, // v0.11.2 AI 콘셉트 이미지 (패키지: diandude.webp)
+  "gs-feidachu": { kind: "illustration", file: "assets/guide/illustrations/feidachu.webp", ready: true, ai: true }, // v0.11.2 AI 콘셉트 이미지 (패키지: feidachu.webp)
+  "gs-existing-panlong-tiandi": { kind: "illustration", file: "assets/guide/illustrations/panlong-tiandi.webp", ready: true, ai: true }, // v0.11.2 AI 콘셉트 이미지 (패키지: panlongtiandi.webp)
 };
 
 // manifest → 기존 image 필드에 반영 (GUIDE_SPOTS 원본 항목은 그대로 두고 런타임에만 덮어씀)

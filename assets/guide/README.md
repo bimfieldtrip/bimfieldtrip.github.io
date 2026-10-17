@@ -4,6 +4,7 @@
 
 - `photos/` — Wikimedia Commons 실사의 웹용 16:10 WebP 사본(1280×800). **v0.11.1부터 4장(`bund`, `mms-shanghai`, `shanghai-first-food-store`, `hugongguan`)은 repo에 포함되어 바로 표시됩니다**(`GUIDE_IMAGE_MANIFEST`의 `file` 필드). 나머지 27장은 기존처럼 Commons 공식 썸네일 CDN(thumb.wikimedia.org)에서 불러오며, 필요하면 `python3 tools/fetch_guide_photos.py`로 사본을 만들고 `GUIDE_LOCAL_PHOTOS`를 `true`로 바꿀 수 있습니다.
 - `illustrations/` — ILLUSTRATION_NEEDED 장소용 AI 일러스트(16:10). 제작 목록은 [ILLUSTRATION_BRIEF.md](ILLUSTRATION_BRIEF.md)에 있습니다.
+  **v0.11.2: 10장 적용** — 모두 AI 생성 콘셉트 이미지이며 실제 매장 사진이 아닙니다(카드에 `AI 이미지 · 실제 사진 아님` 표시). 실사 라이선스 표(아래)와 별개이며, 실사를 대체하지 않습니다. 업종·장면·입점 형태가 맞지 않거나 실제 캐릭터·로고·간판 글자가 들어간 이미지는 넣지 않습니다.
 - 전체 장소별 점검 결과는 [IMAGE_AUDIT.md](IMAGE_AUDIT.md)에 있습니다.
 
 SNS(Instagram/Xiaohongshu)·블로그·Google 이미지 검색 결과·라이선스 미확인 사진은 넣지 않습니다. Google 이미지 검색은 카드의 **PHOTOS ↗** 링크로만 연결합니다.
