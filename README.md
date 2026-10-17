@@ -1,8 +1,22 @@
-# Shanghai Field Trip Hub — v0.10.0 · 중국어 회화 탭 추가
+# Shanghai Field Trip Hub — v0.11.0 · 중국어 회화 MP3 음성
 
 KAIST BIM Shanghai Field Trip(2026.12.27~12.31)을 위한 **공개 여행 안내 허브**입니다.
 "상하이에서 무엇을 하고, 무엇을 준비하고, 어디를 볼 수 있는가"에만 집중하며, 실제 참가자 운영
 (체크인·버스 탑승·룸 배정·택시팀·정산 등)은 별도의 Private Participant Portal에서 처리합니다.
+
+## 🔊 v0.11.0 — 중국어 회화 MP3 음성 + HOME 일정 카드 정리
+
+Guide(실사 이미지 · `js/data-guide.js` · `assets/guide/`) · PREP · Schedule · MY TRIP(Apps Script, `js/config.js`)은 건드리지 않았습니다.
+
+- **중국어 회화 음성:** 25문장 모두 사전 생성 MP3(`assets/phrases/<카테고리>-<번호>.mp3`)로 재생합니다.
+  - 모델 Kokoro-82M v1.1-zh(Apache-2.0), 화자 75번(`zm_041`, 남성), 기본 속도. 오프라인 생성 · 외부 TTS API 없음.
+  - 25개 합계 약 273KB(평균 11KB · 1.8초). `preload="none"`이라 **누른 문장만** 받고, 이후엔 브라우저 캐시를 씁니다.
+  - MP3를 받지 못하거나 재생할 수 없을 때만 기존 브라우저 음성(SpeechSynthesis, zh-CN)으로 대체합니다.
+    사용자가 직접 정지한 경우에는 대체 음성이 시작되지 않습니다.
+  - 문장 ↔ 파일 대응은 `js/data-phrases.js`의 `audio` 값입니다. **문장(`zh`)을 고치면 MP3도 다시 생성해야 합니다.**
+  - 출처 · 생성 설정 · 라이선스: `assets/phrases/NOTICE.md`, `assets/phrases/LICENSE-Kokoro-Apache-2.0.txt`.
+- **HOME:** Trip at a Glance Day 2에 "→ 선택 액티비티" 추가(시각 미표기). 공통 `.card + .card` 여백이 그리드 안에서
+  같은 행 카드를 12px 밀던 문제를 `.glance-grid` / `.glance-card`로 수정 — 2열 이상에서 높이 · 정렬 통일, 모바일은 내용대로.
 
 ## 💬 v0.10.0 — HOME/PREP 정리 + 중국어 회화 탭 신설
 
@@ -287,7 +301,7 @@ shanghai-field-trip-hub/
 │                              js/data-guide.js만 읽음(js/data-trip.js와 완전 분리)
 ├── prep.html                 PREP — BEFORE YOU FLY(기본 펼침) + 5개 카테고리 accordion
 │                              (ESSENTIAL APPS/PAYMENT/CONNECTIVITY/PACKING·POWER/LOCAL TIPS)
-├── phrases.html              중국어 회화 — 6개 카테고리 25문장, 듣기 · 복사 · 크게 보기 (v0.10)
+├── phrases.html              중국어 회화 — 6개 카테고리 25문장, 듣기(MP3) · 복사 · 크게 보기 (v0.10 · 음성 v0.11)
 ├── host-orgs.html             Field Visits 목록 (내비게이션에는 없음 · 카드 → Schedule 소개 카드)
 ├── css/
 │   └── style.css              공통 스타일 (외부 폰트·CDN 없음, 반응형, White + Navy 디자인).
@@ -302,12 +316,13 @@ shanghai-field-trip-hub/
 │   ├── data-guide.js            ★ Shanghai Guide 전용 독립 데이터 (v0.7 신설). GUIDE_SPOTS(56),
 │   │                          GUIDE_SOUVENIRS(33), GUIDE_RESEARCH_NOTES + _EXTENDED(미검증,
 │   │                          화면 미노출), AREA_CLUSTERS(MAP 탭용 8개 지역)
-│   ├── data-phrases.js          중국어 회화 문장 데이터 (PHRASE_CATEGORIES, v0.10)
+│   ├── data-phrases.js          중국어 회화 문장 데이터 (PHRASE_CATEGORIES, v0.10 · audio 필드 v0.11)
 │   ├── main.js                  공통 기능 (6개 고정 메뉴 내비게이션, 상태 배지, REAL+SAMPLE 이중
 │   │                          라벨, 장소/식사 카드, participantPortalUrl()/isPortalConfigured()/
 │   │                          goToPrivatePortal())
 │   └── home.js                  HOME 화면 로직 — 날짜 기반 자동 Phase 판정(computeAutoPhase) +
 │                              Hero + Trip at a Glance + My Trip CTA
+├── assets/phrases/            중국어 회화 음성 MP3 25개 + NOTICE.md(출처·생성 설정) + Kokoro 라이선스 (v0.11)
 └── README.md
 ```
 

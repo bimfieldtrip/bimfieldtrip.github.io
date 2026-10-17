@@ -699,7 +699,7 @@ const ITINERARY = [
     label: "Day 2",
     status: "confirmed",
     title: "기업 방문 3곳",
-    summary: "Biointron → Med-Fine Capital → Harbour BioMed",
+    summary: "Biointron → Med-Fine Capital → Harbour BioMed → 선택 액티비티",
     officialSchedule: { status: "confirmed", note: "Biointron → Med-Fine Capital → Harbour BioMed" },
     items: [
       { slot: "오전", title: "Biointron 방문", type: "VISIT", org_id: "biointron" },

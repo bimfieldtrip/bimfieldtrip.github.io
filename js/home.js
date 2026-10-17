@@ -80,9 +80,9 @@ function shortDayTitle(day) {
 function tripAtGlanceHtml() {
   return `
     <div class="manifest-title"><span class="manifest-title__num">01</span>TRIP AT A GLANCE<span class="manifest-title__line"></span></div>
-    <div class="grid grid--2">
+    <div class="grid grid--2 glance-grid">
       ${ITINERARY.map((day) => `
-        <div class="card">
+        <div class="card glance-card">
           <div class="day-card__header">
             <div><span class="day-card__label">${day.label}</span><span class="day-card__date"> &middot; ${day.date} (${day.weekday})</span></div>
             ${statusBadge(day.status)}
