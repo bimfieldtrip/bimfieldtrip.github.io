@@ -41,7 +41,7 @@
   <div id="orgs-root"></div>
 </main>
 
-<footer class="site-footer">SHANGHAI FIELD TRIP HUB · v0.9.0 · OFFICIAL SCHEDULE</footer>
+<footer class="site-footer">SHANGHAI FIELD TRIP HUB · v0.11.7 · OFFICIAL SCHEDULE</footer>
 <nav class="bottom-nav" data-bottom-nav aria-label="주요 메뉴 (모바일)"></nav>
 
 <script src="js/config.js"></script>
@@ -89,6 +89,11 @@
   function orgCardHtml(org, i) {
     const amap = orgAmapUrl(org);
     const copyAddr = org.address_zh || org.address;
+    // 개요 첫 문장만 먼저 보여 주고, 나머지 문장은 '자세히' 접이식 영역으로 옮깁니다(문장 내용은 그대로).
+    const introParts = org.intro.split(/(?<=다\.)\s+/);
+    const introLead = introParts[0];
+    const introRest = introParts.slice(1).join(" ");
+    const hasMore = introRest || (org.sections || []).length || org.keywords.length || org.facility;
     return `
       <details class="details-box org-visit" id="org-${org.id}">
         <summary>
@@ -100,11 +105,10 @@
         </summary>
         <div class="org-visit__body">
           <p class="org-visit__type">${org.type}</p>
-          <p class="org-visit__intro">${org.intro}</p>
-          <div class="keyword-list">${org.keywords.map((k) => `<span class="keyword-chip">${k}</span>`).join("")}</div>
-          ${org.facility ? `<div class="org-visit__facility"><div class="org-visit__label">${org.facility.title}</div><p>${org.facility.text}</p></div>` : ""}
-          <div class="org-visit__label">방문 전에 알아두기</div>
-          <ul class="org-visit__notes">${org.notes.map((n) => `<li>${n}</li>`).join("")}</ul>
+          <p class="org-visit__intro">${introLead}</p>
+          ${(org.core || []).length ? `<div class="org-visit__label">핵심 사업</div><ul class="org-visit__core">${org.core.map((t) => `<li>${t}</li>`).join("")}</ul>` : ""}
+          ${org.notes && org.notes.length ? `<div class="org-visit__label">방문 전에 알아두기</div>
+          <ul class="org-visit__notes">${org.notes.map((n) => `<li>${n}</li>`).join("")}</ul>` : ""}
           <div class="zh-block" style="margin-top:14px;">
             <div class="zh-block__label">ADDRESS · 방문지 주소</div>
             ${org.address_zh ? `<div class="zh-block__text">${org.address_zh}</div>` : `<div class="zh-block__text">${org.name_zh}</div>`}
@@ -116,6 +120,15 @@
             ${amap ? `<a class="btn btn--sm" href="${amap}" target="_blank" rel="noopener">${icon("pin")}<span>高德地图</span></a>` : ""}
             <a class="btn btn--sm" href="${org.website}" target="_blank" rel="noopener">공식 홈페이지 ${icon("chevron")}</a>
           </div>
+          ${hasMore ? `<details class="org-visit__more">
+            <summary>기술 · 사업모델 · 공개 협력 자세히</summary>
+            <div class="org-visit__more-body">
+              ${introRest ? `<p class="org-visit__intro org-visit__intro--rest">${introRest}</p>` : ""}
+              ${(org.sections || []).map((sec) => `<div class="org-visit__label">${sec.label}</div><ul class="org-visit__notes">${sec.items.map((t) => `<li>${t}</li>`).join("")}</ul>`).join("")}
+              ${org.facility ? `<div class="org-visit__facility"><div class="org-visit__label">${org.facility.title}</div><p>${org.facility.text}</p></div>` : ""}
+              <div class="keyword-list" style="margin-top:12px;">${org.keywords.map((k) => `<span class="keyword-chip">${k}</span>`).join("")}</div>
+            </div>
+          </details>` : ""}
           <p class="text-faint mono org-visit__source">SOURCE — ${org.sources.map((s) => `<a href="${s.url}" target="_blank" rel="noopener">${s.label}</a>`).join(" · ")}</p>
         </div>
       </details>

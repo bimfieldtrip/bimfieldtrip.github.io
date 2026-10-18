@@ -54,6 +54,8 @@ const EAT_TYPES = ["ALL", "RESTAURANT", "CAFE", "DESSERT", "BAR"];
 // tab: "see" | "eat" | "shop" (기본 소속 탭). tabs: [...] 가 있으면 여러 탭에 함께 노출.
 // eatType: tab이 "eat"일 때만 사용 (restaurant/cafe/dessert/bar).
 // category: 화면에 그대로 보여주는 원문 카테고리 라벨(사용자 원문 유지).
+// v0.11.7: amap_keyword 가 있으면 高德地图 검색어로 그 값만 씁니다(없으면 기존대로 name_zh + address).
+//   동방명주 · 상하이타워 · 예원 · 임시정부 청사는 보강한 주소를 ADDRESS 복사에만 쓰고, 지도 검색어는 기존 이름 기반을 유지합니다(사용자 결정 2026-10-18).
 const GUIDE_SPOTS = [
   // ---------- NANJING WEST · JING'AN ----------
   {
@@ -252,6 +254,7 @@ const GUIDE_SPOTS = [
     address: "上海市长宁区延安西路1262号",
     hours: "",
     note: "옛 Columbia Country Club 등을 재생한 문화·라이프스타일 공간. 청록색 야외 수영장이 대표 포토스팟.",
+    tip: "바로 옆 延安西路1221号에 옛 장난감 공장을 개조한 복합공간 星期天公园(Park Dimanche)이 있어 함께 둘러보기 좋습니다. 카페·레스토랑 영업시간은 현장에서 확인하세요.",
     aliases: ["콜롬비아 서클", "상생신소"],
   
     image_search_query: "上生·新所 Columbia Circle Shanghai",},
@@ -283,7 +286,7 @@ const GUIDE_SPOTS = [
     address: "上海市徐汇区肇嘉浜路407号",
     hours: "",
     signature: ["蟹粉捞饭", "金牌红烧肉"],
-    note: "Michelin Guide 등재 상하이 요리점. (과거 자료의 '人管' 표기는 '人和馆'으로 교정)",
+    note: "2026 미쉐린 가이드 1스타 상하이 요리점. (과거 자료의 '人管' 표기는 '人和馆'으로 교정)",
     aliases: ["런허관", "게살솥밥", "홍소육"],
   
     image_search_query: "人和馆 上海菜 徐汇店 上海",},
@@ -455,7 +458,7 @@ const GUIDE_SPOTS = [
     address: "上海市黄浦区淮海中路333号 新天地广场 F4",
     hours: "",
     signature: ["辣椒炒肉"],
-    note: "",
+    note: "고추고기볶음(辣椒炒肉)을 대표 메뉴로 하는 체인의 신천지점.",
     aliases: ["페이다추", "고추고기볶음"],
   
     image_search_query: "费大厨辣椒炒肉 新天地店 上海",},
@@ -464,17 +467,17 @@ const GUIDE_SPOTS = [
   // 아래 19곳은 기존에 이미 저장되어 있던 장소이며, 검증되지 않은 candidate/TBD
   // 표현만 제거했습니다. area는 지명 자체가 속한 지역을 근거로 한 스케매틱
   // 지도용 근사 분류이며, 정확한 주소/영업시간은 표시하지 않습니다.
-  { id: "gs-existing-bund", tab: "see", category: "SEE", area: "NANJING EAST · BUND", name: "The Bund", name_zh: "外滩", address: "", hours: "", note: "상하이를 대표하는 강변 산책로 · 야경 명소.", image: "assets/guide/photos/bund.webp", image_alt: "The Bund at night — Customs House clock tower and HSBC Building lit up along the Huangpu River", image_source_url: "https://commons.wikimedia.org/wiki/File:HSBC_Building_and_Custom_House,_Shanghai_at_night_20260417.jpg", image_credit: "Photo: DvTor8303", image_license: "CC0", image_search_query: "外滩 The Bund Shanghai"},
+  { id: "gs-existing-bund", tab: "see", category: "SEE", area: "NANJING EAST · BUND", name: "The Bund", name_zh: "外滩", address: "", hours: "", note: "상하이를 대표하는 강변 산책로 · 야경 명소.", tip: "야간 경관 조명 시간은 계절과 행사에 따라 공지가 달라집니다. 12월 점등 시간은 당일 공지로 확인하세요.", image: "assets/guide/photos/bund.webp", image_alt: "The Bund at night — Customs House clock tower and HSBC Building lit up along the Huangpu River", image_source_url: "https://commons.wikimedia.org/wiki/File:HSBC_Building_and_Custom_House,_Shanghai_at_night_20260417.jpg", image_credit: "Photo: DvTor8303", image_license: "CC0", image_search_query: "外滩 The Bund Shanghai"},
   { id: "gs-existing-nanjing-east-road", tab: "see", category: "SEE", area: "NANJING EAST · BUND", name: "Nanjing East Road", name_zh: "南京东路", address: "", hours: "", note: "와이탄과 이어지는 대표 쇼핑가.", image_search_query: "南京东路步行街 上海"},
   { id: "gs-existing-peoples-square", tab: "see", category: "SEE", area: "OTHER", name: "People's Square", name_zh: "人民广场", address: "", hours: "", note: "상하이 도심 중앙 광장 · 지하철 환승 거점.", image_search_query: "人民广场 People's Square Shanghai"},
-  { id: "gs-existing-oriental-pearl", tab: "see", category: "SEE", area: "LUJIAZUI", name: "Oriental Pearl Tower", name_zh: "东方明珠", address: "", hours: "", note: "푸동 스카이라인의 상징적인 전망 타워.", image: "https://upload.wikimedia.org/wikipedia/commons/thumb/e/e9/ShanghaiPearlTower.jpg/960px-ShanghaiPearlTower.jpg", image_alt: "Oriental Pearl Tower, Shanghai", image_source_url: "https://commons.wikimedia.org/wiki/File:ShanghaiPearlTower.jpg", image_credit: "", image_license: "Public Domain", image_search_query: "东方明珠 Oriental Pearl Tower Shanghai"},
+  { id: "gs-existing-oriental-pearl", tab: "see", category: "SEE", area: "LUJIAZUI", name: "Oriental Pearl Tower", name_zh: "东方明珠", amap_keyword: "东方明珠", address: "上海市浦东新区世纪大道1号", hours: "09:00–21:00 (참고)", note: "푸동 스카이라인의 상징적인 전망 타워.", tip: "관람 구역에 따라 권종이 나뉩니다. 요금과 예매 방법은 공식 매표 문의(021-58792888)로 확인하세요.", image: "https://upload.wikimedia.org/wikipedia/commons/thumb/e/e9/ShanghaiPearlTower.jpg/960px-ShanghaiPearlTower.jpg", image_alt: "Oriental Pearl Tower, Shanghai", image_source_url: "https://commons.wikimedia.org/wiki/File:ShanghaiPearlTower.jpg", image_credit: "", image_license: "Public Domain", image_search_query: "东方明珠 Oriental Pearl Tower Shanghai"},
   { id: "gs-existing-lujiazui", tab: "see", category: "SEE", area: "LUJIAZUI", name: "Lujiazui", name_zh: "陆家嘴", address: "", hours: "", note: "상하이 금융 중심지 · 초고층 스카이라인 지역.", image_search_query: "陆家嘴 Lujiazui skyline Shanghai"},
-  { id: "gs-existing-shanghai-tower", tab: "see", category: "SEE", area: "LUJIAZUI", name: "Shanghai Tower", name_zh: "上海中心大厦", address: "", hours: "", note: "중국에서 가장 높은 초고층 빌딩.", image_search_query: "上海中心大厦 Shanghai Tower"},
+  { id: "gs-existing-shanghai-tower", tab: "see", category: "SEE", area: "LUJIAZUI", name: "Shanghai Tower", name_zh: "上海中心大厦", amap_keyword: "上海中心大厦", address: "上海市浦东新区银城中路501号", hours: "08:30–22:00 (참고 · 마지막 입장 시간은 티켓에서 확인)", note: "중국에서 가장 높은 초고층 빌딩.", tip: "전망대(上海之巅观光厅, 118층) 입구는 지하 1층입니다. 표는 실명제로 판매되며 여권으로 구매·입장할 수 있습니다. 온라인 예매에서 여권 입력이 안 되면 건물의 현장 매표 데스크를 이용하세요.", image_search_query: "上海中心大厦 Shanghai Tower"},
   { id: "gs-existing-xintiandi", tab: "see", category: "SEE", area: "XINTIANDI", name: "Xintiandi", name_zh: "新天地", address: "", hours: "", note: "스쿠먼(石库门) 골목을 재개발한 상업지구.", image_search_query: "新天地 Xintiandi Shanghai"},
   { id: "gs-existing-tianzifang", tab: "see", category: "SEE", area: "XINTIANDI", name: "Tianzifang", name_zh: "田子坊", address: "", hours: "", note: "좁은 골목 사이 공방·카페·편집숍이 모인 구역.", image_search_query: "田子坊 Tianzifang Shanghai"},
-  { id: "gs-existing-yuyuan", tab: "see", category: "SEE", area: "OTHER", name: "Yuyuan Garden", name_zh: "豫园", address: "", hours: "", note: "전통 정원과 주변 상가(예원상성)를 함께 둘러볼 수 있음.", image: "https://thumb.wikimedia.org/wikipedia/commons/thumb/e/e9/Yu_Garden_1.jpg/1280px-Yu_Garden_1.jpg", image_alt: "Yu Garden, Shanghai", image_source_url: "https://commons.wikimedia.org/wiki/File:Yu_Garden_1.jpg", image_credit: "", image_license: "Public Domain", image_search_query: "豫园 Yu Garden Shanghai"},
+  { id: "gs-existing-yuyuan", tab: "see", category: "SEE", area: "OTHER", name: "Yuyuan Garden", name_zh: "豫园", amap_keyword: "豫园", address: "上海市黄浦区福佑路168号（豫园北门）", hours: "09:00–16:30 (입장 16:00까지) · 매주 월요일 휴원(법정공휴일 제외)", note: "전통 정원과 주변 상가(예원상성)를 함께 둘러볼 수 있음.", tip: "12월은 비수기 요금(성인 30위안, 공식 안내 기준)입니다. 표는 공식 '上海豫园' 미니프로그램이나 남·북문 매표소에서 살 수 있고, ADDRESS 복사는 단체·개인이 모두 들어가는 북문(福佑路168号) 주소이고, 남문(豫园老街279号, 九曲桥 쪽)은 개인 관람객만 들어갈 수 있습니다(공식 안내). 高德地图 버튼은 정원 전체(豫园)로 검색합니다. 2026년 12월 28일은 월요일이라 휴원일입니다.", image: "https://thumb.wikimedia.org/wikipedia/commons/thumb/e/e9/Yu_Garden_1.jpg/1280px-Yu_Garden_1.jpg", image_alt: "Yu Garden, Shanghai", image_source_url: "https://commons.wikimedia.org/wiki/File:Yu_Garden_1.jpg", image_credit: "", image_license: "Public Domain", image_search_query: "豫园 Yu Garden Shanghai"},
   { id: "gs-existing-jingan-temple", tab: "see", category: "SEE", area: "NANJING WEST · JING'AN", name: "Jing'an Temple", name_zh: "静安寺", address: "", hours: "", note: "난징시루 인근의 대표 사찰.", image: "https://thumb.wikimedia.org/wikipedia/commons/thumb/e/ea/Jing%27an_temple.JPG/1280px-Jing%27an_temple.JPG", image_alt: "Jing'an Temple, Shanghai", image_source_url: "https://commons.wikimedia.org/wiki/File:Jing%27an_temple.JPG", image_credit: "Photo: J. Patrick Fischer", image_license: "CC BY-SA 3.0", image_search_query: "静安寺 Jing'an Temple Shanghai"},
-  { id: "gs-existing-korean-provisional-govt", tab: "see", category: "SEE", area: "XINTIANDI", name: "Site of the Provisional Government of the Republic of Korea", name_zh: "大韩民国临时政府旧址", address: "", hours: "", note: "신천지 인근의 대한민국 임시정부 관련 유적.", image_search_query: "大韩民国临时政府旧址 上海"},
+  { id: "gs-existing-korean-provisional-govt", tab: "see", category: "SEE", area: "XINTIANDI", name: "Site of the Provisional Government of the Republic of Korea", name_zh: "大韩民国临时政府旧址", amap_keyword: "大韩民国临时政府旧址", address: "上海市黄浦区马当路306弄4号", hours: "09:00–11:30 · 13:30–17:00 (매표 11:00 · 16:30 마감)", note: "신천지 인근의 대한민국 임시정부 관련 유적.", tip: "점심시간(11:30–13:30)에는 관람할 수 없습니다. 휴관일과 입장료는 공식 안내로 확인되지 않아, 방문 전에 확인하세요.", image_search_query: "大韩民国临时政府旧址 上海"},
   { id: "gs-existing-longhua", tab: "see", category: "SEE", area: "OTHER", name: "Longhua Temple / Longhua Pagoda", name_zh: "龙华寺 / 龙华塔", address: "", hours: "", note: "상하이에서 가장 오래된 사찰·탑 중 하나.", image_search_query: "龙华寺 龙华塔 上海"},
   { id: "gs-existing-m50", tab: "see", category: "SEE", area: "OTHER", name: "M50", name_zh: "M50", address: "", hours: "", note: "옛 방직공장을 개조한 현대미술 갤러리 단지.", image_search_query: "M50 创意园 上海"},
   { id: "gs-existing-pudong-art-museum", tab: "see", category: "SEE", area: "LUJIAZUI", name: "Pudong Museum of Art", name_zh: "浦东美术馆", address: "", hours: "", note: "와이탄 건너편 강변에 위치한 미술관.", image_search_query: "浦东美术馆 上海"},
@@ -483,6 +486,9 @@ const GUIDE_SPOTS = [
   { id: "gs-existing-zhujiajiao", tab: "see", category: "SEE", area: "OTHER", name: "Zhujiajiao Water Town", name_zh: "朱家角", address: "", hours: "", note: "상하이 외곽의 수향(水乡) 고진(古镇).", image_search_query: "朱家角古镇 上海"},
   { id: "gs-existing-wuzhen", tab: "see", category: "SEE", area: "OTHER", name: "Wuzhen Water Town", name_zh: "乌镇", address: "", hours: "", note: "장쑤·저장 지역의 대표 수향 고진.", image_search_query: "乌镇 Wuzhen Water Town"},
   { id: "gs-existing-panlong-tiandi", tab: "see", category: "SEE", area: "OTHER", name: "Panlong Tiandi", name_zh: "蟠龙天地", address: "", hours: "", note: "장강 삼각주 전통 마을을 재생한 복합공간.", image_search_query: "蟠龙天地 上海"},
+  // v0.11.7 신규 2곳 (사용자 승인 2026-10-18). 실사: Commons(GUIDE_IMAGE_MANIFEST). 기존 56곳 항목은 바꾸지 않음.
+  { id: "gs-zhangyuan", tab: "see", category: "SEE / SHOP", area: "NANJING WEST · JING'AN", name: "Zhangyuan", name_zh: "张园", address: "上海市静安区威海路588弄", hours: "", note: "석고문(石库门) 골목 단지를 리노베이션한 문화·상업 공간. 서쪽 구역은 2022년 11월부터 운영 중입니다.", tip: "동쪽 구역은 '2026년 말 개장 예정'(공식)이라 12월 개방 범위는 방문 전에 확인하세요.", aliases: ["장위안", "장옌", "张园"], image_search_query: "张园 Zhangyuan Shanghai", source_url: "https://www.swireproperties.com/zh-cn/portfolio/current-developments/zhangyuan/"},
+  { id: "gs-jingan-sculpture-park", tab: "see", category: "SEE", area: "NANJING WEST · JING'AN", name: "Jing'an Sculpture Park", name_zh: "静安雕塑公园", address: "上海市静安区北京西路500号", hours: "24시간 · 무료 (2026-09 갱신 자료)", note: "조각 작품을 전시한 도심 공원. 지하철 13호선 自然博物馆역 근처입니다.", aliases: ["징안조각공원", "정안조각공원", "징안 조각공원"], image_search_query: "静安雕塑公园 Jing'an Sculpture Park", source_url: "https://www.jingan.gov.cn/rmtzx/003001/20221012/741c4a9b-dce0-4f09-8db8-f88ef9b7bb66.html"},
 ];
 
 // v0.7.1 QA — image/image_alt/image_source_url/image_credit 필드를 모든 spot에
@@ -501,6 +507,14 @@ GUIDE_SPOTS.forEach((s) => {
   s.image_search_query = s.image_search_query || ""; // Google 이미지 검색어 // 예: "AREA VIEW" — 매장 자체 사진이 아닌 지역 사진임을 카드에 표시
 });
 
+// ===== v0.11.7 기존 카드 보강 출처 (확인일 2026-10-18) =====
+// 예원: 공식 참관 안내 https://www.yugarden.com.cn/page/articleview/message.html
+// 대한민국 임시정부 청사: 上海市文旅推广网 https://www.meet-in-shanghai.net/cn/museum/office-of-the-former-site-of-the-provisional-government-of-the-republic-of-korea-444634/
+// 동방명주: 携程 경점 정보(공식 매표 문의 번호 포함) https://you.ctrip.com/sight/shanghai2/762.html
+// 상하이타워 上海之巅: China Trip Primer(2026-08 확인) https://chinatripprimer.com/zh-cn/shanghai/attractions/tower-top
+// 와이탄 조명: 上海市 2026-09-30 공지는 국경절 기간만 다룸 → 시간 수치 미게시 https://www.shanghai.gov.cn/nw17239/20260930/14f402b303d1450eb9acdd097e8077ef.html
+// 人和馆 2026 미쉐린 1스타: https://rachelgouk.com/michelin-guide-shanghai-2026-starred-restaurants-bib-gourmands/
+// Columbia Circle 주변 星期天公园: 上观 2026-10-02 https://www.shobserver.cn/sgh/detail?id=4067998
 // ===== GUIDE_SOUVENIRS =====
 // 실제 가격을 검증하지 못한 품목에는 가격을 만들지 않습니다(priceRange: "").
 // 구매처를 확실히 연결할 수 있는 경우에만 shop_ids를 연결합니다.
@@ -606,6 +620,56 @@ const GUIDE_SOUVENIR_CARDS = [
 ];
 GUIDE_SOUVENIR_CARDS.forEach((c) => { if (c.photo || c.photos) c.license = "unverified"; });
 
+// ===== GUIDE_SPOT_DRAFTS (v0.11.7 · 화면에 표시하지 않는 내부 후보) =====
+// 위치·지점·운영 근거를 확인한 신규 장소 후보입니다. 해당 장소와 정확히 일치하는 이미지를 확보하고
+// 사용자가 승인한 뒤에만 GUIDE_SPOTS로 옮겨 카드로 공개합니다. 기존 56곳의 이미지를 재활용하지 않습니다.
+// priority: "selected"(사용자 선정 신규 카드 우선 대상) | "confirmed"(2차 검증 통과 · 추가 승인 필요) | "address-pending"(입구 주소 확인 필요)
+// image_status: "ready"(일치 실사 확보 · GUIDE_DRAFT_IMAGE_MANIFEST) | "pending"(확보 대기 — 임의 SVG·다른 장소 사진·기존 56곳 이미지 사용 금지)
+// 확인일 2026-10-18. 가격·맛 평가·인스타 후기는 넣지 않았습니다.
+// 제목(title/title_zh): 1행 = 사용자가 확정한 한국어 표기(2026-10-18) 또는 영문 브랜드, 2행 = 확인된 정확한 중국어 상호(1행과 같으면 생략).
+//   확인되지 않은 지점명은 붙이지 않습니다.
+// v0.11.7: 张园 · 静安雕塑公园은 사진·정보 확인 후 사용자 승인으로 GUIDE_SPOTS로 옮김(2026-10-18). 나머지 6곳은 사진 확보 대기.
+// listed: true (사용자 승인 2026-10-18) → 사진 카드 없이 해당 지역 카드 아래 "추가 맛집" 정보형 목록과 검색에만 표시.
+//   지역 지도 핀은 넣지 않습니다(스케매틱 지도 좌표를 검증할 근거 없음). 사진을 확보하면 같은 id로 GUIDE_SPOTS 정식 카드로 옮깁니다.
+//   Matcha Wang · Apoli Itabakery 는 listed 없음 = 완전 비공개 후보.
+//   name_zh = 출처로 확인된 상호(미쉐린·보도·上海市文旅推广网). NAME 복사·高德 검색어에 그대로 쓰이므로 확인되지 않은 지점 표기는 넣지 않고 별칭으로만 둡니다.
+const GUIDE_SPOT_DRAFTS = [
+  { id: "gs-nanxiang-mantou-yuyuan", listed: true, priority: "selected", region: "bund", tab: "eat", eatType: "restaurant", category: "RESTAURANT", area: "NANJING EAST · BUND",
+    name: "Nanxiang Steamed Bun (City God Temple)", name_zh: "南翔馒头店", title: "난샹만두", title_zh: "南翔馒头店",
+    address: "上海市黄浦区城隍庙豫园路85号", hours: "", note: "2026 미쉐린 가이드 빕구르망에 오른 샤오롱바오 집. 예원 관광과 같은 동선입니다.",
+    aliases: ["南翔馒头店（城隍庙）", "남상만두점", "난샹만두", "남상만두", "샤오롱바오", "小笼包"], image_status: "pending — 해당 매장 실사 확보 필요",
+    sources: ["https://guide.michelin.com/sg/zh_CN/shanghai-municipality/shanghai/restaurant/nanxiang-steamed-bun-city-god-temple"] },
+  { id: "gs-sheng-yong-xing-bund", listed: true, priority: "selected", region: "bund", tab: "eat", eatType: "restaurant", category: "RESTAURANT", area: "NANJING EAST · BUND",
+    name: "Sheng Yong Xing (The Bund)", name_zh: "晟永兴", title: "성용싱", title_zh: "晟永兴",
+    address: "上海市黄浦区广东路20号外滩5号5楼", hours: "", note: "2026 미쉐린 가이드 1스타 베이징 요리(베이징덕)점. 예약은 식당에 직접 문의합니다.",
+    tip: "미쉐린 가이드 안내: 예약은 식당이 직접 관리합니다(전화 +86 21 6330 2885).", aliases: ["Sheng Yong Xing", "晟永兴（外滩）", "성용싱", "베이징덕", "北京烤鸭"], image_status: "pending — 해당 매장 실사 확보 필요",
+    sources: ["https://guide.michelin.com/hk/zh_HK/shanghai-municipality/shanghai/restaurant/sheng-yong-xing"] },
+  { id: "gs-jiajia-tangbao-huanghe", listed: true, priority: "confirmed", region: "bund", tab: "eat", eatType: "restaurant", category: "RESTAURANT", area: "NANJING EAST · BUND",
+    name: "Jia Jia Tang Bao (Huanghe Road)", name_zh: "佳家汤包（黄河路店）", title: "지아지아탕바오", title_zh: "佳家汤包（黄河路店）",
+    address: "上海市黄浦区黄河路127号", hours: "07:00/07:30–20:30 (출처마다 시작 시각이 다름)", note: "인민광장 근처의 탕바오(汤包) 전문점.",
+    aliases: ["지아지아탕바오", "탕바오", "汤包"], image_status: "pending — 해당 매장 실사 확보 필요",
+    sources: ["https://www.trvlogue.com/ko/jiajia-tangbao-shanghai-review", "https://hk.trip.com/restaurant/china/shanghai/detail/jia-jia-tang-bao-11144394/"] },
+  { id: "gs-luochunge-zhejiang", listed: true, priority: "confirmed", region: "bund", tab: "eat", eatType: "restaurant", category: "RESTAURANT", area: "NANJING EAST · BUND",
+    name: "Luochunge Shengjian", name_zh: "萝春阁", title: "뤄춘거", title_zh: "萝春阁",
+    address: "上海市黄浦区浙江中路425号", hours: "", note: "생지엔(生煎)으로 알려진 노포 브랜드. 2026년 1월 28일 21년 만에 浙江中路에서 다시 문을 열었습니다.",
+    tip: "재개장 첫날 1시간 반 만에 매진됐다는 보도가 있어 이른 시간 방문이 좋습니다.", aliases: ["萝春阁（浙江中路）", "뤄춘거", "생지엔", "生煎"], image_status: "pending — 해당 매장 실사 확보 필요",
+    sources: ["https://news.qq.com/rain/a/20260129A03MIQ00", "https://m.163.com/dy/article_cambrian/KKED126K0514QU8E.html"], user_original: "浙江中路425-427号 (원문 일치). 澎湃 기사의 '浙江路462号'는 1930년대 역사 기술" },
+  { id: "gs-matcha-wang-hai550", priority: "confirmed", region: "xintiandi", tab: "eat", eatType: "cafe", category: "CAFE", area: "XINTIANDI",
+    name: "Matcha Wang", name_zh: "Matcha Wang（HAI550）", title: "Matcha Wang", title_zh: "",
+    address: "上海市黄浦区淮海中路550号 HAI550 1楼", hours: "", note: "우유 거품 위에 양 그림을 그린 말차 음료로 알려진 말차 전문점.",
+    aliases: ["말차왕", "매치왕", "抹茶"], image_status: "pending — 해당 매장 실사 확보 필요",
+    sources: ["https://www.36kr.com/p/4000981636468608"] },
+  { id: "gs-apoli-itabakery", priority: "confirmed", region: "wukang-anfu", tab: "eat", eatType: "cafe", category: "CAFE / FOOD", area: "WUKANG · ANFU",
+    name: "Apoli Itabakery", name_zh: "AP意大利料理面包坊", title: "Apoli Itabakery", title_zh: "AP意大利料理面包坊",
+    address: "上海市徐汇区兴国路380号", hours: "09:00–21:00 (2026-04 방문기 기준)", note: "이탈리아식 베이커리·카페.",
+    aliases: ["아폴리", "APOLI"], image_status: "pending — 해당 매장 실사 확보 필요",
+    sources: ["https://hedonisthk.blogspot.com/2026/04/apoli-itabakery-ap-shanghai-china-famous-harry-potter-bakery-cafe-amazing-savory-sweet-bite-best-melt-in-the-mouth-nama-donut.html"] },
+];
+
+// ===== GUIDE_DRAFT_IMAGE_MANIFEST (v0.11.7 · 신규 후보 전용 실사, 화면 미표시) =====
+// 카드 공개 승인 시 해당 항목을 GUIDE_IMAGE_MANIFEST로 옮깁니다. (张园 · 静安雕塑公园은 2026-10-18 이동 완료 → 현재 비어 있음)
+const GUIDE_DRAFT_IMAGE_MANIFEST = {};
+
 // ===== GUIDE_RESEARCH_NOTES =====
 // 정확한 상호·주소를 확인하지 못한 자료입니다. Guide 메인 카드에는 렌더링하지
 // 않고(어디에서도 화면에 노출하지 않음), 삭제하지 않고 이 배열에만 보존합니다.
@@ -700,34 +764,34 @@ const GUIDE_LOCAL_PHOTOS = false;
 // 브리프(장소 특징·비율·파일명)는 assets/guide/ILLUSTRATION_BRIEF.md 참고.
 const GUIDE_IMAGE_MANIFEST = {
   // ---------- REAL PHOTO (Wikimedia Commons, 라이선스 확인 2026-09-29 · v0.11.1 4장 2026-10-17 재확인) ----------
-  "gs-the-louis": { kind: "photo", commons: "The Louis, Louis Vuitton Flagship Store 20251128.jpg", thumb: "https://thumb.wikimedia.org/wikipedia/commons/thumb/9/92/The_Louis%2C_Louis_Vuitton_Flagship_Store_20251128.jpg/1280px-The_Louis%2C_Louis_Vuitton_Flagship_Store_20251128.jpg", credit: "Supanut Arunoprayote", license: "CC BY 4.0", alt: "The Louis, Louis Vuitton flagship ship-shaped building, Shanghai" },
-  "gs-starbucks-reserve-roastery": { kind: "photo", commons: "Starbucks Reserve Roastery Shanghai 02.jpg", thumb: "https://thumb.wikimedia.org/wikipedia/commons/thumb/4/43/Starbucks_Reserve_Roastery_Shanghai_02.jpg/1280px-Starbucks_Reserve_Roastery_Shanghai_02.jpg", credit: "Codas", license: "CC BY-SA 4.0", alt: "Interior of Starbucks Reserve Roastery Shanghai with the copper roasting cask" },
-  "gs-the-stage": { kind: "photo", commons: "White Magnolia Plaza, view from Shangqiu road.jpg", thumb: "https://thumb.wikimedia.org/wikipedia/commons/thumb/0/0f/White_Magnolia_Plaza%2C_view_from_Shangqiu_road.jpg/960px-White_Magnolia_Plaza%2C_view_from_Shangqiu_road.jpg", credit: "DmitryKvasov", license: "CC0", alt: "White Magnolia Plaza tower, North Bund — the building that houses The Stage observation deck", context: "WHITE MAGNOLIA PLAZA · EXTERIOR", focus: "50% 0%" },
-  "gs-north-bund": { kind: "photo", commons: "The North Bund, Shanghai.jpg", thumb: "https://thumb.wikimedia.org/wikipedia/commons/thumb/9/95/The_North_Bund%2C_Shanghai.jpg/1280px-The_North_Bund%2C_Shanghai.jpg", credit: "钉钉", license: "CC BY-SA 4.0", alt: "North Bund riverside lawn with the Pudong skyline across the Huangpu River" },
-  "gs-wukang-mansion": { kind: "photo", commons: "Wukang Mansion 20251128.jpg", thumb: "https://thumb.wikimedia.org/wikipedia/commons/thumb/4/41/Wukang_Mansion_20251128.jpg/1280px-Wukang_Mansion_20251128.jpg", credit: "Supanut Arunoprayote", license: "CC BY 4.0", alt: "Wukang Mansion, Shanghai", focus: "50% 35%" },
-  "gs-wukang-road": { kind: "photo", commons: "Wukang Road, Shanghai, May 2016.JPG", thumb: "https://thumb.wikimedia.org/wikipedia/commons/thumb/2/22/Wukang_Road%2C_Shanghai%2C_May_2016.JPG/1280px-Wukang_Road%2C_Shanghai%2C_May_2016.JPG", credit: "SSYoung", license: "CC BY-SA 4.0", alt: "Tree-lined Wukang Road with low historic houses" },
-  "gs-anfu-road": { kind: "photo", commons: "Anfulu 255 Hao Zhuzhai.JPG", thumb: "https://thumb.wikimedia.org/wikipedia/commons/thumb/9/90/Anfulu_255_Hao_Zhuzhai.JPG/1280px-Anfulu_255_Hao_Zhuzhai.JPG", credit: "Fayhoo", license: "CC BY-SA 3.0", alt: "Historic residence at No. 255 Anfu Road under plane trees", context: "ANFU RD. NO.255" },
-  "gs-columbia-circle": { kind: "photo", commons: "Columbia Country Club 06.jpg", thumb: "https://thumb.wikimedia.org/wikipedia/commons/thumb/0/08/Columbia_Country_Club_06.jpg/1280px-Columbia_Country_Club_06.jpg", credit: "WQL", license: "CC BY-SA 4.0", alt: "The turquoise outdoor pool of the former Columbia Country Club at Columbia Circle" },
-  "gs-andaz-itc": { kind: "photo", commons: "XuJiaHui-Complexe Shanghai ITC.jpg", thumb: "https://thumb.wikimedia.org/wikipedia/commons/thumb/e/eb/XuJiaHui-Complexe_Shanghai_ITC.jpg/960px-XuJiaHui-Complexe_Shanghai_ITC.jpg", credit: "ShanghaiDream", license: "CC0", alt: "Shanghai ITC tower complex in Xujiahui, home of Andaz Shanghai ITC", context: "SHANGHAI ITC · EXTERIOR", focus: "50% 0%" },
-  "gs-tian-an-1000-trees": { kind: "photo", commons: "1000 Trees 20251127.jpg", thumb: "https://thumb.wikimedia.org/wikipedia/commons/thumb/0/06/1000_Trees_20251127.jpg/1280px-1000_Trees_20251127.jpg", credit: "Supanut Arunoprayote", license: "CC BY 4.0", alt: "Tian An 1000 Trees, Shanghai", focus: "50% 40%" },
+  "gs-the-louis": { kind: "photo", file: "assets/guide/photos/the-louis.webp", commons: "The Louis, Louis Vuitton Flagship Store 20251128.jpg", thumb: "https://thumb.wikimedia.org/wikipedia/commons/thumb/9/92/The_Louis%2C_Louis_Vuitton_Flagship_Store_20251128.jpg/1280px-The_Louis%2C_Louis_Vuitton_Flagship_Store_20251128.jpg", credit: "Supanut Arunoprayote", license: "CC BY 4.0", alt: "The Louis, Louis Vuitton flagship ship-shaped building, Shanghai", modified: "16:10 crop 1280x800 (WebP)", source_sha256: "c2b4cfa9788556c1d7cd834ff3fde9efcbe62e1c56ef323e6a3dfe80bcfa0973" },
+  "gs-starbucks-reserve-roastery": { kind: "photo", file: "assets/guide/photos/starbucks-reserve-roastery.webp", commons: "Starbucks Reserve Roastery Shanghai 02.jpg", thumb: "https://thumb.wikimedia.org/wikipedia/commons/thumb/4/43/Starbucks_Reserve_Roastery_Shanghai_02.jpg/1280px-Starbucks_Reserve_Roastery_Shanghai_02.jpg", credit: "Codas", license: "CC BY-SA 4.0", alt: "Interior of Starbucks Reserve Roastery Shanghai with the copper roasting cask", modified: "16:10 crop 1280x800 (WebP)", source_sha256: "8bbd1f70a123607b39888761fea155d16816bf0be0f20dc7c3f6843a10a1acf7" },
+  "gs-the-stage": { kind: "photo", file: "assets/guide/photos/the-stage.webp", commons: "White Magnolia Plaza, view from Shangqiu road.jpg", thumb: "https://thumb.wikimedia.org/wikipedia/commons/thumb/0/0f/White_Magnolia_Plaza%2C_view_from_Shangqiu_road.jpg/960px-White_Magnolia_Plaza%2C_view_from_Shangqiu_road.jpg", credit: "DmitryKvasov", license: "CC0", alt: "White Magnolia Plaza tower, North Bund — the building that houses The Stage observation deck", context: "WHITE MAGNOLIA PLAZA · EXTERIOR", focus: "50% 0%", modified: "16:10 crop 960x600 (WebP)", source_sha256: "bf60d7cdbb533232d741cd4892ace2a4323ce9343754bb8444785bb70a2772c1" },
+  "gs-north-bund": { kind: "photo", file: "assets/guide/photos/north-bund.webp", commons: "The North Bund, Shanghai.jpg", thumb: "https://thumb.wikimedia.org/wikipedia/commons/thumb/9/95/The_North_Bund%2C_Shanghai.jpg/1280px-The_North_Bund%2C_Shanghai.jpg", credit: "钉钉", license: "CC BY-SA 4.0", alt: "North Bund riverside lawn with the Pudong skyline across the Huangpu River", modified: "16:10 crop 1280x800 (WebP)", source_sha256: "eb47de6fe89d7f4133439d8a713ff717ef08908fb28e967849e823f686075598" },
+  "gs-wukang-mansion": { kind: "photo", file: "assets/guide/photos/wukang-mansion.webp", commons: "Wukang Mansion 20251128.jpg", thumb: "https://thumb.wikimedia.org/wikipedia/commons/thumb/4/41/Wukang_Mansion_20251128.jpg/1280px-Wukang_Mansion_20251128.jpg", credit: "Supanut Arunoprayote", license: "CC BY 4.0", alt: "Wukang Mansion, Shanghai", focus: "50% 35%", modified: "16:10 crop 1280x800 (WebP)", source_sha256: "0919bb45583fbda3da59f33082e29d395fdd3277aecac5eb0089db76f2698abc" },
+  "gs-wukang-road": { kind: "photo", file: "assets/guide/photos/wukang-road.webp", commons: "Wukang Road, Shanghai, May 2016.JPG", thumb: "https://thumb.wikimedia.org/wikipedia/commons/thumb/2/22/Wukang_Road%2C_Shanghai%2C_May_2016.JPG/1280px-Wukang_Road%2C_Shanghai%2C_May_2016.JPG", credit: "SSYoung", license: "CC BY-SA 4.0", alt: "Tree-lined Wukang Road with low historic houses", modified: "16:10 crop 1280x800 (WebP)", source_sha256: "e182881624cda7155fc5223a2dcfb14365d74c5aabd8a1564d0b9eb093bd5bf2" },
+  "gs-anfu-road": { kind: "photo", file: "assets/guide/photos/anfu-road.webp", commons: "Anfulu 255 Hao Zhuzhai.JPG", thumb: "https://thumb.wikimedia.org/wikipedia/commons/thumb/9/90/Anfulu_255_Hao_Zhuzhai.JPG/1280px-Anfulu_255_Hao_Zhuzhai.JPG", credit: "Fayhoo", license: "CC BY-SA 3.0", alt: "Historic residence at No. 255 Anfu Road under plane trees", context: "ANFU RD. NO.255", modified: "16:10 crop 1280x800 (WebP)", source_sha256: "76df0c1a26f6db1833544feb714f1d893f02759a0beeb53bbcc22dfaafa03451" },
+  "gs-columbia-circle": { kind: "photo", file: "assets/guide/photos/columbia-circle.webp", commons: "Columbia Country Club 06.jpg", thumb: "https://thumb.wikimedia.org/wikipedia/commons/thumb/0/08/Columbia_Country_Club_06.jpg/1280px-Columbia_Country_Club_06.jpg", credit: "WQL", license: "CC BY-SA 4.0", alt: "The turquoise outdoor pool of the former Columbia Country Club at Columbia Circle", modified: "16:10 crop 1280x800 (WebP)", source_sha256: "1ab829dbae1ff65005d58db69f47efc4d53b48efdbaa6f5d9e9dd2396e81fdc8" },
+  "gs-andaz-itc": { kind: "photo", file: "assets/guide/photos/andaz-itc.webp", commons: "XuJiaHui-Complexe Shanghai ITC.jpg", thumb: "https://thumb.wikimedia.org/wikipedia/commons/thumb/e/eb/XuJiaHui-Complexe_Shanghai_ITC.jpg/960px-XuJiaHui-Complexe_Shanghai_ITC.jpg", credit: "ShanghaiDream", license: "CC0", alt: "Shanghai ITC tower complex in Xujiahui, home of Andaz Shanghai ITC", context: "SHANGHAI ITC · EXTERIOR", focus: "50% 0%", modified: "16:10 crop 960x600 (WebP)", source_sha256: "a44bbad208b8fda0c113de6082da5c149e7eb84475f972be93a04a6b62e47341" },
+  "gs-tian-an-1000-trees": { kind: "photo", file: "assets/guide/photos/tian-an-1000-trees.webp", commons: "1000 Trees 20251127.jpg", thumb: "https://thumb.wikimedia.org/wikipedia/commons/thumb/0/06/1000_Trees_20251127.jpg/1280px-1000_Trees_20251127.jpg", credit: "Supanut Arunoprayote", license: "CC BY 4.0", alt: "Tian An 1000 Trees, Shanghai", focus: "50% 40%", modified: "16:10 crop 1280x800 (WebP)", source_sha256: "0e58e7013af2407eaa7337a9073f396019a089bbb3d5477d85913cb827ab6e40" },
   "gs-existing-bund": { kind: "photo", file: "assets/guide/photos/bund.webp", commons: "HSBC Building and Custom House, Shanghai at night 20260417.jpg", thumb: "https://thumb.wikimedia.org/wikipedia/commons/thumb/f/f0/HSBC_Building_and_Custom_House%2C_Shanghai_at_night_20260417.jpg/1280px-HSBC_Building_and_Custom_House%2C_Shanghai_at_night_20260417.jpg", credit: "DvTor8303", license: "CC0", license_url: "https://creativecommons.org/publicdomain/zero/1.0/", date: "2026-04-17", modified: "16:10 crop + resize 1280x800 (WebP)", alt: "The Bund at night — Customs House clock tower and HSBC Building lit up along the Huangpu River" }, // v0.11.1: 출처 불명(pxfuel) 사진 교체
-  "gs-existing-nanjing-east-road": { kind: "photo", commons: "2014.11.15.181406 Nanjing Road Pedestrian Zone Shanghai.jpg", thumb: "https://thumb.wikimedia.org/wikipedia/commons/thumb/9/94/2014.11.15.181406_Nanjing_Road_Pedestrian_Zone_Shanghai.jpg/1280px-2014.11.15.181406_Nanjing_Road_Pedestrian_Zone_Shanghai.jpg", credit: "Hermann Luyken", license: "CC0", alt: "Nanjing Road pedestrian street at night with neon signs" },
-  "gs-existing-peoples-square": { kind: "photo", commons: "People's Square Shanghai November 2017 001.jpg", thumb: "https://thumb.wikimedia.org/wikipedia/commons/thumb/1/1a/People%27s_Square_Shanghai_November_2017_001.jpg/1280px-People%27s_Square_Shanghai_November_2017_001.jpg", credit: "King of Hearts", license: "CC BY-SA 4.0", alt: "People's Square, Shanghai" },
-  "gs-existing-oriental-pearl": { kind: "photo", commons: "ShanghaiPearlTower.jpg", thumb: "https://thumb.wikimedia.org/wikipedia/commons/thumb/e/e9/ShanghaiPearlTower.jpg/960px-ShanghaiPearlTower.jpg", credit: "", license: "Public Domain", alt: "Oriental Pearl Tower, Shanghai", focus: "50% 30%" },
-  "gs-existing-lujiazui": { kind: "photo", commons: "Shanghai Lujiazui night skyline 2017 - Flickr.jpg", thumb: "https://thumb.wikimedia.org/wikipedia/commons/thumb/1/18/Shanghai_Lujiazui_night_skyline_2017_-_Flickr.jpg/1280px-Shanghai_Lujiazui_night_skyline_2017_-_Flickr.jpg", credit: "Larry Qian", license: "CC0", alt: "Lujiazui skyline at night across the Huangpu River" },
-  "gs-existing-shanghai-tower": { kind: "photo", commons: "Shanghai Shanghai Tower 5166304.jpg", thumb: "https://thumb.wikimedia.org/wikipedia/commons/thumb/d/d7/Shanghai_Shanghai_Tower_5166304.jpg/960px-Shanghai_Shanghai_Tower_5166304.jpg", credit: "Ermell", license: "CC0", alt: "Twisting glass facade of Shanghai Tower", focus: "50% 25%" },
-  "gs-existing-xintiandi": { kind: "photo", commons: "新天地 = New Heaven & Earth (6033629189).jpg", thumb: "https://thumb.wikimedia.org/wikipedia/commons/thumb/5/59/%E6%96%B0%E5%A4%A9%E5%9C%B0_%3D_New_Heaven_%26_Earth_%286033629189%29.jpg/1280px-%E6%96%B0%E5%A4%A9%E5%9C%B0_%3D_New_Heaven_%26_Earth_%286033629189%29.jpg", credit: "Can Pac Swire", license: "CC BY-SA 2.0", alt: "Shikumen stone-gate houses in Xintiandi" },
-  "gs-existing-tianzifang": { kind: "photo", commons: "Tianzifang 1.jpg", thumb: "https://thumb.wikimedia.org/wikipedia/commons/thumb/7/7c/Tianzifang_1.jpg/1280px-Tianzifang_1.jpg", credit: "钉钉", license: "CC BY-SA 4.0", alt: "Narrow shikumen lane lined with shops in Tianzifang" },
-  "gs-existing-yuyuan": { kind: "photo", commons: "Yu Garden 1.jpg", thumb: "https://thumb.wikimedia.org/wikipedia/commons/thumb/e/e9/Yu_Garden_1.jpg/1280px-Yu_Garden_1.jpg", credit: "", license: "Public Domain", alt: "Yu Garden, Shanghai" },
-  "gs-existing-jingan-temple": { kind: "photo", commons: "Jing'an temple.JPG", thumb: "https://thumb.wikimedia.org/wikipedia/commons/thumb/e/ea/Jing%27an_temple.JPG/1280px-Jing%27an_temple.JPG", credit: "J. Patrick Fischer", license: "CC BY-SA 3.0", alt: "Jing'an Temple, Shanghai" },
-  "gs-existing-korean-provisional-govt": { kind: "photo", commons: "Entrance of Provisional Government of ROK in Shanghai.JPG", thumb: "https://thumb.wikimedia.org/wikipedia/commons/thumb/2/25/Entrance_of_Provisional_Government_of_ROK_in_Shanghai.JPG/960px-Entrance_of_Provisional_Government_of_ROK_in_Shanghai.JPG", credit: "Ericmetro", license: "CC BY-SA 3.0", alt: "Entrance of the Site of the Provisional Government of the Republic of Korea in Shanghai", focus: "50% 45%" },
-  "gs-existing-longhua": { kind: "photo", commons: "Longhua Pagoda, 2019-10-19 02.jpg", thumb: "https://thumb.wikimedia.org/wikipedia/commons/thumb/b/b7/Longhua_Pagoda%2C_2019-10-19_02.jpg/1280px-Longhua_Pagoda%2C_2019-10-19_02.jpg", credit: "Siyuwj", license: "CC BY-SA 4.0", alt: "Longhua Pagoda, Shanghai", focus: "50% 30%" },
-  "gs-existing-m50": { kind: "photo", commons: "201703 M50 Creative Park.jpg", thumb: "https://thumb.wikimedia.org/wikipedia/commons/thumb/0/0e/201703_M50_Creative_Park.jpg/1280px-201703_M50_Creative_Park.jpg", credit: "MNXANL", license: "CC BY-SA 4.0", alt: "M50 Creative Park on Moganshan Road" },
-  "gs-existing-pudong-art-museum": { kind: "photo", commons: "Museum of Art Pudong from the Bund.jpg", thumb: "https://thumb.wikimedia.org/wikipedia/commons/thumb/c/ca/Museum_of_Art_Pudong_from_the_Bund.jpg/1280px-Museum_of_Art_Pudong_from_the_Bund.jpg", credit: "Simon Wade", license: "CC BY-SA 4.0", alt: "Museum of Art Pudong on the riverfront, seen from the Bund", context: "VIEW FROM THE BUND" },
-  "gs-existing-xujiahui-library": { kind: "photo", commons: "徐家汇书院 08.jpg", thumb: "https://thumb.wikimedia.org/wikipedia/commons/thumb/1/12/%E5%BE%90%E5%AE%B6%E6%B1%87%E4%B9%A6%E9%99%A2_08.jpg/1280px-%E5%BE%90%E5%AE%B6%E6%B1%87%E4%B9%A6%E9%99%A2_08.jpg", credit: "Nanhuajiaren", license: "CC BY-SA 4.0", alt: "Reading hall interior of Xujiahui Library (徐家汇书院)" },
-  "gs-existing-xujiahui-cathedral": { kind: "photo", commons: "Xujiahui Cathedral, 2019-10-19 04.jpg", thumb: "https://thumb.wikimedia.org/wikipedia/commons/thumb/9/98/Xujiahui_Cathedral%2C_2019-10-19_04.jpg/1280px-Xujiahui_Cathedral%2C_2019-10-19_04.jpg", credit: "Siyuwj", license: "CC BY-SA 4.0", alt: "Red-brick Gothic facade of Xujiahui Cathedral" },
-  "gs-existing-zhujiajiao": { kind: "photo", commons: "Zhujiajiao ancient water town, Nr. Shanghai, China - 1.jpg", thumb: "https://thumb.wikimedia.org/wikipedia/commons/thumb/a/af/Zhujiajiao_ancient_water_town%2C_Nr._Shanghai%2C_China_-_1.jpg/1280px-Zhujiajiao_ancient_water_town%2C_Nr._Shanghai%2C_China_-_1.jpg", credit: "Lloyd Tudor", license: "CC BY-SA 4.0", alt: "Canal, stone bridge and traditional houses in Zhujiajiao water town" },
-  "gs-existing-wuzhen": { kind: "photo", commons: "One of the waterways in Wuzhen Ancient Town.jpg", thumb: "https://thumb.wikimedia.org/wikipedia/commons/thumb/d/df/One_of_the_waterways_in_Wuzhen_Ancient_Town.jpg/1280px-One_of_the_waterways_in_Wuzhen_Ancient_Town.jpg", credit: "Wanderingchina", license: "CC BY 4.0", alt: "Aerial view of a waterway in Wuzhen Ancient Town" },
+  "gs-existing-nanjing-east-road": { kind: "photo", file: "assets/guide/photos/nanjing-east-road.webp", commons: "2014.11.15.181406 Nanjing Road Pedestrian Zone Shanghai.jpg", thumb: "https://thumb.wikimedia.org/wikipedia/commons/thumb/9/94/2014.11.15.181406_Nanjing_Road_Pedestrian_Zone_Shanghai.jpg/1280px-2014.11.15.181406_Nanjing_Road_Pedestrian_Zone_Shanghai.jpg", credit: "Hermann Luyken", license: "CC0", alt: "Nanjing Road pedestrian street at night with neon signs", modified: "16:10 crop 1280x800 (WebP)", source_sha256: "a594d252345c7e66c140add8618c2b6b7dc63df2de69d51c2fdfc8dde6994c64" },
+  "gs-existing-peoples-square": { kind: "photo", file: "assets/guide/photos/peoples-square.webp", commons: "People's Square Shanghai November 2017 001.jpg", thumb: "https://thumb.wikimedia.org/wikipedia/commons/thumb/1/1a/People%27s_Square_Shanghai_November_2017_001.jpg/1280px-People%27s_Square_Shanghai_November_2017_001.jpg", credit: "King of Hearts", license: "CC BY-SA 4.0", alt: "People's Square, Shanghai", modified: "16:10 crop 1280x800 (WebP)", source_sha256: "366fbe652c8307308cd8f2e00ac04c6817020a4a8b829f618b6f832e1c73f282" },
+  "gs-existing-oriental-pearl": { kind: "photo", file: "assets/guide/photos/oriental-pearl.webp", commons: "ShanghaiPearlTower.jpg", thumb: "https://thumb.wikimedia.org/wikipedia/commons/thumb/e/e9/ShanghaiPearlTower.jpg/960px-ShanghaiPearlTower.jpg", credit: "", license: "Public Domain", alt: "Oriental Pearl Tower, Shanghai", focus: "50% 30%", modified: "16:10 crop 960x600 (WebP)", source_sha256: "4299bde89a3f970607f1feb80193e225c9e9e5cdc9dcdfcb52d8eb7df436f047" },
+  "gs-existing-lujiazui": { kind: "photo", file: "assets/guide/photos/lujiazui.webp", commons: "Shanghai Lujiazui night skyline 2017 - Flickr.jpg", thumb: "https://thumb.wikimedia.org/wikipedia/commons/thumb/1/18/Shanghai_Lujiazui_night_skyline_2017_-_Flickr.jpg/1280px-Shanghai_Lujiazui_night_skyline_2017_-_Flickr.jpg", credit: "Larry Qian", license: "CC0", alt: "Lujiazui skyline at night across the Huangpu River", modified: "16:10 crop 1280x800 (WebP)", source_sha256: "6469bf6b52d5308c98ce2605492a01e02b06c9572f2912c50ec8616b108670ce" },
+  "gs-existing-shanghai-tower": { kind: "photo", file: "assets/guide/photos/shanghai-tower.webp", commons: "Shanghai Shanghai Tower 5166304.jpg", thumb: "https://thumb.wikimedia.org/wikipedia/commons/thumb/d/d7/Shanghai_Shanghai_Tower_5166304.jpg/960px-Shanghai_Shanghai_Tower_5166304.jpg", credit: "Ermell", license: "CC0", alt: "Twisting glass facade of Shanghai Tower", focus: "50% 25%", modified: "16:10 crop 960x600 (WebP)", source_sha256: "7ab669330a91205aa4e9ab39497f2ebebefbcca5e1192127684382547ebecf6d" },
+  "gs-existing-xintiandi": { kind: "photo", file: "assets/guide/photos/xintiandi.webp", commons: "新天地 = New Heaven & Earth (6033629189).jpg", thumb: "https://thumb.wikimedia.org/wikipedia/commons/thumb/5/59/%E6%96%B0%E5%A4%A9%E5%9C%B0_%3D_New_Heaven_%26_Earth_%286033629189%29.jpg/1280px-%E6%96%B0%E5%A4%A9%E5%9C%B0_%3D_New_Heaven_%26_Earth_%286033629189%29.jpg", credit: "Can Pac Swire", license: "CC BY-SA 2.0", alt: "Shikumen stone-gate houses in Xintiandi", modified: "16:10 crop 1280x800 (WebP)", source_sha256: "7190ffb05ff6edc79bbadc89ef2841bc9f26d7befc8b3fe9de59136a3473fcab" },
+  "gs-existing-tianzifang": { kind: "photo", file: "assets/guide/photos/tianzifang.webp", commons: "Tianzifang 1.jpg", thumb: "https://thumb.wikimedia.org/wikipedia/commons/thumb/7/7c/Tianzifang_1.jpg/1280px-Tianzifang_1.jpg", credit: "钉钉", license: "CC BY-SA 4.0", alt: "Narrow shikumen lane lined with shops in Tianzifang", modified: "16:10 crop 1280x800 (WebP)", source_sha256: "03ba9405821ec872147d6e1eeee0c6581d7ed72f5b9338b02c381ab71fa814c1" },
+  "gs-existing-yuyuan": { kind: "photo", file: "assets/guide/photos/yuyuan.webp", commons: "Yu Garden 1.jpg", thumb: "https://thumb.wikimedia.org/wikipedia/commons/thumb/e/e9/Yu_Garden_1.jpg/1280px-Yu_Garden_1.jpg", credit: "", license: "Public Domain", alt: "Yu Garden, Shanghai", modified: "16:10 crop 1280x800 (WebP)", source_sha256: "222b747f1e7421ae2ae6dd71dce10a33e68f480562c027eeed0a8ed8efa5cbd3" },
+  "gs-existing-jingan-temple": { kind: "photo", file: "assets/guide/photos/jingan-temple.webp", commons: "Jing'an temple.JPG", thumb: "https://thumb.wikimedia.org/wikipedia/commons/thumb/e/ea/Jing%27an_temple.JPG/1280px-Jing%27an_temple.JPG", credit: "J. Patrick Fischer", license: "CC BY-SA 3.0", alt: "Jing'an Temple, Shanghai", modified: "16:10 crop 1280x800 (WebP)", source_sha256: "a353131d0ea7dfdfa47b165e91a055d802ce48bc1b52d2a0eec3bdc1a8a92f46" },
+  "gs-existing-korean-provisional-govt": { kind: "photo", file: "assets/guide/photos/korean-provisional-govt.webp", commons: "Entrance of Provisional Government of ROK in Shanghai.JPG", thumb: "https://thumb.wikimedia.org/wikipedia/commons/thumb/2/25/Entrance_of_Provisional_Government_of_ROK_in_Shanghai.JPG/960px-Entrance_of_Provisional_Government_of_ROK_in_Shanghai.JPG", credit: "Ericmetro", license: "CC BY-SA 3.0", alt: "Entrance of the Site of the Provisional Government of the Republic of Korea in Shanghai", focus: "50% 45%", modified: "16:10 crop 960x600 (WebP)", source_sha256: "5bd4c1fa243bd57ad6000da34e5db35379006aa4e01bb02027ab9da6d6444a8c" },
+  "gs-existing-longhua": { kind: "photo", file: "assets/guide/photos/longhua.webp", commons: "Longhua Pagoda, 2019-10-19 02.jpg", thumb: "https://thumb.wikimedia.org/wikipedia/commons/thumb/b/b7/Longhua_Pagoda%2C_2019-10-19_02.jpg/1280px-Longhua_Pagoda%2C_2019-10-19_02.jpg", credit: "Siyuwj", license: "CC BY-SA 4.0", alt: "Longhua Pagoda, Shanghai", focus: "50% 30%", modified: "16:10 crop 1280x800 (WebP)", source_sha256: "fca84f33e394965337f89889136a0d295d7b57e9108290417443e50bd5a39e57" },
+  "gs-existing-m50": { kind: "photo", file: "assets/guide/photos/m50.webp", commons: "201703 M50 Creative Park.jpg", thumb: "https://thumb.wikimedia.org/wikipedia/commons/thumb/0/0e/201703_M50_Creative_Park.jpg/1280px-201703_M50_Creative_Park.jpg", credit: "MNXANL", license: "CC BY-SA 4.0", alt: "M50 Creative Park on Moganshan Road", modified: "16:10 crop 1280x800 (WebP)", source_sha256: "5044de4ea69e60279750533c378c47a7cf5556efc417e3bfafd101bf59086afb" },
+  "gs-existing-pudong-art-museum": { kind: "photo", file: "assets/guide/photos/pudong-art-museum.webp", commons: "Museum of Art Pudong from the Bund.jpg", thumb: "https://thumb.wikimedia.org/wikipedia/commons/thumb/c/ca/Museum_of_Art_Pudong_from_the_Bund.jpg/1280px-Museum_of_Art_Pudong_from_the_Bund.jpg", credit: "Simon Wade", license: "CC BY-SA 4.0", alt: "Museum of Art Pudong on the riverfront, seen from the Bund", context: "VIEW FROM THE BUND", modified: "16:10 crop 1280x800 (WebP)", source_sha256: "fca074cd89e528c488065a9a14f0a00f9244a5e6ff76dec1fcf311ab63c82e44" },
+  "gs-existing-xujiahui-library": { kind: "photo", file: "assets/guide/photos/xujiahui-library.webp", commons: "徐家汇书院 08.jpg", thumb: "https://thumb.wikimedia.org/wikipedia/commons/thumb/1/12/%E5%BE%90%E5%AE%B6%E6%B1%87%E4%B9%A6%E9%99%A2_08.jpg/1280px-%E5%BE%90%E5%AE%B6%E6%B1%87%E4%B9%A6%E9%99%A2_08.jpg", credit: "Nanhuajiaren", license: "CC BY-SA 4.0", alt: "Reading hall interior of Xujiahui Library (徐家汇书院)", modified: "16:10 crop 1280x800 (WebP)", source_sha256: "3769dc03e218f4d0272765f37751d85b975d8e6c84dafd7a6e7898ead8269d80" },
+  "gs-existing-xujiahui-cathedral": { kind: "photo", file: "assets/guide/photos/xujiahui-cathedral.webp", commons: "Xujiahui Cathedral, 2019-10-19 04.jpg", thumb: "https://thumb.wikimedia.org/wikipedia/commons/thumb/9/98/Xujiahui_Cathedral%2C_2019-10-19_04.jpg/1280px-Xujiahui_Cathedral%2C_2019-10-19_04.jpg", credit: "Siyuwj", license: "CC BY-SA 4.0", alt: "Red-brick Gothic facade of Xujiahui Cathedral", modified: "16:10 crop 1280x800 (WebP)", source_sha256: "12524ed96f3d6faf82cd1c426d215e07dfa9830b16cba1aa0336a7bab1a7fd61" },
+  "gs-existing-zhujiajiao": { kind: "photo", file: "assets/guide/photos/zhujiajiao.webp", commons: "Zhujiajiao ancient water town, Nr. Shanghai, China - 1.jpg", thumb: "https://thumb.wikimedia.org/wikipedia/commons/thumb/a/af/Zhujiajiao_ancient_water_town%2C_Nr._Shanghai%2C_China_-_1.jpg/1280px-Zhujiajiao_ancient_water_town%2C_Nr._Shanghai%2C_China_-_1.jpg", credit: "Lloyd Tudor", license: "CC BY-SA 4.0", alt: "Canal and traditional riverside houses in Zhujiajiao water town", modified: "16:10 crop 1280x800 (WebP)", source_sha256: "4e9e94cddbef2e4244e17f2a961977a5560fa342d9934a9ecbb5f4b0a220cecd" },
+  "gs-existing-wuzhen": { kind: "photo", file: "assets/guide/photos/wuzhen.webp", commons: "One of the waterways in Wuzhen Ancient Town.jpg", thumb: "https://thumb.wikimedia.org/wikipedia/commons/thumb/d/df/One_of_the_waterways_in_Wuzhen_Ancient_Town.jpg/1280px-One_of_the_waterways_in_Wuzhen_Ancient_Town.jpg", credit: "Wanderingchina", license: "CC BY 4.0", alt: "Aerial view of a waterway in Wuzhen Ancient Town", modified: "16:10 crop 1152x720 (WebP)", source_sha256: "075be94db7ff8c631bcd05cc66830d7064d746ab7345df22fba2579a8bc0978c" },
 
   // ---------- ILLUSTRATION_NEEDED (라이선스가 확인된 실사 없음 → AI 일러스트 교체 대상) ----------
   // 현재는 기존 inline SVG placeholder를 유지합니다. file에 16:10 이미지를 넣고 ready: true로 바꾸세요.
@@ -759,6 +823,9 @@ const GUIDE_IMAGE_MANIFEST = {
   "gs-diandude": { kind: "illustration", file: "assets/guide/illustrations/diandude.webp", ready: true, ai: true }, // v0.11.2 AI 콘셉트 이미지 (패키지: diandude.webp)
   "gs-feidachu": { kind: "illustration", file: "assets/guide/illustrations/feidachu.webp", ready: true, ai: true }, // v0.11.2 AI 콘셉트 이미지 (패키지: feidachu.webp)
   "gs-existing-panlong-tiandi": { kind: "illustration", file: "assets/guide/illustrations/panlong-tiandi.webp", ready: true, ai: true }, // v0.11.2 AI 콘셉트 이미지 (패키지: panlongtiandi.webp)
+  // v0.11.7 신규 실사 2장 (Commons · 원본 SHA-1 일치 확인, 브라우저에서 16:10 crop + 1280x800 WebP q0.8)
+  "gs-zhangyuan": { kind: "photo", file: "assets/guide/photos/zhangyuan.webp", commons: "Zhang Yuan, Shanghai, China 2024 (54281266880).jpg", credit: "Juan Antonio Segal (cropped)", license: "CC BY 2.0", license_url: "https://creativecommons.org/licenses/by/2.0/", date: "2024-12-30", source: "https://www.flickr.com/photos/jafsegal/54281266880/", alt: "Renovated shikumen buildings and lane at Zhangyuan, Shanghai, with the Zhangyuan sign", modified: "16:10 crop(왼쪽 기준, 4000x1844 중 2950x1844) + resize 1280x800 (WebP)", source_sha1: "d84620011cf1f663336c9b4e820271d302e636cb", sha256: "8f074a5a01ef1fdbb81a2473f3d0217e1c19b1c6ffe746cdf6df5a80a7e2c50e" },
+  "gs-jingan-sculpture-park": { kind: "photo", file: "assets/guide/photos/jingan-sculpture-park.webp", commons: "Jing'an Sculpture Park.jpg", credit: "Zhou Guanhuai (cropped)", license: "CC BY-SA 4.0", license_url: "https://creativecommons.org/licenses/by-sa/4.0/", date: "2021-10-30", alt: "Entrance sign of Jing'an Sculpture Park (静安雕塑公园), Shanghai", modified: "16:10 crop(2272x1704 중 2272x1420) + resize 1280x800 (WebP) — CC BY-SA 4.0으로 재배포", source_sha1: "026733ccb34c198320d0923b031ff429c9138596", sha256: "86d3b3c227be94e865b32222109d6fdd657f9065f0eab952f36fd6b9dbf24c4c" },
 };
 
 // manifest → 기존 image 필드에 반영 (GUIDE_SPOTS 원본 항목은 그대로 두고 런타임에만 덮어씀)
@@ -785,7 +852,8 @@ GUIDE_SPOTS.forEach((s) => {
   }
 });
 
-// ===== GUIDE_DISPLAY_NAMES — 카드 화면 표시용 장소명 (v0.11.4) =====
+// ===== GUIDE_DISPLAY_NAMES — 카드 화면 표시용 장소명 (v0.11.4 · v0.11.7 한국어 1행 통일) =====
+// v0.11.7: 1행 중국어였던 7곳을 사용자가 확정한 한국어 표기로 바꿈(2026-10-18). 三立方 · 上海第一食品商店은 사용자 지정 표기 유지.
 // [1줄 대표 제목, 2줄 중국어명]. 2줄이 null 이면 기존 name_zh 를 그대로 쓰고, "" 이면 2줄을 표시하지 않습니다.
 // 1줄과 2줄이 같으면 화면에서 자동으로 2줄을 생략합니다.
 // ⚠️ 화면 표시 전용입니다. 기존 name · name_zh · aliases · address 는 바꾸지 않습니다 —
@@ -793,7 +861,7 @@ GUIDE_SPOTS.forEach((s) => {
 const GUIDE_DISPLAY_NAMES = {
   "gs-the-louis": ["The Louis", null],
   "gs-starbucks-reserve-roastery": ["스타벅스 리저브 로스터리", "星巴克臻选上海烘焙工坊"],
-  "gs-henjiuyiqian-yangroushuan": ["很久以前羊肉串", null],
+  "gs-henjiuyiqian-yangroushuan": ["헌지우이치엔 양꼬치", null],
   "gs-the-stage": ["The Stage", null],
   "gs-manner-coffee-guoke": ["Manner Coffee", null],
   "gs-north-bund": ["북와이탄", null],
@@ -811,23 +879,23 @@ const GUIDE_DISPLAY_NAMES = {
   "gs-columbia-circle": ["Columbia Circle", null],
   "gs-tonton": ["TonTon", ""],
   "gs-sanlifang-dirty": ["三立方", ""],
-  "gs-renhe-guan": ["人和馆", null],
+  "gs-renhe-guan": ["런허관", null],
   "gs-andaz-itc": ["Andaz Shanghai ITC", null],
   "gs-rooftop-bar-andaz": ["The Rooftop Bar", ""],
-  "gs-dongge-andaz": ["东阁", ""],
+  "gs-dongge-andaz": ["둥거", null],
   "gs-tian-an-1000-trees": ["천수", null],
   "gs-charlietown": ["CHARLIETOWN", null],
-  "gs-qingzhi-handcream": ["青稚护手霜", null],
+  "gs-qingzhi-handcream": ["칭즈 핸드크림", null],
   "gs-popmart": ["POP MART", null],
   "gs-miniso-land": ["MINISO LAND", null],
   "gs-toptoy": ["TOP TOY", null],
   "gs-shanghai-first-food-store": ["上海第一食品商店", ""],
   "gs-mms-shanghai": ["M&M'S Shanghai", ""],
   "gs-monogram": ["monogram", null],
-  "gs-libaixie": ["李百蟹", null],
-  "gs-hugongguan": ["沪公馆", null],
+  "gs-libaixie": ["이백게", null],
+  "gs-hugongguan": ["호공관", null],
   "gs-diandude": ["점도덕", null],
-  "gs-feidachu": ["费大厨辣椒炒肉", null],
+  "gs-feidachu": ["페이다츄", null],
   "gs-existing-bund": ["와이탄", null],
   "gs-existing-nanjing-east-road": ["난징동루", null],
   "gs-existing-peoples-square": ["인민광장", null],
@@ -847,6 +915,22 @@ const GUIDE_DISPLAY_NAMES = {
   "gs-existing-zhujiajiao": ["주자자오", "朱家角"],
   "gs-existing-wuzhen": ["우전", null],
   "gs-existing-panlong-tiandi": ["Panlong Tiandi", null],
+  "gs-zhangyuan": ["장위안", null],
+  "gs-jingan-sculpture-park": ["정안조각공원", null],
+};
+// ===== GUIDE_MAP_LABELS (v0.11.7) — 지역 지도 핀 전용 축약명 =====
+// 핀 라벨은 기본적으로 카드 1행(GUIDE_DISPLAY_NAMES[0])과 같습니다. 지도에서 잘리거나 다른 라벨과 겹치는 곳만 여기서 짧게 씁니다.
+// 원래 장소를 알아볼 수 있는 이름만 씁니다(검색 · 카드 제목 · 高德 · 복사에는 영향 없음).
+const GUIDE_MAP_LABELS = {
+  "gs-starbucks-reserve-roastery": "스타벅스 로스터리", // 카드 1행 '스타벅스 리저브 로스터리'가 PC 지도에서 잘림
+  "gs-mms-shanghai": "M&M'S",                          // 'M&M'S Shanghai'가 768px에서 옆 핀(上海第一食品商店) 라벨과 겹침
+};
+// ===== GUIDE_MAP_LABEL_POS (v0.11.7) — 핀 라벨 위치만 조정 (핀 좌표 · 번호 · ID 변경 없음) =====
+// pos: 라벨을 핀 위("above")/아래("below")에 둠(기본: 번호 홀짝으로 번갈아). dx: 라벨만 가로로 이동(지도 단위).
+const GUIDE_MAP_LABEL_POS = {
+  // gs-shanghai-first-food-store: 768px에서 라벨이 난징동루 핀에 닿지만, 위로 옮기면 600·520px에서 TOP TOY 라벨·monogram 핀과 새로 겹쳐 조정하지 않음(v0.11.6과 동일)
+  "gs-andaz-itc": { dx: -12 },                      // 라벨 오른쪽 끝이 768px에서 둥거 핀에 닿음
+  "gs-sanlifang-dirty": { pos: "below" },           // 위쪽 라벨이 도로명 '永康路 YONGKANG RD'와 겹침
 };
 // 표기 통일로 화면에서 빠진 대체 표기를 검색 별칭으로 보존합니다(기존 aliases 뒤에 덧붙임, 중복 제외).
 const GUIDE_EXTRA_ALIASES = {
@@ -991,7 +1075,7 @@ const GUIDE_REGIONS = [
         { d: "M 20 240 L 780 240", label: "南京西路 NANJING RD (W)", lx: 520, ly: 228, main: true },
         { d: "M 20 380 L 780 380", label: "延安中路", lx: 40, ly: 370 },
       ],
-      pins: { "gs-existing-jingan-temple": [140, 260], "gs-the-louis": [540, 290], "gs-starbucks-reserve-roastery": [610, 300], "gs-henjiuyiqian-yangroushuan": [580, 170] },
+      pins: { "gs-existing-jingan-temple": [140, 260], "gs-the-louis": [540, 290], "gs-starbucks-reserve-roastery": [610, 300], "gs-henjiuyiqian-yangroushuan": [580, 170], "gs-jingan-sculpture-park": [700, 130], "gs-zhangyuan": [680, 330] },
     },
   },
   {

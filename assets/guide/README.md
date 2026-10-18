@@ -2,7 +2,7 @@
 
 이미지 우선순위: **실사(라이선스 확인) > 장소를 묘사한 완성 일러스트 > 기존 SVG placeholder**
 
-- `photos/` — Wikimedia Commons 실사의 웹용 16:10 WebP 사본(1280×800). **v0.11.1부터 4장(`bund`, `mms-shanghai`, `shanghai-first-food-store`, `hugongguan`)은 repo에 포함되어 바로 표시됩니다**(`GUIDE_IMAGE_MANIFEST`의 `file` 필드). 나머지 27장은 기존처럼 Commons 공식 썸네일 CDN(thumb.wikimedia.org)에서 불러오며, 필요하면 `python3 tools/fetch_guide_photos.py`로 사본을 만들고 `GUIDE_LOCAL_PHOTOS`를 `true`로 바꿀 수 있습니다.
+- `photos/` — Wikimedia Commons 실사의 웹용 16:10 WebP 사본(1280×800). **v0.11.1부터 4장(`bund`, `mms-shanghai`, `shanghai-first-food-store`, `hugongguan`)은 repo에 포함되어 바로 표시됩니다**(`GUIDE_IMAGE_MANIFEST`의 `file` 필드). **v0.11.7부터 나머지 27장도 repo에 포함**되어(`GUIDE_IMAGE_MANIFEST`의 `file` 필드) 실사 31장 모두 외부(Wikimedia) 접속 없이 표시됩니다. 27장은 Commons 썸네일 원본(1280px, 일부 960px)을 16:10으로 자르고 1280×800 이하로 저장했으며(업스케일 없음), 가공 내역은 `modified`, 받은 원본의 SHA256은 `source_sha256`에 기록했습니다. 저작자·라이선스·Commons 출처 링크는 카드 크레딧에 그대로 표시됩니다. 데이터의 `thumb` 주소는 출처 기록용으로 남겨 두었습니다.
 - `illustrations/` — ILLUSTRATION_NEEDED 장소용 AI 일러스트(16:10). 제작 목록은 [ILLUSTRATION_BRIEF.md](ILLUSTRATION_BRIEF.md)에 있습니다.
   **v0.11.3: 25장 적용(v0.11.2 10장 + v0.11.3 15장)** — 모두 AI 생성 콘셉트 이미지이며 실제 매장 사진이 아닙니다(카드에 `AI 이미지 · 실제 사진 아님` 표시). 실사 라이선스 표(아래)와 별개이며, 실사를 대체하지 않습니다. 업종·장면·입점 형태가 맞지 않거나 실제 캐릭터·로고·간판 글자가 들어간 이미지는 넣지 않습니다.
 - 전체 장소별 점검 결과는 [IMAGE_AUDIT.md](IMAGE_AUDIT.md)에 있습니다.
@@ -65,3 +65,17 @@ CC BY / CC BY-SA 사진은 **저작자·라이선스 표기가 의무**입니다
 
 검토했지만 적용하지 않은 후보: MINISO LAND(Flickr CC BY-NC 2.0 — 비상업 조건 판단을 보수적으로 보류), 李百蟹(沪公馆과 같은 외탄 22호 건물 → 반복 방지), monogram(世茂广场 사진에 M&M'S 정면이 크게 보여 오해 소지 · 같은 건물 반복), 点都德(사무동 외관만 보여 B1 식당을 설명하지 못함).
 
+
+## v0.11.7 — 신규 장소 실사 2장 (2026-10-18 공개 승인)
+
+신규 카드 张园 · 静安雕塑公园에 사용합니다(`GUIDE_IMAGE_MANIFEST`). 기존 56곳 사진과 파일명이 겹치지 않는 새 파일이며, 이로써 repo 안 실사는 33장(기존 31 + 신규 2), AI 이미지는 25장입니다. 카드 크레딧에는 두 장 모두 "(cropped)"로 가공 사실을 표시합니다.
+
+| 로컬 파일 | 후보 | 표시 | Commons 원본 | 저작자 | 촬영일 | 라이선스 | 수정 |
+|---|---|---|---|---|---|---|---|
+| photos/zhangyuan.webp | 张园 (gs-zhangyuan) | 장소 | [Zhang Yuan, Shanghai, China 2024 (54281266880).jpg](https://commons.wikimedia.org/wiki/File:Zhang_Yuan,_Shanghai,_China_2024_(54281266880).jpg) (4000×1844, 원출처 [Flickr](https://www.flickr.com/photos/jafsegal/54281266880/)) | Juan Antonio Segal (카드 표기: "Juan Antonio Segal (cropped)") | 2024-12-30 | [CC BY 2.0](https://creativecommons.org/licenses/by/2.0/) | 16:10 크롭(왼쪽 기준) + 1280×800 축소 · WebP |
+| photos/jingan-sculpture-park.webp | 静安雕塑公园 (gs-jingan-sculpture-park) | 입구 표지 | [Jing'an Sculpture Park.jpg](https://commons.wikimedia.org/wiki/File:Jing%27an_Sculpture_Park.jpg) (2272×1704) | Zhou Guanhuai (본인 촬영) | 2021-10-30 | [CC BY-SA 4.0](https://creativecommons.org/licenses/by-sa/4.0/) | 16:10 크롭 + 1280×800 축소 · WebP. 사본도 CC BY-SA 4.0 |
+
+장소 일치 근거
+- 张园: Commons 분류 "Zhangyuan (Swire)", 촬영 좌표 31.230555, 121.455509(威海路·茂名北路 일대), 사진 속 건물에 '张园 ZHANG YUAN' 간판.
+- 静安雕塑公园: Commons 분류 "Jing'an Sculptures Park", 사진 속 입구 표지 '静安雕塑公园 JING'AN SCULPTURE PARK'.
+- 내려받은 원본의 SHA-1이 Commons 기록과 일치(张园 d846200…, 静安 026733c…).

@@ -438,8 +438,15 @@ const PLACES = [
 // - ⚠️ 방문 시각·이동 시간 등 구체적인 시각은 이 공개 데이터에 넣지 않습니다.
 //
 // { id, visitDate, slot("오전"|"오후"|"저녁"), status, name_en, name_zh, type,
-//   intro, keywords[], notes[], facility?{title, text}, address, address_zh,
+//   intro(개요·설립 배경), sections[{label, items[]}](주요 사업·기술 / 사업모델·시장 / 공개된 협력·성과),
+//   keywords[], notes[](방문 장소 관련 사실만), facility?{title, text}, address, address_zh,
 //   mapKeyword, website, sources[{label, url}] }
+// v0.11.7: 참가자 사전 안내용으로 공개자료(공식 홈페이지·공식 발표) 범위에서만 보강했습니다(확인일 2026-10-18).
+//   비공개 공정·설비·고객사·내부 전략에 대한 추정, 현장 관찰 포인트·질문 목록·평가 항목은 넣지 않습니다.
+//   중문 주소는 공식 중문 사이트에서 확인된 곳만 넣었습니다(Med-Fine Capital · Nona Biosciences는 주최측 확인 전 비워 둠).
+// v0.11.7 모바일 가독성: core[](핵심 사업 2~3줄)는 위 intro·sections에 이미 있는 내용만 짧게 옮긴 요약입니다.
+//   카드를 펼치면 intro 첫 문장 + core + 주소·버튼이 먼저 보이고, intro 나머지·sections·keywords·facility는
+//   카드 안의 '기술 · 사업모델 · 공개 협력 자세히' 접이식 영역에 들어갑니다(itinerary.html orgCardHtml).
 const ORGS = [
   {
     id: "biointron",
@@ -449,20 +456,38 @@ const ORGS = [
     name_en: "Biointron",
     name_zh: "百英生物",
     type: "항체 연구개발 서비스 기업 (CRO)",
-    intro: "상하이에 본사를 둔 항체 연구개발 서비스 기업으로, 항체 신약 개발 초기 단계에 필요한 발굴·최적화·생산 서비스를 제공합니다. VHH 항체 발굴, Single B Cell Screening, Hybridoma Sequencing 같은 발굴 서비스와 Affinity Maturation, Antibody Humanization 같은 항체 엔지니어링을 함께 다룹니다. 고처리량 재조합 항체 생산, 이중항체 발현, CHO-K1 안정 세포주 구축, 항체 개발 가능성(Developability) 평가도 서비스 범위에 포함됩니다.",
+    intro: "2012년 설립된 상하이 본사의 항체 전문 CRO입니다. 공식 연혁은 중국 의약성(China Medical City) 인큐베이터에서 출발했다고 소개하며, 신약 개발 초기 단계의 항체 발굴·최적화·발현을 고객사 대신 수행하는 연구 서비스가 본업입니다.",
+    core: [
+      "항체 발굴·최적화·생산을 고객사 대신 수행하는 항체 전문 CRO",
+      "CHO-K1 유래 세포주 CHOK1BN 라이선스 제공",
+    ],
+    sections: [
+      { label: "주요 사업 · 기술", items: [
+        "항체 발굴: VHH(나노바디) 발굴, Single B Cell Screening, Hybridoma Sequencing",
+        "항체 최적화: 인간화(Humanization), 친화도 성숙(Affinity Maturation)",
+        "항체 생산: 고처리량 재조합 항체 생산, 이중항체 발현, 대량 발현, 개발 가능성(Developability) 평가",
+        "CHO-K1 유래 세포주 CHOK1BN 라이선스 제공 (공식 홈페이지: 미국 FDA DMF 등록)",
+      ] },
+      { label: "사업모델 · 시장", items: [
+        "자체 신약이 아니라 제약·바이오 기업의 항체 연구를 위탁받아 수행하는 서비스 모델입니다.",
+        "공식 홈페이지 기준 상하이 본사 외에 난징·타이저우(중국), 미국 뉴저지(Piscataway)·매사추세츠(Cambridge)에 거점이 있습니다.",
+      ] },
+      { label: "공개된 사업 성과", items: [
+        "공식 연혁: 2021년 시리즈 A(약 1억 위안), 2022년 시리즈 B(5억 위안) 투자 유치, 2025년 A주 상장 추진 언급",
+      ] },
+    ],
     keywords: ["Antibody Discovery", "VHH", "Single B Cell Screening", "Antibody Humanization", "HTP Recombinant Antibody Production", "Developability Assessment"],
     notes: [
-      "자체 신약을 개발하는 회사가 아니라, 고객사의 항체 연구를 지원하는 서비스 기업이라는 점을 염두에 두면 좋습니다.",
-      "공식 홈페이지는 소량 항체를 빠르게 발현·정제해 주는 RushMab™ 패키지와 자동화 생산 공정을 강조합니다.",
-      "공식 홈페이지 기준 본사는 상하이이며, 미국(Piscataway, NJ · Cambridge, MA)에도 오피스가 있습니다.",
+      "방문지는 공식 홈페이지에 게재된 상하이 본사(푸둥 저우푸진 沈梅路)입니다.",
     ],
     address: "No. 1–9, Lane 99, Shenmei Road, Pudong New District, Shanghai, China",
-    address_zh: "",
-    mapKeyword: "百英生物 上海",
+    address_zh: "上海市浦东新区周浦镇沈梅路99弄1号楼",
+    mapKeyword: "上海市浦东新区周浦镇沈梅路99弄1号楼",
     website: "https://www.biointron.com/",
     sources: [
+      { label: "Biointron · About Us", url: "https://www.biointron.com/about-us/" },
       { label: "Biointron · Services", url: "https://www.biointron.com/services/" },
-      { label: "百英生物 (중문 사이트)", url: "https://www.biointron.com.cn" },
+      { label: "百英生物 (중문 사이트 · 중문 주소)", url: "https://www.biointron.com.cn" },
     ],
   },
   {
@@ -473,18 +498,30 @@ const ORGS = [
     name_en: "Med-Fine Capital",
     name_zh: "幂方健康基金",
     type: "헬스케어·생명과학 전문 투자기관",
-    intro: "상하이에 본사를 둔 의약·헬스케어 및 생명과학 분야 전문 투자기관입니다. 공식 홈페이지는 운영팀이 헬스케어 산업 배경과 벤처캐피털 투자 경험을 함께 갖추고 있다고 소개합니다. 방문 자료 기준으로 바이오테크, 진단, 의료기기, 의료서비스 등 헬스케어 전반에 투자합니다.",
+    intro: "상하이에 본사를 둔 의약·헬스케어 및 생명과학 분야 전문 투자기관입니다. 공식 홈페이지는 운영팀이 헬스케어 산업 경력과 벤처캐피털 투자 경험을 함께 갖추고 있다고 소개합니다. 중국어 명칭은 幂方健康基金(幂方资本)입니다.",
+    core: [
+      "의약·헬스케어·생명과학 분야 기업에 투자하는 전문 투자기관",
+    ],
+    sections: [
+      { label: "주요 사업", items: [
+        "의약·헬스케어·생명과학 분야 기업에 대한 투자 (공식 홈페이지: '专注医药健康与生命科学')",
+        "방문 자료 기준 투자 영역: 바이오테크, 진단, 의료기기, 의료서비스 등 헬스케어 전반",
+      ] },
+      { label: "사업모델 · 시장", items: [
+        "제품을 만드는 회사가 아니라 성장 단계의 헬스케어 기업에 자금을 투자하는 투자기관입니다.",
+        "공식 홈페이지 기준 상하이에 본사를 두고 중국 내 헬스케어 기업에 투자합니다.",
+      ] },
+    ],
     keywords: ["Healthcare Investment", "Life Sciences", "Venture Capital", "Biotech"],
     notes: [
-      "회사 방문과 달리 투자자 관점에서 중국 바이오 산업의 자금 흐름, 기업 성장 단계, 투자 판단 기준을 들어볼 수 있는 방문처입니다.",
-      "공식 홈페이지는 중국어로 운영되며, 중국어 명칭은 幂方健康基金(幂方资本)으로 표기됩니다.",
+      "공식 홈페이지는 중국어로 운영됩니다. 중문 주소는 공식 홈페이지에 게재되어 있지 않아 주최측 안내로 확인할 예정입니다.",
     ],
     address: "Room 3605, SK Tower, No. 150 Yaoyuan Road, Pudong District, Shanghai, China",
     address_zh: "",
     mapKeyword: "幂方健康基金 上海",
     website: "https://www.medfinecapital.com/",
     sources: [
-      { label: "Med-Fine Capital · 공식 홈페이지", url: "https://www.medfinecapital.com/" },
+      { label: "Med-Fine Capital · 공식 홈페이지", url: "http://www.medfinecapital.com/mifang_web/index.html" },
     ],
   },
   {
@@ -495,19 +532,39 @@ const ORGS = [
     name_en: "Harbour BioMed",
     name_zh: "和铂医药",
     type: "항체 치료제 개발 바이오제약 기업 (HKEX: 02142)",
-    intro: "면역·염증 질환과 종양학 등을 중심으로 항체 치료제를 발굴·개발하는 글로벌 바이오제약 기업입니다. 전인간(fully human) 단일클론항체를 만드는 형질전환 마우스 플랫폼 Harbour Mice®를 보유하며, 일반 항체(H2L2)와 중쇄 단독 항체(HCAb) 두 형식을 모두 생성합니다. 이를 바탕으로 HCAb 기반 면역세포 인게이저 이중항체 기술 HBICE®와 다중특이 항체 기술 HCAb PLUS™를 운영합니다.",
+    intro: "2016년 설립되어 2020년 홍콩증권거래소에 상장한(HKEX: 02142) 항체 치료제 개발 기업입니다. 면역·염증 질환과 종양학 등에서 새로운 항체 치료제를 발굴·개발하는 것을 사명으로 내세우며, 상하이 장장(2017)·쑤저우(2018) 등에 연구 거점을 두고 있습니다.",
+    core: [
+      "면역·염증 질환, 종양학 분야 항체 치료제 발굴·개발",
+      "전인간 항체 플랫폼 Harbour Mice® 보유",
+      "자체 개발과 글로벌 협력·라이선싱 병행",
+    ],
+    sections: [
+      { label: "주요 기술 플랫폼", items: [
+        "Harbour Mice®: 전인간(fully human) 항체를 일반 항체(H2L2)와 중쇄 단독 항체(HCAb) 두 형식으로 만드는 형질전환 마우스 플랫폼",
+        "HBICE®: HCAb 기반 면역세포 인게이저 이중항체 기술 · HCAb PLUS™: 다중특이 항체 기술",
+        "Hu-mAtrIx™ AI 플랫폼 기반 HCAb 생성형 AI 모델 (공식 홈페이지 소개)",
+      ] },
+      { label: "사업모델 · 시장", items: [
+        "자체 연구개발과 글로벌 협력·공동개발·기술 및 자산 라이선싱을 함께 운영합니다.",
+        "공식 홈페이지는 사업 축을 Harbour Therapeutics · Harbour Medical · Nona Biosciences 세 가지로 소개합니다.",
+      ] },
+      { label: "공개된 협력", items: [
+        "공식 홈페이지가 협력사로 소개하는 기업: AstraZeneca, Bristol Myers Squibb, Otsuka, Pfizer, Moderna, AbbVie 등",
+        "베이징에 Harbour BioMed–AstraZeneca 이노베이션 랩을 운영합니다(공식 홈페이지).",
+      ] },
+    ],
     keywords: ["Harbour Mice®", "HCAb", "HBICE®", "HCAb PLUS™", "Immunology", "Oncology"],
     notes: [
-      "홍콩증권거래소 상장사(HKEX: 02142)입니다.",
-      "12월 30일 방문하는 Nona Biosciences가 Harbour BioMed의 100% 자회사입니다. 두 방문을 이어서 보면 '자체 신약 개발'과 '플랫폼 기반 연구 서비스'가 어떻게 나뉘는지 비교할 수 있습니다.",
-      "공식 홈페이지는 Hu-mAtrIx™ AI 플랫폼 기반의 전인간 HCAb 생성형 AI 모델도 소개합니다.",
+      "12월 30일 방문하는 Nona Biosciences는 Harbour BioMed의 100% 자회사입니다.",
     ],
     address: "6F, Tower B, Fenglin International Phase I, No. 388 Fenglin Road, Xuhui District, Shanghai, China",
-    address_zh: "",
-    mapKeyword: "和铂医药 上海",
+    address_zh: "上海市徐汇区枫林路388号枫林国际一期B座6楼",
+    mapKeyword: "上海市徐汇区枫林路388号枫林国际一期B座6楼",
     website: "https://www.harbourbiomed.com/",
     sources: [
       { label: "Harbour BioMed · About", url: "https://www.harbourbiomed.com/about" },
+      { label: "Harbour BioMed · Contact (영문 주소)", url: "https://www.harbourbiomed.com/contact" },
+      { label: "和铂医药 (중문 사이트 · 중문 주소)", url: "https://www.harbourbiomed.cn/" },
     ],
   },
   {
@@ -518,7 +575,15 @@ const ORGS = [
     name_en: "Shanghai Jiao Tong University (Minhang Campus)",
     name_zh: "上海交通大学（闵行校区）",
     type: "연구중심 종합대학",
-    intro: "중국의 주요 연구중심 대학 중 하나로, 이번 방문지는 상하이 민항구(闵行区)에 있는 민항 캠퍼스입니다. 생명과학, 의공학, 공학 분야의 연구 역량을 갖추고 있습니다. 방문할 구체적인 학과·연구실은 아직 공지되지 않았습니다.",
+    intro: "1896년 난양공학(南洋公学)으로 출발한 중국의 주요 연구중심 대학입니다. 이번 방문지는 1987년 문을 연 상하이 민항구(闵行区)의 민항 캠퍼스입니다.",
+    core: [
+      "생명과학·의공학·공학 등 이공계 연구 분야를 갖춘 종합대학",
+    ],
+    sections: [
+      { label: "주요 분야", items: [
+        "생명과학, 의공학(Biomedical Engineering), 공학 등 이공계 연구 분야를 갖춘 종합대학입니다.",
+      ] },
+    ],
     keywords: ["Research University", "Life Sciences", "Biomedical Engineering", "Engineering"],
     notes: [
       "방문 학과·연구실·프로그램은 미정(TBD)입니다. 확정되면 이 카드에 반영됩니다.",
@@ -531,6 +596,7 @@ const ORGS = [
     sources: [
       { label: "SJTU · 공식 홈페이지", url: "https://en.sjtu.edu.cn/" },
       { label: "SJTU · 캠퍼스 주소", url: "https://life.sjtu.edu.cn/en/data/list/address" },
+      { label: "Wikipedia · Shanghai Jiao Tong University (연혁)", url: "https://en.wikipedia.org/wiki/Shanghai_Jiao_Tong_University" },
     ],
   },
   {
@@ -541,7 +607,21 @@ const ORGS = [
     name_en: "WuXi Biologics Shanghai",
     name_zh: "药明生物",
     type: "바이오의약품 CRDMO (위탁 연구·개발·생산) 기업",
-    intro: "바이오의약품의 발굴(Research), 공정·분석 개발(Development), cGMP 생산(Manufacturing)까지 한 회사 안에서 제공하는 글로벌 CRDMO 기업입니다. 공식 홈페이지에 따르면 동물세포(Mammalian)와 미생물(Microbial) 생산 시스템을 모두 다루며, 중국·미국·아일랜드·독일·싱가포르에 연구·개발·생산 거점을 운영합니다.",
+    intro: "WuXi AppTec의 바이오의약품 사업에서 분사해 2017년 6월 홍콩증권거래소에 상장한(2269.HK) 바이오의약품 CRDMO 기업입니다. 바이오의약품의 발굴(Research), 공정·분석 개발(Development), cGMP 생산(Manufacturing)을 한 회사 안에서 제공하는 '엔드투엔드' 위탁 서비스를 내세웁니다.",
+    core: [
+      "바이오의약품 발굴·개발·cGMP 생산을 한 회사에서 제공하는 위탁 서비스(CRDMO)",
+      "중국·미국·아일랜드·독일·싱가포르 거점",
+    ],
+    sections: [
+      { label: "주요 사업", items: [
+        "바이오의약품 위탁 연구·개발·생산(CRDMO): 동물세포(Mammalian)·미생물(Microbial) 생산 시스템을 모두 다룹니다(공식 홈페이지).",
+      ] },
+      { label: "사업모델 · 시장", items: [
+        "고객사의 바이오의약품 개발과 생산을 위탁받는 서비스 모델입니다.",
+        "공식 홈페이지 기준 중국·미국·아일랜드·독일·싱가포르에 거점을 두고 있습니다.",
+        "품질 시스템이 미국 FDA, EMA, NMPA, PMDA 등 여러 규제기관의 승인을 받았다고 소개합니다(공식 홈페이지).",
+      ] },
+    ],
     facility: {
       title: "Shanghai Fengxian 시설",
       text: "Shanghai Fengxian은 공식 홈페이지 사업장 목록에 올라 있는 상하이 거점 중 하나입니다(상하이에는 Waigaoqiao FTZ, Lingang 등 별도 거점도 있음). 2018년 회사 발표에 따르면 펑셴 부지는 바이오의약품 발굴·개발과 임상·상업 생산을 한 곳에 통합하는 혁신 센터로 계획되었습니다. 실제 방문 건물과 견학 범위는 아직 확인되지 않았습니다.",
@@ -550,15 +630,16 @@ const ORGS = [
     notes: [
       "방문지는 장쑤성 우시(无锡)시가 아니라 상하이 펑셴구(奉贤区)입니다.",
       "같은 날 저녁 WuXi Biologics와 저녁 식사가 예정되어 있습니다.",
-      "공정개발, 생산시설, 품질관리, 글로벌 제조 운영 관점에서 질문을 준비해 두면 좋습니다.",
     ],
     address: "1951 Huifeng West Road, Fengxian District, Shanghai, China",
     address_zh: "上海市奉贤区汇丰西路1951号",
     mapKeyword: "上海市奉贤区汇丰西路1951号",
     website: "https://www.wuxibiologics.com/",
     sources: [
+      { label: "WuXi Biologics · Company", url: "https://www.wuxibiologics.com/company/" },
       { label: "WuXi Biologics · Locations & Facilities", url: "https://www.wuxibiologics.com/locations-facilities/" },
       { label: "WuXi Biologics · 2018 Fengxian 착공 발표", url: "https://www.wuxibiologics.com/?p=1075" },
+      { label: "Wikipedia · WuXi Biologics (상장·분사 연혁)", url: "https://en.wikipedia.org/wiki/WuXi_Biologics" },
     ],
   },
   {
@@ -569,11 +650,29 @@ const ORGS = [
     name_en: "Nona Biosciences",
     name_zh: "诺纳生物",
     type: "항체 기반 바이오의약품 발굴·전임상 연구 서비스 기업",
-    intro: "항체 기반 바이오의약품의 아이디어 단계부터 IND 신청까지('Idea to IND') 이어지는 전임상 연구 서비스를 제공하는 바이오테크 기업입니다. Harbour Mice® 플랫폼으로 전인간 항체(H2L2·HCAb)를 발굴하고, 항원 준비·동물 면역, 항체 스크리닝, 리드 엔지니어링, 개발 가능성 및 약리 평가를 수행합니다. 이중·다중항체(HBICE®), ADC, CAR 기반 세포치료 등 차세대 모달리티 개발도 지원합니다.",
+    intro: "Harbour BioMed가 2022년 11월 출범시킨 100% 자회사입니다. 모회사의 항체 플랫폼을 외부 제약·바이오 기업과 연구기관에 서비스로 제공하기 위해 만들어졌으며, 아이디어 단계부터 IND 신청까지를 잇는 'Idea to IND' 전임상 솔루션을 내세웁니다.",
+    core: [
+      "Harbour BioMed 항체 플랫폼을 외부에 서비스로 제공하는 자회사",
+      "아이디어 단계부터 IND까지 잇는 'Idea to IND' 전임상 솔루션",
+    ],
+    sections: [
+      { label: "주요 서비스 · 기술", items: [
+        "Harbour Mice® 기반 전인간 항체(H2L2·HCAb) 발굴",
+        "항원 준비·동물 면역, Single B Cell 스크리닝, 리드 엔지니어링, 개발 가능성·약리 평가",
+        "이중·다중항체(HBICE®), ADC 등 차세대 모달리티 지원 (공식 홈페이지 서비스 목록)",
+      ] },
+      { label: "사업모델 · 시장", items: [
+        "바이오텍·제약사·학계에 플랫폼 접근과 위탁 연구를 제공하는 서비스·라이선싱 모델입니다(출범 발표).",
+      ] },
+      { label: "공개된 협력", items: [
+        "2022년 11월: Dragonfly Therapeutics에 HCAb 플랫폼 접근 및 항체 생성 제공 협력 발표",
+        "2023년 12월: MSLN 표적 ADC 후보물질 HBM9033의 글로벌 권리를 Pfizer에 이전하는 계약 보도 (선급·단기 마일스톤 5,300만 달러 + 잠재 마일스톤 최대 10억 달러)",
+      ] },
+    ],
     keywords: ["Idea to IND", "Harbour Mice®", "Antibody Screening", "Antibody Engineering", "Bispecific / Multispecific", "ADC"],
     notes: [
-      "Harbour BioMed(和铂医药)의 100% 자회사로 2022년 11월 출범했습니다(Harbour BioMed 공식 발표). Harbour BioMed는 Nona를 자사 기술과 전문성을 외부에 개방하는 사업 축으로 소개합니다.",
-      "28일 방문하는 Harbour BioMed와 같은 플랫폼(Harbour Mice®)을 쓰므로, 두 방문을 연결해서 준비하면 좋습니다.",
+      "28일 방문하는 Harbour BioMed의 100% 자회사로, 같은 Harbour Mice® 플랫폼을 사용합니다.",
+      "중문 주소는 공식 홈페이지에서 확인되지 않아 주최측 안내로 확인할 예정입니다. 영문 주소는 Harbour BioMed 공식 연락처 페이지와 같습니다.",
     ],
     address: "6F, No. 987 Cailun Road, Pilot Free Trade Zone, Shanghai, China",
     address_zh: "",
@@ -582,6 +681,8 @@ const ORGS = [
     sources: [
       { label: "Nona Biosciences · Our Company", url: "https://nonabio.com/our-company/" },
       { label: "Harbour BioMed · Nona 출범 발표 (2022.11)", url: "https://www.biospace.com/harbour-biomed-launches-nona-biosciences-ideas-to-ind-preclinical-solutions-business-to-accelerate-global-biotherapeutic-innovation" },
+      { label: "Contract Pharma · Dragonfly 협력 (2022.11)", url: "https://www.contractpharma.com/breaking-news/nona-biosciences-enters-collaboration-agreement-with-dragonfly-therapeutics/" },
+      { label: "China Bio Today · Pfizer 계약 (2023.12)", url: "https://www.chinabiotoday.com/articles/nona-pfizer-1-billion" },
     ],
   },
 ];

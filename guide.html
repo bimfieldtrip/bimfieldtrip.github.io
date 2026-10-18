@@ -42,6 +42,10 @@
   <section id="guide-search-results" class="guide-search-results" hidden>
     <div class="manifest-title"><span class="manifest-title__num">SEARCH</span><span id="search-result-count"></span><span class="manifest-title__line"></span></div>
     <div class="guide-grid" id="search-root"></div>
+    <div id="search-extra-wrap" hidden>
+      <div class="manifest-title"><span class="manifest-title__num">EAT</span>추가 맛집<span class="manifest-title__line"></span></div>
+      <div class="xe-list" id="search-extra-root"></div>
+    </div>
     <div id="search-souvenir-wrap" hidden>
       <div class="manifest-title"><span class="manifest-title__num">SOUVENIRS</span>기념품<span class="manifest-title__line"></span></div>
       <div class="sv-grid sv-grid--search" id="search-souvenir-root"></div>
@@ -74,6 +78,7 @@
     <p class="guide-map__note">핀 번호 = 아래 카드 번호. 핀 위치는 대략적인 상대 위치이며, 정확한 길찾기는 카드의 高德地图 버튼을 쓰세요.</p>
     <div class="filter-bar" id="region-cat-filter" role="toolbar" aria-label="카테고리 필터"></div>
     <div class="guide-grid" id="region-root"></div>
+    <div id="region-extra-root"></div>
     <div class="region-detail__foot">
       <button class="btn btn--sm btn--ghost" type="button" data-region-back>↑ 전체 지도로</button>
       <button class="btn btn--sm" type="button" id="region-next"></button>
@@ -89,7 +94,7 @@
   </section>
 </main>
 
-<footer class="site-footer">SHANGHAI FIELD TRIP HUB · v0.11.6 · SHANGHAI GUIDE · REGION-FIRST</footer>
+<footer class="site-footer">SHANGHAI FIELD TRIP HUB · v0.11.7 · SHANGHAI GUIDE · REGION-FIRST</footer>
 <nav class="bottom-nav" data-bottom-nav aria-label="주요 메뉴 (모바일)"></nav>
 
 <script src="js/config.js"></script>
@@ -134,7 +139,8 @@
   function amapSearchUrl(spot) {
     const nameZh = spot.name_zh || "";
     const addr = spot.address || "";
-    let keyword = [nameZh, addr].filter(Boolean).join(" ");
+    // v0.11.7: amap_keyword 가 지정된 장소는 그 검색어만 사용(이름 기반 검색 유지)
+    let keyword = spot.amap_keyword || [nameZh, addr].filter(Boolean).join(" ");
     if (!keyword) keyword = spot.name ? spot.name + " 上海" : "";
     if (!keyword) return "";
     const params = new URLSearchParams({
@@ -640,7 +646,17 @@
 
   // ---------- 02 · 지역 상세 스케매틱 지도 ----------
   const CAT_COLOR = { see: "var(--navy-800)", eat: "var(--coral)", cafe: "var(--amber)", shop: "var(--mint)" };
+  // v0.11.7: 핀 라벨 = 카드 1행(guideDisplayTitle). 길어서 겹치는 곳만 GUIDE_MAP_LABELS(지도 전용 축약명)를 씁니다.
+  //   좌표 · 핀 번호 · 장소 ID · 클릭 이동은 그대로입니다. (이전 방식: 영문/원어 name 기반 — 아래 pinShortNameLegacy)
   function pinShortName(spot) {
+    const ml = typeof GUIDE_MAP_LABELS !== "undefined" ? GUIDE_MAP_LABELS[spot.id] : "";
+    const t = String(ml || guideDisplayTitle(spot) || "").trim();
+    // 안전장치: 축약명이 없는데 아주 긴 이름은 폭 기준으로 줄임(한글·한자 2칸, 그 외 1칸 · 최대 22칸)
+    let w = 0, out = "";
+    for (const ch of t) { w += /[\u1100-\u11ff\u3000-\u9fff\uac00-\ud7af\uff00-\uffef]/.test(ch) ? 2 : 1; if (w > 22) return out.trim() + "…"; out += ch; }
+    return t || pinShortNameLegacy(spot);
+  }
+  function pinShortNameLegacy(spot) {
     let en = String(spot.name || "").split(" / ")[0].split(" — ")[0].replace(/[（(][^）)]*[）)]/g, "").trim();
     if (/[　-鿿]/.test(en) && /[A-Za-z]{2}/.test(en)) en = en.replace(/[　-鿿·]+/g, " ").replace(/^[^A-Za-z0-9]+/, "").trim();
     if (!/[A-Za-z]{2}/.test(en)) en = (spot.name_zh || spot.name).replace(/[（(].*$/, "").split("·")[0];
@@ -662,14 +678,17 @@
       const cats = spotCats(s);
       const dim = activeCat !== "all" && !cats.includes(activeCat) ? "is-dim" : "";
       const [x, y] = p;
-      const below = i % 2 === 1;
+      // v0.11.7: 라벨 위치만 개별 조정(GUIDE_MAP_LABEL_POS: pos "above"|"below", dx). 핀 좌표·번호는 그대로.
+      const lp = (typeof GUIDE_MAP_LABEL_POS !== "undefined" && GUIDE_MAP_LABEL_POS[s.id]) || {};
+      const below = lp.pos ? lp.pos === "below" : i % 2 === 1;
+      const lx = x + (lp.dx || 0);
       const anchor = x > 690 ? "end" : x < 110 ? "start" : "middle";
       return `
         <g class="rm-pin ${dim}" data-pin="${escapeAttr(s.id)}" tabindex="0" role="button" aria-label="${i + 1}. ${escapeAttr(s.name)}">
           <title>${i + 1}. ${escapeAttr(s.name)}</title>
           <circle cx="${x}" cy="${y}" r="${(13 * k).toFixed(1)}" style="fill:${CAT_COLOR[cats[0]]}"/>
           <text class="rm-pin__num" x="${x}" y="${y + 4 * k}" text-anchor="middle"${fs(11.5)}>${i + 1}</text>
-          ${showLabels ? `<text class="rm-pin__label" x="${x}" y="${below ? y + (13 + 15) * k : y - (13 + 6) * k}" text-anchor="${anchor}"${fs(11.5)}>${escapeAttr(pinShortName(s))}</text>` : ""}
+          ${showLabels ? `<text class="rm-pin__label" x="${lx}" y="${below ? y + (13 + 15) * k : y - (13 + 6) * k}" text-anchor="${anchor}"${fs(11.5)}>${escapeAttr(pinShortName(s))}</text>` : ""}
         </g>`;
     }).join("");
     svg.innerHTML = `<rect x="0" y="0" width="800" height="460" rx="14" class="rm-bg"/>${water}${roads}${roadLabels}${notes}${pins}
@@ -694,6 +713,43 @@
       el.classList.add("is-deep-linked");
       setTimeout(() => el.classList.remove("is-deep-linked"), 2200);
     });
+  }
+
+  // ---------- v0.11.7 · 추가 맛집 (사진 카드 없이 정보형 목록) ----------
+  // GUIDE_SPOT_DRAFTS 중 listed: true 인 곳만. 기존 사진 카드 그리드와 지역 지도(핀)는 건드리지 않습니다.
+  const EXTRA_EATS = typeof GUIDE_SPOT_DRAFTS !== "undefined" ? GUIDE_SPOT_DRAFTS.filter((d) => d.listed) : [];
+  function extraById(id) { return EXTRA_EATS.find((d) => d.id === id); }
+  function extraEatsIn(region) { return EXTRA_EATS.filter((d) => d.region === region.key); }
+  function extraEatHtml(d, inSearch) {
+    const mapUrl = amapSearchUrl(d);
+    const region = GUIDE_REGIONS.find((r) => r.key === d.region);
+    return `
+      <article class="xe-item"${inSearch ? "" : ` id="card-${escapeAttr(d.id)}"`}>
+        <div class="guide-card__top">
+          <div class="guide-card__category">${d.category}</div>
+          <div class="guide-card__area">${region ? region.name_en : d.area}</div>
+        </div>
+        ${guideTitleHtml(d)}
+        ${d.note ? `<div class="guide-card__note">${d.note}</div>` : ""}
+        ${d.address ? `<div class="guide-card__addr">${icon("pin")} ${d.address}</div>` : ""}
+        <div class="xe-item__actions">
+          ${mapUrl ? `<a class="btn btn--sm" href="${mapUrl}" target="_blank" rel="noopener">${icon("pin")}<span>高德地图</span></a>` : ""}
+          ${d.name_zh ? `<button class="copy-btn copy-btn--sm" type="button" data-copy="${escapeAttr(d.name_zh)}">${icon("copy")}<span>NAME</span></button>` : ""}
+          ${d.address ? `<button class="copy-btn copy-btn--sm" type="button" data-copy="${escapeAttr(d.address)}">${icon("copy")}<span>ADDRESS</span></button>` : ""}
+        </div>
+        ${inSearch ? `<a class="xe-item__go" href="#spot=${escapeAttr(d.id)}">${region ? region.short : ""} 지역 목록에서 보기 →</a>` : ""}
+      </article>`;
+  }
+  function renderExtraEats(region) {
+    const root = document.getElementById("region-extra-root");
+    const list = region ? extraEatsIn(region) : [];
+    const show = list.length && (activeCat === "all" || activeCat === "eat");
+    root.innerHTML = show ? `
+      <section class="xe" aria-label="추가 맛집">
+        <div class="xe__head"><h3 class="xe__title">추가 맛집</h3><span class="xe__count">${list.length}곳</span></div>
+        <p class="xe__note">위치는 각 항목의 高德地图 버튼으로 확인하세요. 지역 지도 핀에는 표시하지 않았습니다.</p>
+        <div class="xe-list">${list.map((d) => extraEatHtml(d)).join("")}</div>
+      </section>` : "";
   }
 
   // ---------- 02 · 지역 상세 ----------
@@ -727,6 +783,7 @@
     document.getElementById("region-root").innerHTML = shown.length
       ? shown.map(({ s, n }) => guideCardHtml(s, n)).join("")
       : emptyBoxHtml("이 지역에는 해당 카테고리의 장소가 없습니다.");
+    renderExtraEats(region);
 
     const idx = GUIDE_REGIONS.indexOf(region);
     const next = GUIDE_REGIONS[(idx + 1) % GUIDE_REGIONS.length];
@@ -838,6 +895,17 @@
           <p class="sv-tip__faint">호텔의 중국어 주소와 수령 가능 여부를 먼저 확인하세요. 호텔에 따라 프런트나 지정 장소에서 물건을 수령해야 할 수 있습니다. 배달 가능 지역, 상품, 비용 및 주문 가능 여부는 상황에 따라 달라집니다.</p>
         </div>
       </details>
+      <details class="sv-tip">
+        <summary><span class="sv-tip__label">TIP</span>🧋 어디서나 보이는 차음료 · 간식 체인</summary>
+        <div class="sv-tip__body">
+          <p>상하이 곳곳에 지점이 있는 체인이라, 따로 찾아가기보다 동선 근처 매장을 이용하면 됩니다.</p>
+          <ul>
+            <li><b>차음료</b> 喜茶 HEYTEA(헤이티) · 霸王茶姬 CHAGEE(차지) · 茶百道(차바이다오) · 古茗(구밍) · 沪上阿姨 AUNTEA JENNY(후상아이) · 阿嬷手作(아마수작) · 蜜雪冰城 MIXUE(미쉐)</li>
+            <li><b>간식</b> 莉莲蛋挞 Lillian Bakery(에그타르트) · 泸溪河(중식 과자·베이커리) · 袁记云饺(물만두·완탕)</li>
+          </ul>
+          <p class="sv-tip__faint">동행자 참고용으로 모은 목록입니다. 메뉴·가격·영업시간은 지점마다 다르니 매장에서 확인하세요. 沪上阿姨와 阿嬷手作는 서로 다른 브랜드입니다.</p>
+        </div>
+      </details>
       ${SOUV_GROUPS.map((g) => {
         const list = SOUV_CARDS.filter((c) => c.group === g.key && (c.photo || c.photos));
         return list.length ? `
@@ -858,10 +926,13 @@
     document.getElementById("region-detail").hidden = on || !activeRegionKey;
     if (!on) return;
     const spots = GUIDE_SPOTS.filter(matchesSearch);
+    const extras = EXTRA_EATS.filter(matchesSearch);
     const souv = GUIDE_SOUVENIRS.filter(souvenirMatches);
     const souvNew = SOUV_CARDS.filter((c) => c.isNew && [c.title, c.orig].join(" ").toLowerCase().includes(searchQuery));
-    document.getElementById("search-result-count").textContent = "검색 결과 " + spots.length + "곳" + (souv.length + souvNew.length ? " · 기념품 " + (souv.length + souvNew.length) : "");
-    document.getElementById("search-root").innerHTML = spots.length ? spots.map((s) => guideCardHtml(s)).join("") : emptyBoxHtml("조건에 맞는 장소가 없습니다.");
+    document.getElementById("search-result-count").textContent = "검색 결과 " + spots.length + "곳" + (extras.length ? " · 추가 맛집 " + extras.length : "") + (souv.length + souvNew.length ? " · 기념품 " + (souv.length + souvNew.length) : "");
+    document.getElementById("search-root").innerHTML = spots.length ? spots.map((s) => guideCardHtml(s)).join("") : (extras.length ? "" : emptyBoxHtml("조건에 맞는 장소가 없습니다."));
+    document.getElementById("search-extra-wrap").hidden = !extras.length;
+    document.getElementById("search-extra-root").innerHTML = extras.map((d) => extraEatHtml(d, true)).join("");
     document.getElementById("search-souvenir-wrap").hidden = !(souv.length + souvNew.length);
     document.getElementById("search-souvenir-root").innerHTML = souv.map((it) => {
       const c = souvCardFor(it);
@@ -872,7 +943,17 @@
   // ---------- 라우팅: #region=<key> · #spot=<id> · (기존) #see/#eat/#shop/#souvenirs/#map ----------
   function goToSpotDeepLink(spotId) {
     const spot = spotById(spotId);
-    if (!spot) return false;
+    if (!spot) {
+      // v0.11.7: 추가 맛집 목록 항목 → 해당 지역을 열고 목록 위치로 이동
+      const d = extraById(spotId);
+      const r = d && GUIDE_REGIONS.find((x) => x.key === d.region);
+      if (!r) return false;
+      if (searchQuery) { searchQuery = ""; document.getElementById("guide-search").value = ""; renderSearch(); }
+      activeCat = "all";
+      selectRegion(r.key, { noHash: true, keepCat: true });
+      focusCard(spotId);
+      return true;
+    }
     const region = regionOf(spot);
     if (!region) return false;
     if (searchQuery) { searchQuery = ""; document.getElementById("guide-search").value = ""; renderSearch(); }
