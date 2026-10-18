@@ -44,7 +44,7 @@
     <div class="guide-grid" id="search-root"></div>
     <div id="search-souvenir-wrap" hidden>
       <div class="manifest-title"><span class="manifest-title__num">SOUVENIRS</span>기념품<span class="manifest-title__line"></span></div>
-      <div class="guide-grid" id="search-souvenir-root"></div>
+      <div class="sv-grid sv-grid--search" id="search-souvenir-root"></div>
     </div>
   </section>
 
@@ -83,13 +83,13 @@
   <!-- 03 · 기념품 (기존 SOUVENIRS 탭 내용 그대로) -->
   <section id="guide-souvenirs" class="guide-souvenirs">
     <details class="guide-fold" id="souvenir-fold">
-      <summary class="manifest-title"><span class="manifest-title__num">03</span>기념품 체크리스트 · SOUVENIRS <span class="guide-fold__count" id="souvenir-count"></span><span class="manifest-title__line"></span></summary>
-      <div class="guide-grid guide-grid--compact" id="souvenir-root"></div>
+      <summary class="manifest-title"><span class="manifest-title__num">03</span><span>기념품 체크리스트<span class="souv-title-en"> · SOUVENIRS</span></span> <span class="guide-fold__count" id="souvenir-count"></span><span class="manifest-title__line"></span></summary>
+      <div class="souv" id="souvenir-root"></div>
     </details>
   </section>
 </main>
 
-<footer class="site-footer">SHANGHAI FIELD TRIP HUB · v0.11.4 · SHANGHAI GUIDE · REGION-FIRST</footer>
+<footer class="site-footer">SHANGHAI FIELD TRIP HUB · v0.11.6 · SHANGHAI GUIDE · REGION-FIRST</footer>
 <nav class="bottom-nav" data-bottom-nav aria-label="주요 메뉴 (모바일)"></nav>
 
 <script src="js/config.js"></script>
@@ -765,12 +765,88 @@
       </article>
     `;
   }
+  // v0.11.6: 기념품 = 사진 카드(GUIDE_SOUVENIR_CARDS). GUIDE_SOUVENIRS 33개는 그대로이며 카드 데이터가 없으면 기존 목록으로 되돌아갑니다.
+  const SOUV_CARDS = typeof GUIDE_SOUVENIR_CARDS !== "undefined" ? GUIDE_SOUVENIR_CARDS : [];
+  const SOUV_GROUPS = typeof GUIDE_SOUVENIR_GROUPS !== "undefined" ? GUIDE_SOUVENIR_GROUPS : [];
+  function souvCardFor(item) { return SOUV_CARDS.find((c) => c.id === item.id); }
   function souvenirMatches(item) {
-    return !searchQuery || (item.name + " " + (item.note || "")).toLowerCase().includes(searchQuery);
+    if (!searchQuery) return true;
+    const c = souvCardFor(item) || {};
+    return [item.name, item.note, c.title, c.orig].filter(Boolean).join(" ").toLowerCase().includes(searchQuery);
+  }
+  function souvWhereHtml(c) {
+    const shops = (c.shops || []).map((id) => spotById(id)).filter(Boolean);
+    if (shops.length) {
+      return `<div class="sv-where">${icon("pin")}<div>${shops.map((s) => `<a href="#spot=${escapeAttr(s.id)}">${escapeAttr(guideDisplayTitle(s))}</a>`).join("<i>·</i>")}</div></div>`;
+    }
+    const w = c.where || "구매처 확인 필요";
+    return `<div class="sv-where sv-where--text${/확인 필요/.test(w) ? " is-unverified" : ""}">${icon("pin")}<div><span>${escapeAttr(w)}</span></div></div>`;
+  }
+  function souvPhotoCardHtml(c, inSearch) {
+    const photos = c.photos || (c.photo ? [c.photo] : []);
+    const alt = (i) => `${c.title}${c.orig ? " (" + c.orig + ")" : ""} 상품 사진${photos.length > 1 ? " " + (i + 1) : ""}${c.tag ? " · " + c.tag : ""}`;
+    return `
+      <article class="sv-card${c.isNew ? " sv-card--new" : ""}"${inSearch ? "" : ` id="souv-${escapeAttr(c.id)}"`}>
+        <div class="sv-card__photo${photos.length > 1 ? " sv-card__photo--duo" : ""}">
+          ${photos.map((f, i) => `<img src="${escapeAttr(f)}" alt="${escapeAttr(alt(i))}" loading="lazy" decoding="async">`).join("")}
+          ${c.tag ? `<span class="sv-card__tag${c.isNew ? " sv-card__tag--new" : ""}">${escapeAttr(c.tag)}</span>` : ""}
+        </div>
+        <div class="sv-card__body">
+          <h4 class="sv-card__title">${escapeAttr(c.title)}</h4>
+          ${c.orig ? `<div class="sv-card__orig">${escapeAttr(c.orig)}</div>` : ""}
+          ${souvWhereHtml(c)}
+        </div>
+      </article>`;
+  }
+  function souvMemoHtml(list) {
+    return list.length ? `
+      <div class="sv-memo">
+        <div class="sv-memo__title">그 밖의 쇼핑 메모 <span>사진 없음 · ${list.length}</span></div>
+        <ul class="sv-memo__list">${list.map((c) => {
+          const shops = (c.shops || []).map((id) => spotById(id)).filter(Boolean);
+          return `<li>${escapeAttr(c.title)}${shops.length ? ` <a href="#spot=${escapeAttr(shops[0].id)}">${escapeAttr(guideDisplayTitle(shops[0]))}</a>` : ""}</li>`;
+        }).join("")}</ul>
+      </div>` : "";
   }
   function renderSouvenirs() {
     document.getElementById("souvenir-count").textContent = "(" + GUIDE_SOUVENIRS.length + ")";
-    document.getElementById("souvenir-root").innerHTML = GUIDE_SOUVENIRS.map(souvenirCardHtml).join("");
+    const root = document.getElementById("souvenir-root");
+    // v0.11.6: 표시 항목 수 = 기존 GUIDE_SOUVENIRS + 추가 후보 (사진 카드 + 하단 메모 합계와 같음)
+    const nAdded = SOUV_CARDS.filter((c) => c.isNew).length;
+    if (SOUV_CARDS.length && SOUV_GROUPS.length) {
+      // PC: "38개 (기존 33 + 추가 5)" · 모바일: "38개" (CSS로 전환)
+      document.getElementById("souvenir-count").innerHTML = `${GUIDE_SOUVENIRS.length + nAdded}개<span class="souv-count-detail"> (기존 ${GUIDE_SOUVENIRS.length} + 추가 ${nAdded})</span>`;
+    }
+    if (!SOUV_CARDS.length || !SOUV_GROUPS.length) { // 안전장치: 카드 데이터가 없으면 기존 목록 그대로
+      root.innerHTML = `<div class="guide-grid guide-grid--compact">${GUIDE_SOUVENIRS.map(souvenirCardHtml).join("")}</div>`;
+      return;
+    }
+    const known = new Set(SOUV_CARDS.map((c) => c.id));
+    // 카드 데이터에 없는 GUIDE_SOUVENIRS 항목이 생겨도 사라지지 않도록 메모로 표시
+    const orphan = GUIDE_SOUVENIRS.filter((it) => !known.has(it.id)).map((it) => ({ id: it.id, title: it.name, shops: it.shop_ids }));
+    const memo = SOUV_CARDS.filter((c) => c.group === "memo").concat(orphan);
+    root.innerHTML = `
+      <p class="sv-note">상하이에서 살 만한 기념품을 모았어요. 상품 사진과 구매처를 참고하되 실제 판매 여부는 현지에서 확인해주세요.</p>
+      <details class="sv-tip">
+        <summary><span class="sv-tip__label">TIP</span>🛵 쇼핑한 기념품, 호텔로 배달받기</summary>
+        <div class="sv-tip__body">
+          <p>중국에서는 메이투안(美团)으로 간식과 생활용품을 호텔까지 배달받을 수 있어요.</p>
+          <ul>
+            <li><b>美团闪购(샨거우)</b> 마트 간식이나 생활용품을 앱에서 주문해 배송</li>
+            <li><b>美团跑腿(파오투이)</b> 이미 구매한 물건을 픽업해 다른 장소로 배송</li>
+          </ul>
+          <p class="sv-tip__faint">호텔의 중국어 주소와 수령 가능 여부를 먼저 확인하세요. 호텔에 따라 프런트나 지정 장소에서 물건을 수령해야 할 수 있습니다. 배달 가능 지역, 상품, 비용 및 주문 가능 여부는 상황에 따라 달라집니다.</p>
+        </div>
+      </details>
+      ${SOUV_GROUPS.map((g) => {
+        const list = SOUV_CARDS.filter((c) => c.group === g.key && (c.photo || c.photos));
+        return list.length ? `
+          <section class="sv-group" aria-label="${escapeAttr(g.label)}">
+            <h3 class="sv-group__title"><span>${g.en}</span>${g.label}<em>${list.length}</em></h3>
+            <div class="sv-grid">${list.map((c) => souvPhotoCardHtml(c)).join("")}</div>
+          </section>` : "";
+      }).join("")}
+      ${souvMemoHtml(memo)}`;
   }
 
   // ---------- 검색 (모든 지역 가로질러) ----------
@@ -783,10 +859,14 @@
     if (!on) return;
     const spots = GUIDE_SPOTS.filter(matchesSearch);
     const souv = GUIDE_SOUVENIRS.filter(souvenirMatches);
-    document.getElementById("search-result-count").textContent = "검색 결과 " + spots.length + "곳" + (souv.length ? " · 기념품 " + souv.length : "");
+    const souvNew = SOUV_CARDS.filter((c) => c.isNew && [c.title, c.orig].join(" ").toLowerCase().includes(searchQuery));
+    document.getElementById("search-result-count").textContent = "검색 결과 " + spots.length + "곳" + (souv.length + souvNew.length ? " · 기념품 " + (souv.length + souvNew.length) : "");
     document.getElementById("search-root").innerHTML = spots.length ? spots.map((s) => guideCardHtml(s)).join("") : emptyBoxHtml("조건에 맞는 장소가 없습니다.");
-    document.getElementById("search-souvenir-wrap").hidden = !souv.length;
-    document.getElementById("search-souvenir-root").innerHTML = souv.map(souvenirCardHtml).join("");
+    document.getElementById("search-souvenir-wrap").hidden = !(souv.length + souvNew.length);
+    document.getElementById("search-souvenir-root").innerHTML = souv.map((it) => {
+      const c = souvCardFor(it);
+      return c && (c.photo || c.photos) ? souvPhotoCardHtml(c, true) : souvenirCardHtml(it);
+    }).concat(souvNew.map((c) => souvPhotoCardHtml(c, true))).join("");
   }
 
   // ---------- 라우팅: #region=<key> · #spot=<id> · (기존) #see/#eat/#shop/#souvenirs/#map ----------

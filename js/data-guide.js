@@ -542,6 +542,70 @@ const GUIDE_SOUVENIRS = [
   { id: "gsv-towel-cake", name: "towel cake", priceRange: "", note: "", shop_ids: [] },
 ];
 
+// ===== GUIDE_SOUVENIR_CARDS (v0.11.6 · 기념품 사진 카드 — 화면 구성 전용) =====
+// 위 GUIDE_SOUVENIRS 33개 항목(id)은 그대로 두고, 카드 표시에 필요한 한국어명·사진·구매처만 덧붙입니다.
+// ▸ 사진: 사용자가 직접 수집해 전달한 원본(shanghai_souvenir_original_photos_for_claude_20261018, PHOTO_MANIFEST.csv)의
+//   웹용 사본(assets/guide/souvenirs/*.webp — 긴 변 최대 640px, 업스케일·크롭·로고/워터마크 편집 없음).
+//   원본 파일명·SHA256은 assets/guide/souvenirs/SOURCES.md에 기록했습니다.
+// ▸ license: "unverified" — 원본 페이지·공개 재사용 권한이 아직 확인되지 않았습니다. 출처 표기만으로 허락된 것으로 보지 않습니다.
+// ▸ shops: 기존 GUIDE_SOUVENIRS.shop_ids가 있는 경우에만 Guide 장소 카드로 연결합니다(새 판매처를 지정하지 않음).
+//   where: 일반 업종 명칭(예: "마트 · 편의점") 또는 "구매처 확인 필요".
+// ▸ tag: 사진의 성격 표시 — "예시 사진"(정확한 모델·판매처 미확인), "홍보 이미지", "추가 후보"(기존 33개 외 신규 후보).
+// ▸ 사진이 없는 항목(GATHERING 다구 · 빈티지 시계)은 photo 없이 두고 화면 하단 "그 밖의 쇼핑 메모"에 표시합니다.
+const GUIDE_SOUVENIR_GROUPS = [
+  { key: "snack", label: "간식", en: "SNACKS" },
+  { key: "drink", label: "음료 · 차 · 술", en: "DRINKS & TEA" },
+  { key: "beauty", label: "뷰티 · 생활", en: "BEAUTY & DAILY" },
+  { key: "goods", label: "굿즈 · 패션 · 전자", en: "GOODS" },
+];
+const GUIDE_SOUVENIR_DIR = "assets/guide/souvenirs/";
+const GUIDE_SOUVENIR_CARDS = [
+  // --- 간식 ---
+  { id: "gsv-white-rabbit-candy", group: "snack", title: "화이트래빗 밀크캔디", orig: "White Rabbit · 大白兔奶糖", photo: GUIDE_SOUVENIR_DIR + "white-rabbit.webp", shops: ["gs-shanghai-first-food-store"] },
+  { id: "gsv-shanghai-china-oreo", group: "snack", title: "중국 오레오", orig: "Oreo · 奥利奥", photo: GUIDE_SOUVENIR_DIR + "oreo-china.webp", where: "마트 · 편의점" },
+  { id: "gsv-lays-cucumber", group: "snack", title: "레이즈 오이맛", orig: "Lay's · 乐事 黄瓜味", photo: GUIDE_SOUVENIR_DIR + "lays-cucumber.webp", where: "마트 · 편의점" },
+  { id: "gsv-lays-tomato", group: "snack", title: "레이즈 토마토맛", orig: "Lay's · 乐事 番茄味", photo: GUIDE_SOUVENIR_DIR + "lays-tomato.webp", where: "마트 · 편의점" },
+  { id: "gsv-franzzi-cookies", group: "snack", title: "프란찌 쿠키", orig: "Franzzi · 法丽兹", photo: GUIDE_SOUVENIR_DIR + "franzzi-cookies.webp", where: "마트 · 편의점" },
+  { id: "gsv-jujube-nougat-cashew", group: "snack", title: "대추 누가 캐슈넛", orig: "腰果奶枣", photo: GUIDE_SOUVENIR_DIR + "jujube-nougat-cashew-user-corrected.webp", where: "마트 · 편의점" },
+  { id: "gsv-kaman-egg-roll", group: "snack", title: "카만 에그롤", orig: "KAMAN · 咔曼", photo: GUIDE_SOUVENIR_DIR + "kaman-eggroll.webp", where: "마트 · 편의점" },
+  { id: "gsv-three-squirrels-macadamia", group: "snack", title: "삼지송서 간식", orig: "Three Squirrels · 三只松鼠", photo: GUIDE_SOUVENIR_DIR + "three-squirrels-packaging.webp", where: "마트 · 편의점" }, // 마카다미아 제품인지 미확인 → 브랜드 간식으로 표기
+  { id: "gsv-caramel-sunflower-seeds", group: "snack", title: "카라멜 해바라기씨", orig: "焦糖瓜子", photo: GUIDE_SOUVENIR_DIR + "caramel-sunflower-seeds.webp", where: "마트 · 편의점" },
+  { id: "gsv-towel-cake", group: "snack", title: "수건 케이크", orig: "毛巾卷", photo: GUIDE_SOUVENIR_DIR + "towel-cake.webp", where: "구매처 확인 필요" },
+  { id: "new-butterfly-pastry", group: "snack", isNew: true, title: "국제호텔 나비과자", orig: "国际饭店 蝴蝶酥", photo: GUIDE_SOUVENIR_DIR + "butterfly-pastry.webp", where: "국제호텔(国际饭店) · 매장 위치 확인 필요", tag: "추가 후보" },
+  { id: "new-snackerco-snacks", group: "snack", isNew: true, title: "SNACKERCO 간식", orig: "SNACKERCO", photo: GUIDE_SOUVENIR_DIR + "snackerco-snacks.webp", where: "구매처 확인 필요", tag: "추가 후보" },
+  // --- 음료 · 차 · 술 ---
+  { id: "gsv-jiangxiaobai", group: "drink", title: "강소백 과일맛", orig: "江小白 果立方", photo: GUIDE_SOUVENIR_DIR + "jiangxiaobai-fruit-flavours-user-corrected.webp", where: "마트 · 편의점" },
+  { id: "gsv-plum-wine", group: "drink", title: "매실주 Meijian", orig: "梅见", photo: GUIDE_SOUVENIR_DIR + "meijian-plum-wine-user-corrected.webp", where: "마트 · 편의점" },
+  { id: "gsv-oolong-tea", group: "drink", title: "차 선물세트", orig: "Tea gift set", photo: GUIDE_SOUVENIR_DIR + "tea-gift-set-type-unverified.webp", where: "구매처 확인 필요" }, // 우롱차인지 미확인 → "차 선물세트"로만 표기
+  { id: "gsv-luckin-liquid-coffee", group: "drink", title: "루이싱커피 액상커피", orig: "Luckin · 瑞幸咖啡", photo: GUIDE_SOUVENIR_DIR + "luckin-liquid-coffee.webp", where: "구매처 확인 필요" },
+  { id: "gsv-mixue-mint-lemon", group: "drink", title: "미쉐 음료", orig: "Mixue · 蜜雪冰城", photo: GUIDE_SOUVENIR_DIR + "mixue-lemon-drink.webp", where: "미쉐 매장" }, // 정확한 맛·판매 지속 여부 미확인
+  { id: "new-yantai-gaoliang", group: "drink", isNew: true, title: "연태고량주", orig: "烟台古酿", photo: GUIDE_SOUVENIR_DIR + "yantai-gaoliang-liquor.webp", where: "구매처 확인 필요", tag: "추가 후보" },
+  { id: "new-blan-bunny-tea", group: "drink", isNew: true, title: "블랜버니 티 선물세트", orig: "Blan Bunny", photo: GUIDE_SOUVENIR_DIR + "blan-bunny-tea-gift-set.webp", where: "구매처 확인 필요", tag: "추가 후보" },
+  { id: "new-saturnbird-coffee", group: "drink", isNew: true, title: "새턴버드 커피", orig: "Saturnbird · 三顿半", photo: GUIDE_SOUVENIR_DIR + "saturnbird-coffee.webp", where: "구매처 확인 필요", tag: "추가 후보" },
+  // --- 뷰티 · 생활 ---
+  { id: "gsv-qingzhi-hand-cream", group: "beauty", title: "칭즈 핸드크림", orig: "青稚 · 틴케이스", photo: GUIDE_SOUVENIR_DIR + "qingzhi-round-tin-handcream.webp", shops: ["gs-qingzhi-handcream"] },
+  { id: "gsv-to-summer-fragrance", group: "beauty", title: "To Summer 향수", orig: "观夏", photo: GUIDE_SOUVENIR_DIR + "to-summer-fragrance.webp", shops: ["gs-to-summer"] },
+  { id: "gsv-kiehls-moisturizer", group: "beauty", title: "키엘 수분크림", orig: "Kiehl's", photo: GUIDE_SOUVENIR_DIR + "kiehls-moisturizer.webp", where: "키엘 매장 · 백화점" },
+  { id: "gsv-colgate-toothpaste", group: "beauty", title: "콜게이트 치약", orig: "Colgate · 高露洁", photo: GUIDE_SOUVENIR_DIR + "colgate-toothpaste.webp", where: "마트 · 편의점" },
+  // --- 굿즈 · 패션 · 전자 ---
+  { id: "gsv-character-goods-family", group: "goods", title: "캐릭터 굿즈", orig: "POP MART · MINISO LAND · TOP TOY", photo: GUIDE_SOUVENIR_DIR + "character-rabbit-keyring.webp", shops: ["gs-popmart", "gs-miniso-land", "gs-toptoy"], tag: "예시 사진" }, // 사진 속 키링의 브랜드 미확인 — 세 매장 상품이라고 단정하지 않음
+  { id: "gsv-tagi-accessories", group: "goods", title: "TAGI 액세서리", orig: "TAGI.", photo: GUIDE_SOUVENIR_DIR + "tagi-bag-as-accessory-example.webp", shops: ["gs-tagi"] },
+  { id: "gsv-custom-magnet", group: "goods", title: "상하이 마그넷", orig: "우캉맨션 · 동방명주", photos: [GUIDE_SOUVENIR_DIR + "wukang-mansion-magnet.webp", GUIDE_SOUVENIR_DIR + "shanghai-architecture-magnet.webp"], shops: ["gs-monogram"], tag: "예시 사진" }, // 커스텀 제작 여부·monogram 판매 상품인지 미확인
+  { id: "gsv-starbucks-city-mug", group: "goods", title: "스타벅스 상하이 시티 머그", orig: "Starbucks Shanghai", photo: GUIDE_SOUVENIR_DIR + "starbucks-shanghai-mug.webp", where: "스타벅스 매장" },
+  { id: "gsv-shanghai-character-goods", group: "goods", title: "상하이 디즈니 캐릭터 인형", orig: "Shanghai Disney", photo: GUIDE_SOUVENIR_DIR + "disney-linabell-plush.webp", where: "구매처 확인 필요" },
+  { id: "gsv-hello-kitty-dimsum-doll", group: "goods", title: "헬로키티 딤섬 굿즈", orig: "Hello Kitty", photo: GUIDE_SOUVENIR_DIR + "hello-kitty-dimsum-promotional.webp", where: "구매처 확인 필요", tag: "홍보 이미지" },
+  { id: "gsv-adidas-cny-items", group: "goods", title: "아디다스 중국풍 의류", orig: "adidas", photo: GUIDE_SOUVENIR_DIR + "adidas-china-style-clothing.webp", where: "아디다스 매장", tag: "예시 사진" },
+  { id: "gsv-levis", group: "goods", title: "리바이스 의류", orig: "Levi's", photo: GUIDE_SOUVENIR_DIR + "levis-clothing.webp", where: "리바이스 매장", tag: "예시 사진" },
+  { id: "gsv-dji-accessories", group: "goods", title: "DJI 액세서리", orig: "DJI · 大疆", photo: GUIDE_SOUVENIR_DIR + "dji-accessories.webp", where: "DJI 매장" },
+  { id: "gsv-digital-camera", group: "goods", title: "디지털카메라 (CCD)", orig: "CCD camera", photo: GUIDE_SOUVENIR_DIR + "ccd-digital-camera.webp", where: "중고 · 빈티지 매장", tag: "예시 사진" },
+  { id: "gsv-old-iphone", group: "goods", title: "구형 아이폰", orig: "iPhone", photo: GUIDE_SOUVENIR_DIR + "old-iphones.webp", where: "중고 · 빈티지 매장", tag: "예시 사진" },
+  { id: "gsv-cassette-player", group: "goods", title: "카세트 플레이어", orig: "Cassette player", photo: GUIDE_SOUVENIR_DIR + "cassette-player.webp", where: "중고 · 빈티지 매장", tag: "예시 사진" },
+  // --- 사진 없음 → 하단 "그 밖의 쇼핑 메모" ---
+  { id: "gsv-gathering-ceramics", group: "memo", title: "GATHERING 도자기 · 다구", shops: ["gs-gathering"] }, // 사용자 요청: 추천 사진 카드에서 제외
+  { id: "gsv-vintage-luxury-watch", group: "memo", title: "빈티지 명품 시계" },
+];
+GUIDE_SOUVENIR_CARDS.forEach((c) => { if (c.photo || c.photos) c.license = "unverified"; });
+
 // ===== GUIDE_RESEARCH_NOTES =====
 // 정확한 상호·주소를 확인하지 못한 자료입니다. Guide 메인 카드에는 렌더링하지
 // 않고(어디에서도 화면에 노출하지 않음), 삭제하지 않고 이 배열에만 보존합니다.

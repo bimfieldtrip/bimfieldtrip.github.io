@@ -1051,3 +1051,121 @@ main [hidden] { display: none !important; }
   font-family: var(--font-display); font-size: 0.7rem; font-weight: 800; letter-spacing: 0.01em;
   white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
 }
+
+/* ---------- PREP · 02 필수 앱 / 선택 앱 카드 높이·정렬 통일 (v0.11.5) ----------
+   원인: 공통 규칙 .card + .card { margin-top:12px }가 그리드 안에도 적용되어 같은 행의 2·3번째 카드만
+   12px 내려가고 그만큼 짧아졌습니다. 이 두 그리드에서만 margin을 없애고(간격은 grid gap 14px이 담당),
+   카드를 세로 flex로 만들어 같은 행의 카드가 같은 높이로 늘어나고 하단이 맞도록 합니다.
+   제목 · 중국어명 · 배지 · 설명 목록은 모든 카드에서 같은 위치(위쪽 기준)에서 시작합니다.
+   1열(900px 미만)에서는 내용 높이대로 자연스럽게 세로 배치됩니다. */
+#essential-apps-root, #optional-apps-root { align-items: stretch; }
+#essential-apps-root > .card, #optional-apps-root > .card { margin-top: 0; display: flex; flex-direction: column; min-width: 0; height: 100%; }
+#essential-apps-root > .card > .prep-card__head, #optional-apps-root > .card > .prep-card__head { flex: 0 0 auto; }
+#essential-apps-root .prep-card__head > .tag, #essential-apps-root .prep-card__head > .badge,
+#optional-apps-root .prep-card__head > .tag, #optional-apps-root .prep-card__head > .badge { flex-shrink: 0; }
+#essential-apps-root > .card > ul, #optional-apps-root > .card > ul { flex: 1 1 auto; }
+
+/* ---------- Guide · 장소 카드 박스 정렬 통일 (v0.11.6) ----------
+   - 버튼은 2열 격자(高德地图 · NAME / ADDRESS · PHOTOS)로 고정해 카드마다 줄바꿈 모양이 달라지지 않게 합니다.
+     버튼이 홀수(주소 없음)이면 마지막 버튼(PHOTOS)이 한 줄 전체를 씁니다. 순서는 그대로입니다.
+   - 버튼 영역은 카드 아래쪽에 붙여서, 같은 행에서 설명 길이가 달라도 버튼 줄이 나란히 맞습니다.
+   - 2열 이상일 때 MORE가 없는 카드에는 MORE 줄과 같은 높이의 빈 마감을 두어 버튼 위치가 같은 행에서 맞습니다.
+     (1열 모바일에서는 빈 공간을 만들지 않습니다.) */
+.guide-card__body { gap: 8px; }
+.guide-card__name-zh { margin-top: 0; }
+.guide-card__addr { display: flex; gap: 4px; align-items: flex-start; }
+.guide-card__addr svg { flex: 0 0 auto; margin-top: 1px; }
+.guide-card__actions {
+  display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 8px;
+  margin-top: auto; padding-top: 6px;
+}
+.guide-card__actions > .btn, .guide-card__actions > .copy-btn {
+  min-height: 38px; width: 100%; min-width: 0; justify-content: center; padding: 6px 8px; white-space: nowrap;
+}
+.guide-card__actions > :last-child:nth-child(odd) { grid-column: 1 / -1; }
+.guide-card__more { margin-top: 2px; padding-top: 10px; }
+.guide-card__more summary { min-height: 22px; line-height: 22px; }
+@media (min-width: 640px) {
+  .guide-card__body:not(:has(> .guide-card__more))::after {
+    content: ""; display: block; margin-top: 2px; padding-top: 10px; height: 22px; border-top: 1px solid transparent; box-sizing: content-box;
+  }
+}
+
+/* ---------- Guide · 기념품 사진 카드 (v0.11.6) ----------
+   작은 상품 사진 + 한국어 상품명 + 원어명 + 구매처. 사진은 잘라내지 않고(contain) 흰 바탕 정사각형 안에 맞춥니다.
+   모바일 2열(세로형) → 640px 이상 2열(가로형: 사진 왼쪽) → 1020px 이상 4열(세로형). 같은 행의 카드 높이는 grid가 맞춥니다. */
+.souv { margin: 4px 0 30px; display: flex; flex-direction: column; gap: 22px; }
+.sv-note { margin: 0; font-size: 0.8rem; line-height: 1.55; color: var(--ink-dim); background: var(--bg-soft); border: 1px solid var(--line-soft); border-radius: var(--radius-md); padding: 10px 12px; }
+.sv-note b { color: var(--navy-800); }
+/* 배송 TIP (v0.11.6+): 기본은 한 줄로 접힘 — 모바일에서 공간을 차지하지 않도록 */
+.sv-tip { margin-top: -12px; border: 1px solid var(--line-soft); border-radius: var(--radius-md); background: var(--surface); }
+.sv-tip > summary { list-style: none; cursor: pointer; display: flex; align-items: center; gap: 8px; padding: 9px 12px; font-size: 0.82rem; font-weight: 700; color: var(--navy-800); }
+.sv-tip > summary::-webkit-details-marker { display: none; }
+.sv-tip > summary::after { content: "+"; margin-left: auto; font-family: var(--font-mono); color: var(--ink-faint); }
+.sv-tip[open] > summary::after { content: "\2212"; }
+.sv-tip__label { flex: 0 0 auto; font-family: var(--font-mono); font-size: 0.6rem; font-weight: 800; letter-spacing: 0.08em; color: #fff; background: var(--navy-800); border-radius: 4px; padding: 2px 6px; }
+.sv-tip__body { padding: 0 12px 11px; font-size: 0.8rem; line-height: 1.55; color: var(--ink-dim); }
+.sv-tip__body p { margin: 0 0 6px; }
+.sv-tip__body ul { margin: 0 0 6px; padding-left: 18px; }
+.sv-tip__body li { margin: 2px 0; overflow-wrap: anywhere; }
+.sv-tip__body li b { color: var(--navy-800); margin-right: 4px; }
+.sv-tip__faint { color: var(--ink-faint); font-size: 0.74rem; margin-bottom: 0 !important; }
+.sv-group__title { display: flex; align-items: baseline; gap: 8px; margin: 0 0 10px; font-size: 0.95rem; font-weight: 800; color: var(--navy-900); }
+.sv-group__title span { font-family: var(--font-mono); font-size: 0.64rem; font-weight: 700; letter-spacing: 0.08em; color: var(--navy-500); }
+.sv-group__title em { font-style: normal; font-family: var(--font-mono); font-size: 0.72rem; font-weight: 600; color: var(--ink-faint); }
+.sv-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px; align-items: stretch; }
+.sv-card {
+  display: flex; flex-direction: column; min-width: 0; overflow: hidden;
+  background: var(--surface); border: 1px solid var(--line); border-radius: var(--radius-md);
+  transition: border-color 0.15s ease, box-shadow 0.15s ease;
+}
+.sv-card:hover { border-color: var(--navy-500); box-shadow: var(--shadow-card); }
+.sv-card__photo { position: relative; aspect-ratio: 1 / 1; background: #fff; border-bottom: 1px solid var(--line-soft); padding: 8px; display: flex; align-items: center; justify-content: center; }
+.sv-card__photo { overflow: hidden; min-height: 0; }
+/* 사진 비율과 상관없이 칸 크기를 고정: 이미지를 칸 안쪽(여백 8px)에 절대 배치하고 contain으로 맞춤 */
+.sv-card__photo img { position: absolute; top: 8px; left: 8px; width: calc(100% - 16px); height: calc(100% - 16px); object-fit: contain; display: block; }
+.sv-card__photo--duo img:first-child { width: calc(50% - 11px); }
+.sv-card__photo--duo img:nth-child(2) { left: calc(50% + 3px); width: calc(50% - 11px); }
+.sv-card__tag {
+  position: absolute; left: 6px; top: 6px; padding: 2px 7px; border-radius: 999px;
+  background: rgba(11, 23, 48, 0.78); color: #fff; font-size: 0.6rem; font-weight: 800; letter-spacing: 0.01em; white-space: nowrap;
+}
+.sv-card__tag--new { background: var(--coral); }
+.sv-card__body { flex: 1; display: flex; flex-direction: column; gap: 2px; padding: 10px 11px 11px; min-width: 0; }
+.sv-card__title { margin: 0; font-size: 0.88rem; font-weight: 800; line-height: 1.3; color: var(--navy-950); word-break: keep-all; overflow-wrap: anywhere; }
+.sv-card__orig { font-size: 0.7rem; line-height: 1.35; color: var(--ink-faint); overflow-wrap: anywhere; }
+.sv-where { display: flex; gap: 4px; align-items: flex-start; margin-top: auto; padding-top: 8px; font-size: 0.74rem; font-weight: 700; line-height: 1.4; color: var(--navy-700); }
+.sv-where svg { flex: 0 0 auto; width: 13px; height: 13px; margin-top: 2px; }
+.sv-where > div { display: flex; flex-wrap: wrap; column-gap: 5px; min-width: 0; overflow-wrap: anywhere; }
+.sv-where a { color: var(--navy-700); text-decoration: none; border-bottom: 1px solid rgba(35, 57, 122, 0.25); }
+.sv-where a:hover { border-bottom-color: var(--navy-700); }
+.sv-where i { font-style: normal; font-weight: 400; color: var(--ink-faint); }
+.sv-where--text { font-weight: 600; color: var(--ink-dim); }
+/* "구매처 확인 필요": 확정 구매처 링크(굵은 네이비 + 밑줄)보다 덜 강조 — 작고 옅은 회색, 아이콘도 흐리게 */
+.sv-where--text.is-unverified { color: var(--ink-faint); font-weight: 400; font-size: 0.7rem; }
+.sv-where--text.is-unverified svg { opacity: 0.55; }
+@media (min-width: 640px) {
+  .sv-grid { gap: 12px; }
+  .sv-card { display: grid; grid-template-columns: 120px minmax(0, 1fr); }
+  .sv-card__photo { aspect-ratio: auto; height: 100%; min-height: 120px; border-bottom: 0; border-right: 1px solid var(--line-soft); }
+  .sv-card__body { padding: 12px 14px; justify-content: flex-start; }
+}
+@media (min-width: 1020px) {
+  .sv-grid { grid-template-columns: repeat(4, minmax(0, 1fr)); }
+  .sv-card { display: flex; }
+  .sv-card__photo { aspect-ratio: 4 / 3; height: auto; min-height: 0; border-right: 0; border-bottom: 1px solid var(--line-soft); padding: 10px; }
+  .sv-card__title { font-size: 0.92rem; }
+}
+.sv-grid--search { margin-bottom: 30px; }
+/* 사진 없는 항목 */
+.sv-memo { border-top: 1px dashed var(--line); padding-top: 12px; }
+.sv-memo__title { font-size: 0.8rem; font-weight: 800; color: var(--ink-dim); margin-bottom: 8px; }
+.sv-memo__title span { font-family: var(--font-mono); font-weight: 600; font-size: 0.7rem; color: var(--ink-faint); margin-left: 4px; }
+.sv-memo__list { list-style: none; margin: 0; padding: 0; display: flex; flex-wrap: wrap; gap: 6px; }
+.sv-memo__list li { font-size: 0.78rem; color: var(--ink-dim); background: var(--bg-soft); border: 1px solid var(--line-soft); border-radius: 999px; padding: 4px 11px; max-width: 100%; overflow-wrap: anywhere; }
+.sv-memo__list a { color: var(--navy-700); font-weight: 700; text-decoration: none; margin-left: 2px; }
+
+/* v0.11.6: 모바일(640px 미만)에서는 기념품 섹션 제목을 "03 기념품 체크리스트 · 38개"로 간결하게 */
+@media (max-width: 639px) {
+  .souv-title-en, .souv-count-detail { display: none; }
+}
