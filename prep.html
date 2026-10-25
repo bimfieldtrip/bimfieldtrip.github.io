@@ -7,6 +7,15 @@
 <meta name="theme-color" content="#ffffff" />
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns=%27http://www.w3.org/2000/svg%27 viewBox=%270 0 100 100%27%3E%3Ccircle cx=%2750%27 cy=%2750%27 r=%2746%27 fill=%27%23ffffff%27 stroke=%27%231a2c5c%27 stroke-width=%274%27/%3E%3Ccircle cx=%2750%27 cy=%2730%27 r=%277%27 fill=%27%231a2c5c%27/%3E%3Ccircle cx=%2728%27 cy=%2770%27 r=%277%27 fill=%27%234863b5%27/%3E%3Ccircle cx=%2772%27 cy=%2770%27 r=%277%27 fill=%27%234863b5%27/%3E%3C/svg%3E" />
 <link rel="stylesheet" href="css/style.css" />
+<style>
+  /* v0.11.8 — 여행 준비 Q&A iframe (이 페이지 전용) */
+  .prep-qa-frame { border: 1px solid var(--line); border-radius: var(--radius-md); overflow: hidden; background: #fff; }
+  .prep-qa-frame iframe { display: block; width: 100%; height: 78vh; min-height: 520px; max-height: 900px; border: 0; }
+  @supports (height: 1dvh) { .prep-qa-frame iframe { height: 78dvh; } }
+  @media (max-width: 640px) { .prep-qa-frame { margin: 0 -10px; } } /* 모바일: 카드 안쪽 여백을 조금 써서 Q&A 폭 확보 */
+  .prep-qa-open { margin: 10px 0 0; font-size: .82rem; text-align: right; }
+  .prep-qa-open a { color: var(--navy-700); }
+</style>
 </head>
 <body data-page="prep">
 <a class="skip-link" href="#main">본문 바로가기</a>
@@ -31,6 +40,18 @@
     <h1>Prep</h1>
     <p class="page-head__desc">출국 전 체크리스트와 중국 현지 세팅(앱, 결제, 통신, 이동, 팁)을 모아둔 페이지입니다.</p>
   </div>
+
+  <!-- v0.11.8 — 여행 준비 Q&A (Vercel 웹앱 iframe 임베드, 01~06 전체에 걸친 질문용이라 번호 없이 맨 위에 둠). 펼칠 때만 로딩하며 이 페이지의 어떤 데이터도 전달하지 않습니다. -->
+  <details class="details-box details-box--category" id="prep-qa" style="margin-top:0;">
+    <summary><span class="manifest-title__num">ASK</span>여행 준비 Q&amp;A<span class="manifest-title__line"></span></summary>
+    <div class="details-box__body">
+      <p class="text-muted" style="margin-bottom:12px; font-size:.86rem;">입국·지하철·결제·준비 앱에 관해 질문하면 공개 안내자료에서 답을 찾아 줍니다. 여권번호·연락처·카드번호 등 개인정보는 입력하지 마세요.</p>
+      <div class="prep-qa-frame">
+        <iframe data-src="https://shanghai-prep-qa-kaist.vercel.app/" title="여행 준비 Q&amp;A" loading="lazy" referrerpolicy="no-referrer" sandbox="allow-scripts allow-same-origin allow-forms allow-popups allow-popups-to-escape-sandbox"></iframe>
+      </div>
+      <p class="prep-qa-open"><a href="https://shanghai-prep-qa-kaist.vercel.app/" target="_blank" rel="noopener noreferrer">화면이 보이지 않으면 새 창에서 열기 ↗</a></p>
+    </div>
+  </details>
 
   <div class="manifest-title" style="margin-top:0;"><span class="manifest-title__num">01</span>출국 전 체크리스트<span class="manifest-title__line"></span></div>
   <div class="card" id="checklist-root"></div>
@@ -297,6 +318,16 @@
   }
 
   document.addEventListener("DOMContentLoaded", renderPrep);
+
+  // v0.11.8 — 여행 준비 Q&A: 접이식 영역을 처음 펼칠 때만 iframe을 로딩합니다(주소에 파라미터·개인정보 없음).
+  (function () {
+    const box = document.getElementById("prep-qa");
+    if (!box) return;
+    box.addEventListener("toggle", function () {
+      const frame = box.querySelector("iframe[data-src]");
+      if (box.open && frame && !frame.getAttribute("src")) frame.setAttribute("src", frame.dataset.src);
+    });
+  })();
 </script>
 </body>
 </html>
