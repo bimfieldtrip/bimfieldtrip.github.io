@@ -20,7 +20,7 @@
 <body data-page="prep">
 <a class="skip-link" href="#main">본문 바로가기</a>
 
-<div class="demo-strip"><span class="demo-strip__dot"></span><strong>출국 준비</strong>&nbsp;— 앱, 결제, 통신 및 여행 팁</div>
+<div class="demo-strip"><span class="demo-strip__dot"></span><strong>출국 준비</strong>&nbsp;— 입국, 앱, 결제, 통신, 공항 이동 및 여행 팁</div>
 
 <header class="site-header">
   <div class="site-header__bar">
@@ -56,11 +56,20 @@
   <div class="manifest-title" style="margin-top:0;"><span class="manifest-title__num">01</span>출국 전 체크리스트<span class="manifest-title__line"></span></div>
   <div class="card" id="checklist-root"></div>
 
-  <details class="details-box details-box--category">
-    <summary><span class="manifest-title__num">02</span>필수 앱<span class="manifest-title__line"></span></summary>
+  <!-- v0.11.9 신규 — 무비자 · 입국신고서 · 숙소 영문 정보 -->
+  <details class="details-box details-box--category" id="prep-entry">
+    <summary><span class="manifest-title__num">02</span>입국 준비<span class="manifest-title__line"></span></summary>
+    <div class="details-box__body">
+      <div id="entry-root"></div>
+    </div>
+  </details>
+
+  <details class="details-box details-box--category" id="prep-apps">
+    <summary><span class="manifest-title__num">03</span>필수 앱<span class="manifest-title__line"></span></summary>
     <div class="details-box__body">
       <p class="text-muted" id="essential-apps-note" style="margin-bottom:12px; font-size:.86rem;"></p>
       <div class="grid grid--3" id="essential-apps-root"></div>
+      <p class="prep-src" style="margin-top:10px;">앱 아이콘은 각 회사의 상표이며, 어떤 앱인지 알아보기 쉽도록 App Store에 등록된 공식 아이콘을 표시했습니다.</p>
       <details class="details-box" style="margin-top:14px;">
         <summary>선택 앱 더보기</summary>
         <div class="grid grid--3" id="optional-apps-root" style="margin-top:12px;"></div>
@@ -68,10 +77,11 @@
     </div>
   </details>
 
-  <details class="details-box details-box--category">
-    <summary><span class="manifest-title__num">03</span>결제<span class="manifest-title__line"></span></summary>
+  <details class="details-box details-box--category" id="prep-payment">
+    <summary><span class="manifest-title__num">04</span>결제<span class="manifest-title__line"></span></summary>
     <div class="details-box__body">
       <div id="payment-primary-root"></div>
+      <div id="payment-setup-root" style="margin-top:12px;"></div>
       <details class="details-box" style="margin-top:10px;">
         <summary>백업 결제 방법 보기</summary>
         <div id="payment-backup-root" style="margin-top:12px;"></div>
@@ -79,10 +89,11 @@
     </div>
   </details>
 
-  <details class="details-box details-box--category">
-    <summary><span class="manifest-title__num">04</span>통신<span class="manifest-title__line"></span></summary>
+  <details class="details-box details-box--category" id="prep-connectivity">
+    <summary><span class="manifest-title__num">05</span>통신<span class="manifest-title__line"></span></summary>
     <div class="details-box__body">
       <div id="connectivity-root"></div>
+      <div class="grid grid--2" id="connectivity-points-root" style="margin-top:12px;"></div>
       <details class="details-box" style="margin-top:10px;">
         <summary>참고 — eSIM 추천 링크</summary>
         <div id="connectivity-reference-root" style="margin-top:12px;"></div>
@@ -90,25 +101,41 @@
     </div>
   </details>
 
-  <details class="details-box details-box--category">
-    <summary><span class="manifest-title__num">05</span>짐 · 보조배터리<span class="manifest-title__line"></span></summary>
+  <!-- v0.11.9 신규 — 공항 → 호텔 (PVG / SHA) -->
+  <details class="details-box details-box--category" id="prep-airport">
+    <summary><span class="manifest-title__num">06</span>공항 → 호텔<span class="manifest-title__line"></span></summary>
+    <div class="details-box__body">
+      <div id="airport-root"></div>
+    </div>
+  </details>
+
+  <!-- v0.11.9 — 기존 "06 현지 여행 팁" 안의 이동 카드(지하철 · 택시 · 시티투어)를 별도 섹션으로 옮기고 사용 단계를 붙였습니다. -->
+  <details class="details-box details-box--category" id="prep-getting-around">
+    <summary><span class="manifest-title__num">07</span>지하철 · 택시 타는 법<span class="manifest-title__line"></span></summary>
+    <div class="details-box__body">
+      <p class="text-muted" id="getting-around-note" style="margin-bottom:12px; font-size:.86rem;"></p>
+      <div class="grid grid--2" id="getting-around-root"></div>
+    </div>
+  </details>
+
+  <details class="details-box details-box--category" id="prep-packing">
+    <summary><span class="manifest-title__num">08</span>짐 · 보조배터리 · 현금<span class="manifest-title__line"></span></summary>
     <div class="details-box__body">
       <div id="powerbank-root"></div>
+      <div class="grid grid--2" id="packing-root" style="margin-top:12px;"></div>
       <div id="emergency-cash-root" style="margin-top:12px;"></div>
     </div>
   </details>
 
-  <details class="details-box details-box--category">
-    <summary><span class="manifest-title__num">06</span>현지 여행 팁<span class="manifest-title__line"></span></summary>
+  <details class="details-box details-box--category" id="prep-tips">
+    <summary><span class="manifest-title__num">09</span>현지 방문 팁<span class="manifest-title__line"></span></summary>
     <div class="details-box__body">
-      <p class="text-muted" id="getting-around-note" style="margin-bottom:12px; font-size:.86rem;"></p>
-      <div class="grid grid--3" id="getting-around-root"></div>
-      <div class="grid grid--3" id="local-tips-root" style="margin-top:12px;"></div>
+      <div class="prep-tip-groups" id="local-tips-root"></div>
     </div>
   </details>
 </main>
 
-<footer class="site-footer">SHANGHAI FIELD TRIP HUB · v0.11.6 · PREP</footer>
+<footer class="site-footer">SHANGHAI FIELD TRIP HUB · v0.11.9 · PREP</footer>
 <nav class="bottom-nav" data-bottom-nav aria-label="주요 메뉴 (모바일)"></nav>
 
 <script src="js/config.js"></script>
@@ -118,6 +145,8 @@
   // Prep — v0.5에서 실제 출국 전 체크리스트 수준으로 보강했습니다. 모든 앱/결제/통신/
   // 이동/팁 내용은 사용자가 직접 제공한 내용만 그대로 사용했으며, 새로 조사해서 추가한
   // 항목은 없습니다 (Disney 관련 내용도 포함하지 않습니다).
+  // v0.11.9 — 여정기획팀 OT 자료(입국 · 공항 이동 · 지하철/택시 · 주의사항)를 반영했고,
+  //   정책 · 수수료 · 요금은 공식 출처로 다시 확인했습니다(js/data-trip.js PREP 주석 참고).
   function prepStatusBadge(status) {
     const label = (typeof PREP_STATUS_LABEL !== "undefined" && PREP_STATUS_LABEL[status]) || String(status || "").toUpperCase();
     const cls = "tag--" + String(status || "").toLowerCase();
@@ -180,9 +209,12 @@
     return `
       <div class="card">
         <div class="prep-card__head" style="display:flex; justify-content:space-between; align-items:flex-start; gap:8px; margin-bottom:8px;">
-          <div>
-            <div style="font-weight:800;">${app.name}</div>
-            <div class="text-faint mono" style="font-size:.76rem;">${app.name_zh || ""}</div>
+          <div class="prep-app__id">
+            <span class="prep-app__icon" data-initial="${prepAttr((app.name || "?").charAt(0))}" aria-hidden="true">${app.icon ? `<img src="${prepAttr(app.icon)}" alt="" width="40" height="40" loading="lazy" decoding="async" onerror="this.remove()">` : ""}</span>
+            <div class="prep-app__names">
+              <div style="font-weight:800;">${app.name}</div>
+              <div class="text-faint mono" style="font-size:.76rem;">${app.name_zh || ""}</div>
+            </div>
           </div>
           ${prepStatusBadge(app.status)}
         </div>
@@ -257,7 +289,7 @@
     `;
   }
 
-  // -------- GETTING AROUND --------
+  // -------- GETTING AROUND (v0.11.9 — steps / caution이 있으면 번호 목록으로 표시) --------
   function gettingAroundCardHtml(item) {
     return `
       <div class="card">
@@ -265,9 +297,185 @@
           <div style="font-weight:800;">${item.title}</div>
           ${prepStatusBadge(item.status)}
         </div>
+        ${item.steps ? `<ol class="prep-steps">${item.steps.map((s) => `<li>${s}</li>`).join("")}</ol>` : ""}
         <p class="text-muted" style="margin-bottom:0; font-size:.88rem;">${item.note}</p>
+        ${item.caution ? `<p class="prep-caution">${item.caution}</p>` : ""}
       </div>
     `;
+  }
+
+  // ======== v0.11.9 신규 렌더러 (입국 · 결제 등록/수수료 · 통신 보강 · 공항 이동 · 짐) ========
+  function prepAttr(s) {
+    return String(s == null ? "" : s).replace(/&/g, "&amp;").replace(/"/g, "&quot;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
+  }
+  function prepSourceHtml(src, checked) {
+    if (!src) return "";
+    return `<p class="prep-src">출처: <a href="${prepAttr(src.url)}" target="_blank" rel="noopener noreferrer">${src.label} ↗</a>${checked ? ` · ${checked} 확인` : ""}</p>`;
+  }
+  function prepCopyBtn(text, label) {
+    return `<button class="copy-btn copy-btn--sm" type="button" data-copy="${prepAttr(text)}">${icon("copy")}<span>${label}</span></button>`;
+  }
+  function prepAmapUrl(keyword) {
+    const params = new URLSearchParams({ keyword: keyword, city: "310000", view: "map", src: "bimfieldtrip", callnative: "1" });
+    return "https://uri.amap.com/search?" + params.toString();
+  }
+
+  // 02 입국 준비
+  function renderEntry() {
+    const e = PREP.entry, h = PREP.hotel, ac = e.arrivalCard, vf = e.visaFree;
+    document.getElementById("entry-root").innerHTML = `
+      <div class="card">
+        <div class="prep-card__head" style="display:flex; justify-content:space-between; align-items:center; gap:8px; margin-bottom:8px;">
+          <div style="font-weight:800;">${vf.title}</div>
+          ${prepStatusBadge(vf.status)}
+        </div>
+        <ul class="prep-list">${vf.points.map((p) => `<li>${p}</li>`).join("")}</ul>
+        ${prepSourceHtml(vf.source, vf.checked)}
+      </div>
+
+      <div class="card" style="margin-top:12px;">
+        <div class="prep-card__head" style="display:flex; justify-content:space-between; align-items:center; gap:8px; margin-bottom:8px;">
+          <div style="font-weight:800;">${ac.title}</div>
+          ${prepStatusBadge(ac.status)}
+        </div>
+        <p class="text-muted" style="font-size:.88rem; margin-bottom:10px;">${ac.lead}</p>
+        <div class="btn-row" style="margin-bottom:12px;">
+          <a class="btn btn--sm btn--primary" href="${prepAttr(ac.url)}" target="_blank" rel="noopener noreferrer"><span>${ac.urlLabel} ↗</span></a>
+        </div>
+        <p class="text-faint mono" style="font-size:.72rem; margin-bottom:12px; word-break:break-all;">${ac.url}</p>
+        <p class="text-muted" style="font-size:.86rem; margin-bottom:8px;">${ac.channels}</p>
+        <ol class="prep-steps">${ac.steps.map((s) => `<li>${s}</li>`).join("")}</ol>
+        <p class="prep-caution prep-caution--info">${ac.mandatory}</p>
+        ${prepSourceHtml(ac.source, ac.checked)}
+      </div>
+
+      <div class="card" style="margin-top:12px;" id="prep-hotel-en">
+        <div class="prep-card__head" style="display:flex; justify-content:space-between; align-items:center; gap:8px; margin-bottom:8px;">
+          <div style="font-weight:800;">입국신고서에 쓰는 숙소 정보 (영문)</div>
+          ${prepStatusBadge("essential")}
+        </div>
+        <div class="zh-block">
+          <div class="zh-block__label">HOTEL · ENGLISH</div>
+          <div class="prep-hotel__en">${h.name_en}</div>
+          <div class="zh-block__addr">${h.address_en}</div>
+        </div>
+        <div class="btn-row" style="margin-top:10px;">
+          ${prepCopyBtn(h.name_en, "HOTEL NAME")}
+          ${prepCopyBtn(h.address_en, "ADDRESS")}
+        </div>
+        <p class="text-faint" style="font-size:.8rem; margin:10px 0 0;">항공편 정보는 각자 본인 항공권 기준으로 입력하세요. 택시 · DiDi에 넣는 중국어 이름 · 주소는 06 공항 → 호텔에 있습니다.</p>
+      </div>
+    `;
+  }
+
+  // 04 결제 — 카드 등록 경로 + 수수료
+  function renderPaymentSetup() {
+    const p = PREP.payment, f = p.fee;
+    document.getElementById("payment-setup-root").innerHTML = `
+      <div class="grid grid--2">
+        ${p.cardSetup.map((c) => `
+          <div class="card">
+            <div style="font-weight:800; margin-bottom:8px;">${c.app} · 카드 등록 경로</div>
+            <ol class="prep-steps">${c.steps.map((s) => `<li>${s}</li>`).join("")}</ol>
+          </div>`).join("")}
+      </div>
+      <p class="text-muted" style="font-size:.84rem; margin:10px 2px 12px;">${p.cardCheck}</p>
+      <div class="card">
+        <div class="prep-card__head" style="display:flex; justify-content:space-between; align-items:center; gap:8px; margin-bottom:8px;">
+          <div style="font-weight:800;">${f.title}</div>
+          ${prepStatusBadge(f.status)}
+        </div>
+        <ul class="prep-list">${f.points.map((x) => `<li>${x}</li>`).join("")}</ul>
+        <p class="prep-caution prep-caution--info">${f.note}</p>
+        ${prepSourceHtml(f.source, f.checked)}
+      </div>
+    `;
+  }
+
+  // 05 통신 — 보강 항목
+  function renderConnectivityPoints() {
+    document.getElementById("connectivity-points-root").innerHTML = (PREP.connectivity.points || []).map((pt) => `
+      <div class="card">
+        <div style="font-weight:800; margin-bottom:6px;">${pt.title}</div>
+        <p class="text-muted" style="margin-bottom:0; font-size:.88rem;">${pt.body}</p>
+      </div>`).join("");
+  }
+
+  // 06 공항 → 호텔
+  function airportOptionHtml(o, i) {
+    return `
+      <div class="card prep-route">
+        <div class="prep-card__head" style="display:flex; justify-content:space-between; align-items:center; gap:8px; margin-bottom:6px;">
+          <div style="font-weight:800;">${i + 1}. ${o.title}</div>
+          <span class="tag tag--outline">${o.tag}</span>
+        </div>
+        <p class="prep-route__path">${o.route}</p>
+        <dl class="prep-route__meta">
+          <dt>소요</dt><dd>${o.time}</dd>
+          <dt>요금</dt><dd>${o.cost}</dd>
+          <dt>장점</dt><dd>${o.pros}</dd>
+          <dt>단점</dt><dd>${o.cons}</dd>
+        </dl>
+      </div>`;
+  }
+  function renderAirport() {
+    const a = PREP.airport, h = PREP.hotel;
+    document.getElementById("airport-root").innerHTML = `
+      <div class="notice notice--private" style="margin-top:0;">${a.note}</div>
+      <div class="card" id="prep-hotel-zh">
+        <div class="prep-card__head" style="display:flex; justify-content:space-between; align-items:center; gap:8px; margin-bottom:8px;">
+          <div style="font-weight:800;">목적지 · 택시 · DiDi에 붙여넣기</div>
+          ${prepStatusBadge("essential")}
+        </div>
+        <div class="zh-block">
+          <div class="zh-block__label">HOTEL · 中文</div>
+          <div class="zh-block__text" lang="zh-CN">${h.name_zh}</div>
+          <div class="zh-block__addr" lang="zh-CN">${h.address_zh}</div>
+          <div class="zh-block__addr">${h.name_en}</div>
+        </div>
+        <div class="btn-row" style="margin-top:10px;">
+          ${prepCopyBtn(h.name_zh, "NAME")}
+          ${prepCopyBtn(h.address_zh, "ADDRESS")}
+          <a class="copy-btn copy-btn--sm" href="${prepAttr(prepAmapUrl(h.name_zh + " " + h.address_zh))}" target="_blank" rel="noopener noreferrer">${icon("pin")}<span>高德 ↗</span></a>
+        </div>
+        <p class="text-faint" style="font-size:.8rem; margin:10px 0 0;">기사에게 화면을 보여주거나 앱 목적지에 붙여넣으세요. 휴대폰 메모 · 캡처로도 저장해 두면 통신이 안 될 때 편합니다.</p>
+      </div>
+      <p class="prep-caution" style="margin:12px 2px;">${a.ehailing}</p>
+      ${a.airports.map((ap, idx) => `
+        <details class="details-box" style="margin-top:12px;" ${idx === 0 ? "open" : ""}>
+          <summary>${ap.code} · ${ap.name} <span lang="zh-CN" class="text-faint" style="font-weight:600;">${ap.name_zh}</span></summary>
+          <div class="grid grid--3" style="margin-top:12px;">${ap.options.map(airportOptionHtml).join("")}</div>
+        </details>`).join("")}
+      <div class="card" style="margin-top:12px;">
+        <div style="font-weight:800; margin-bottom:6px;">龙阳路站 → 호텔 (마지막 구간)</div>
+        <p class="text-muted" style="margin-bottom:0; font-size:.88rem;">${a.lastMile}</p>
+      </div>
+      <p class="prep-src">${a.basis} 요금 근거: <a href="https://english.shanghai.gov.cn/en-TravelYourWay/20251010/6f1beb560360472b8edaffd6187f4988.html" target="_blank" rel="noopener noreferrer">상하이시 지하철 안내 ↗</a> · 자기부상열차 요금은 운영사 안내(2024) 기준</p>
+    `;
+  }
+
+  // 09 현지 방문 팁 — 그룹 카드 안에 [제목 · 태그 / 본문] 행을 쌓는 목록형 (높이 강제 없음)
+  function renderLocalTips() {
+    const groups = PREP.localTipGroups || [{ id: "", title: "" }];
+    const known = new Set(groups.map((g) => g.id));
+    document.getElementById("local-tips-root").innerHTML = groups.map((g) => {
+      const tips = PREP.localTips.filter((t) => (t.group || "") === g.id || (!known.has(t.group) && g === groups[groups.length - 1]));
+      if (!tips.length) return "";
+      return `
+        <section class="card prep-tip-group">
+          ${g.title ? `<h3 class="prep-tip-group__title">${g.title}</h3>` : ""}
+          ${tips.map((t) => `
+            <div class="prep-tip">
+              <div class="prep-tip__head"><span class="prep-tip__title">${t.title}</span>${prepStatusBadge(t.status)}</div>
+              <p class="prep-tip__body">${t.note}</p>
+            </div>`).join("")}
+        </section>`;
+    }).join("");
+  }
+
+  // 08 짐
+  function renderPacking() {
+    document.getElementById("packing-root").innerHTML = (PREP.packing || []).map(localTipCardHtml).join("");
   }
 
   // -------- EMERGENCY CASH --------
@@ -300,24 +508,39 @@
 
   function renderPrep() {
     renderChecklist();
+    renderEntry(); // v0.11.9
 
     document.getElementById("essential-apps-note").textContent = PREP.essentialAppsNote;
     document.getElementById("essential-apps-root").innerHTML = PREP.essentialApps.map(appCardHtml).join("");
     document.getElementById("optional-apps-root").innerHTML = PREP.optionalApps.map(appCardHtml).join("");
 
     renderPayment();
+    renderPaymentSetup();       // v0.11.9
     renderConnectivity();
+    renderConnectivityPoints(); // v0.11.9
+    renderAirport();            // v0.11.9
     renderPowerBank();
+    renderPacking();            // v0.11.9
 
     document.getElementById("getting-around-note").textContent = PREP.gettingAroundNote;
     document.getElementById("getting-around-root").innerHTML = PREP.gettingAround.map(gettingAroundCardHtml).join("");
 
     renderEmergencyCash();
 
-    document.getElementById("local-tips-root").innerHTML = PREP.localTips.map(localTipCardHtml).join("");
+    renderLocalTips(); // v0.11.9 — 주제별 묶음 목록
   }
 
   document.addEventListener("DOMContentLoaded", renderPrep);
+
+  // v0.11.9 — prep.html#prep-airport 처럼 섹션 주소로 들어오면 해당 accordion을 펼칩니다.
+  function openPrepHashSection() {
+    const id = (location.hash || "").slice(1);
+    if (!/^prep-[a-z-]+$/.test(id)) return;
+    const el = document.getElementById(id);
+    if (el && el.tagName === "DETAILS") { el.open = true; el.scrollIntoView({ block: "start" }); }
+  }
+  document.addEventListener("DOMContentLoaded", openPrepHashSection);
+  window.addEventListener("hashchange", openPrepHashSection);
 
   // v0.11.8 — 여행 준비 Q&A: 접이식 영역을 처음 펼칠 때만 iframe을 로딩합니다(주소에 파라미터·개인정보 없음).
   (function () {

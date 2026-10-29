@@ -1197,3 +1197,58 @@ main [hidden] { display: none !important; }
 .xe-item__go { align-self: flex-start; margin-top: 2px; font-size: 0.78rem; font-weight: 700; color: var(--navy-700); text-decoration: none; }
 .xe-item.is-deep-linked { animation: guide-card-highlight 2.1s ease; }
 #search-extra-wrap { margin-top: 18px; }
+
+/* ---------- PREP v0.11.9 — 입국 · 공항 이동 · 사용 단계 ----------
+   기존 card / zh-block / copy-btn / tag 토큰만 재사용합니다. */
+.prep-steps { margin: 0 0 10px; padding-left: 20px; color: var(--ink-dim); font-size: 0.86rem; }
+.prep-steps li { margin: 4px 0; padding-left: 2px; }
+.prep-steps li::marker { color: var(--navy-600); font-weight: 800; }
+.prep-list { margin: 0 0 8px; padding-left: 18px; color: var(--ink-dim); font-size: 0.86rem; }
+.prep-list li { margin: 4px 0; }
+.prep-list strong, .prep-steps strong, .prep-caution strong { color: var(--navy-900); }
+.prep-caution {
+  margin: 10px 0 0; padding: 8px 10px; border-left: 3px solid var(--amber);
+  background: var(--tbd-bg); border-radius: 0 var(--radius-sm) var(--radius-sm) 0;
+  font-size: 0.82rem; color: var(--ink-dim);
+}
+.prep-caution--info { border-left-color: var(--navy-500); background: var(--bg-soft); }
+.prep-src { margin: 10px 0 0; font-size: 0.72rem; color: var(--ink-faint); overflow-wrap: anywhere; }
+.prep-src a { color: var(--navy-700); }
+.prep-hotel__en { font-size: 1rem; font-weight: 800; color: var(--navy-950); overflow-wrap: anywhere; }
+.prep-route__path { font-size: 0.84rem; color: var(--ink); margin: 0 0 8px; overflow-wrap: anywhere; }
+.prep-route__meta { display: grid; grid-template-columns: auto 1fr; gap: 4px 10px; margin: 0; font-size: 0.82rem; }
+.prep-route__meta dt { font-family: var(--font-mono); font-size: 0.7rem; font-weight: 700; color: var(--ink-faint); padding-top: 2px; }
+.prep-route__meta dd { margin: 0; color: var(--ink-dim); overflow-wrap: anywhere; }
+#airport-root .zh-block__text, #entry-root .zh-block__addr { overflow-wrap: anywhere; }
+#emergency-cash-root .tag, .prep-route .tag { white-space: normal; max-width: 100%; text-align: left; }
+
+/* ---------- PREP 09 현지 방문 팁 (v0.11.9) — 주제별 묶음 목록. PC 2열 · 모바일 1열, 높이는 내용대로 ---------- */
+.prep-tip-groups { column-count: 1; column-gap: 12px; }
+@media (min-width: 760px) { .prep-tip-groups { column-count: 2; } } /* 2열: 묶음 카드를 빈칸 없이 위에서부터 채움 */
+.prep-tip-group { padding: 14px 16px; margin: 0 0 12px !important; break-inside: avoid; display: block; }
+.prep-tip-group__title {
+  margin: 0 0 4px; font-family: var(--font-mono); font-size: 0.72rem; font-weight: 700;
+  letter-spacing: 0.06em; color: var(--navy-600);
+}
+.prep-tip { padding: 10px 0; border-top: 1px solid var(--line); }
+.prep-tip:first-of-type { border-top: none; }
+.prep-tip__head { display: flex; justify-content: space-between; align-items: flex-start; gap: 8px; margin-bottom: 4px; }
+.prep-tip__title { font-weight: 800; font-size: 0.9rem; color: var(--navy-900); min-width: 0; overflow-wrap: anywhere; }
+.prep-tip__head .tag { flex-shrink: 0; }
+.prep-tip__body { margin: 0; font-size: 0.86rem; line-height: 1.6; color: var(--ink-dim); }
+
+/* ---------- PREP 03 앱 카드 아이콘 (v0.11.9) — 40px 정사각형, 비율 유지, 홈 화면처럼 둥근 모서리 ---------- */
+.prep-app__id { display: flex; align-items: center; gap: 10px; min-width: 0; }
+.prep-app__names { min-width: 0; overflow-wrap: anywhere; }
+.prep-app__icon {
+  flex: 0 0 40px; width: 40px; height: 40px; border-radius: 9px; overflow: hidden;
+  background: var(--bg-soft); border: 1px solid var(--line);
+  display: inline-flex; align-items: center; justify-content: center;
+}
+.prep-app__icon img { width: 100%; height: 100%; object-fit: cover; display: block; }
+.prep-app__icon:empty::after { content: attr(data-initial); font-weight: 800; color: var(--navy-700); font-size: 1rem; }
+#essential-apps-root .prep-card__head, #optional-apps-root .prep-card__head { align-items: center !important; }
+
+/* v0.11.9 — 새 그리드(통신 · 결제 등록 · 공항 경로 · 이동 · 짐)에도 .card + .card 여백이 붙어 PC에서 같은 행 카드가 어긋나던 것 정리 */
+#connectivity-points-root > .card, #packing-root > .card, #getting-around-root > .card,
+#payment-setup-root .grid > .card, #airport-root .grid > .card { margin-top: 0; }

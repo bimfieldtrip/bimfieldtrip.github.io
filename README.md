@@ -1,8 +1,26 @@
-# Shanghai Field Trip Hub — v0.11.7 · Guide 58곳 · 실사 로컬화 · 기업 소개 정리
+# Shanghai Field Trip Hub — v0.11.9 · PREP 출국 준비 통합 (입국 · 공항 이동) · 숙소 확정
 
 KAIST BIM Shanghai Field Trip(2026.12.27~12.31)을 위한 **공개 여행 안내 허브**입니다.
 "상하이에서 무엇을 하고, 무엇을 준비하고, 어디를 볼 수 있는가"에만 집중하며, 실제 참가자 운영
 (체크인·버스 탑승·룸 배정·택시팀·정산 등)은 별도의 Private Participant Portal에서 처리합니다.
+
+## 🧳 v0.11.9 — PREP 출국 준비 통합: 여정기획팀 OT 자료 반영 (PREP · Schedule 숙소)
+
+여정기획팀 OT 자료(2026.10) 2~6쪽 중 기존 PREP에 없거나 설명이 부족한 내용만 보강했습니다. 정책 · 수수료 · 요금은 공식 출처로 2026-10-29에 다시 확인했습니다.
+
+- **구성:** ASK · 01 체크리스트 · **02 입국 준비(신규)** · 03 필수 앱 · 04 결제 · 05 통신 · **06 공항 → 호텔(신규)** · **07 지하철 · 택시 타는 법(기존 이동 카드 이동 + 사용 단계)** · 08 짐 · 보조배터리 · 현금 · 09 현지 방문 팁. 모두 기존 accordion 구조이며 `prep.html#prep-airport`처럼 섹션 주소로 들어오면 해당 섹션이 펼쳐집니다.
+- **02 입국 준비:** 한국 일반여권 무비자(2026.12.31 24시까지 · 최대 30일, 중국비자신청서비스센터 공지) · NIA 공식 온라인 입국신고서(무료 · 사전 작성은 선택 · 현장 종이 작성 가능) · 숙소 영문명/주소 복사 버튼.
+- **04 결제:** Alipay · WeChat Pay 카드 등록 경로, 해외카드 수수료(1회 200위안 이하 무료 · 초과 시 약 3% · 결제 화면에서 최종 수수료 확인).
+- **05 통신:** 로밍과 여행용 eSIM 차이(연결 방식에 따라 해외 서비스 가능 여부가 다름), 현지 Wi-Fi 제약, VPN 주의, 출국 전 인증 이유. 체크리스트 문구에서 VPN 제외.
+- **06 공항 → 호텔:** 호텔 중국어명 · 주소 복사 + 高德 링크, PVG 3가지(Maglev · 2호선 · 택시/DiDi) · SHA 3가지(T2 2호선 · T1 10→2호선 · 택시/DiDi)의 경로 · 소요 · 요금 · 장단점, 마지막 구간, `网约车 · E-Hailing` 승차장 안내. 단체 이동 · 집합 시간은 MY TRIP 안내 유지.
+- **07 · 08 · 09:** Alipay 지하철 QR · DiDi 호출 3~4단계, 보안검색, 해외 터치카드 대안 / 멀티 어댑터 · 휴대용 티슈 · 비상금(권장 100~200위안 병기) / 스쿠터 · 횡단보도 · 귀중품 · 화장실.
+- **체크리스트:** 기존 id 7개는 그대로(문구만 보완), 새 id 4개 추가(`arrival-card` · `hotel-address-saved` · `transport-ready` · `adapter-pack`). 저장 키(`kaistbim_shanghai_v05_prep_checklist`)를 바꾸지 않아 기존 체크 상태가 유지됩니다.
+- **공개 정보만:** 호텔 이름 · 주소 외에 참가자 · 항공편 · 방 배정 · 집합 시간은 넣지 않았습니다. OT PDF 원본은 저장소에 올리지 않았습니다.
+- **03 필수 앱 아이콘:** 앱 카드 7개(Alipay · WeChat · Amap · Xiaohongshu · DiDi · Meituan · Dianping)에 App Store 공식 아이콘을 40px로 표시합니다(`assets/prep/apps/*.webp`, 출처 `assets/prep/apps/SOURCES.md`). 파일이 없으면 이름 첫 글자 칸으로 대체됩니다. 받는 방법: `tools/download_prep_app_icons.sh`.
+- **09 현지 방문 팁:** 이름을 바꾸고(현지 여행 팁 → 현지 방문 팁) 카드 7개를 "안전 · 소지품 / 식당 · 음료 / 화장실 · 문화" 묶음 목록으로 정리했습니다(PC 2열 · 모바일 1열, 높이 강제 없음, 내용 그대로).
+- **숙소 확정:** `js/data-trip.js` 위쪽 `HOTEL_INFO` 하나에 호텔 이름 · 주소를 두고, `PLACES`의 SAMPLE 숙소(H+ Hotel, id `hplus-hotel`)를 실제 숙소(id `stay-hotel`, CONFIRMED, 高德 링크)로 바꿨습니다. PREP도 같은 값을 씁니다. SCHEDULE 맨 아래에 **03 STAY** 카드(중국어 이름·주소 복사, 영문 주소 복사, 高德, PREP 06 링크)를 추가했고, 공식 일정 · 방문 기업 카드는 그대로입니다.
+- 새 그리드(통신 · 결제 등록 · 공항 경로 · 이동 · 짐)에서 PC 2·3열 카드가 12px 어긋나던 여백을 정리했습니다(v0.11.5와 같은 원인).
+- 수정 파일: `prep.html` · `itinerary.html` · `js/data-trip.js` · `css/style.css`(끝부분 PREP 블록 추가) · `README.md` · `tools/download_prep_app_icons.sh` · `assets/prep/apps/*`. HOME · GUIDE · 중국어 회화 · MY TRIP(`js/config.js`) · Apps Script는 건드리지 않았습니다.
 
 ## 🗺 v0.11.7 — Guide 58곳 · 실사 로컬화 · 추가 맛집 · 기업 소개 정리 (Guide · Schedule만 수정)
 
@@ -335,9 +353,9 @@ Schedule/Home의 날짜별 일정과 방문기관은 학교 공식 일정표 기
 - **SHANGHAI GUIDE**는 이제 SEE/EAT/SHOP/SOUVENIRS/MAP 5탭 구조이며, `js/data-guide.js`의
   독립 데이터(`GUIDE_SPOTS` 55곳, `GUIDE_SOUVENIRS` 33개 품목)를 사용합니다. 자세한 사용법은 위
   "🔎 Shanghai Guide 사용법" 참고.
-- **PREP**은 01 BEFORE YOU FLY(기본으로 펼쳐진 체크리스트) 아래로 02 ESSENTIAL APPS / 03
-  PAYMENT / 04 CONNECTIVITY / 05 PACKING·POWER / 06 LOCAL TIPS 5개 카테고리가 각각 하나의 큰
-  accordion(`<details class="details-box--category">`)으로 접혀 있습니다.
+- **PREP**은 01 출국 전 체크리스트(기본으로 펼쳐짐) 아래로 02 입국 준비 / 03 필수 앱 / 04 결제 /
+  05 통신 / 06 공항 → 호텔 / 07 지하철 · 택시 / 08 짐 · 보조배터리 · 현금 / 09 현지 여행 팁이 각각 하나의 큰
+  accordion(`<details class="details-box--category">`)으로 접혀 있습니다(v0.11.9).
 - **MY TRIP**은 별도 페이지가 아닙니다. 상단·하단 내비게이션의 MY TRIP, Home의 My Trip CTA,
   Schedule 상단의 My Trip 링크를 누르면 `goToPrivatePortal()`(`js/main.js`)이
   `participantPortalUrl()`로 **같은 탭에서 바로** 이동시킵니다.
@@ -352,8 +370,8 @@ shanghai-field-trip-hub/
 ├── itinerary.html            SCHEDULE — Day별 시간대·방문 순서 + 방문기관 소개 카드 (시각 없음)
 ├── guide.html                SHANGHAI GUIDE — 지역 선택 → 지역 지도 → 카테고리 → 카드 (v0.8).
 │                              js/data-guide.js만 읽음(js/data-trip.js와 완전 분리)
-├── prep.html                 PREP — BEFORE YOU FLY(기본 펼침) + 5개 카테고리 accordion
-│                              (ESSENTIAL APPS/PAYMENT/CONNECTIVITY/PACKING·POWER/LOCAL TIPS)
+├── prep.html                 PREP — 체크리스트(기본 펼침) + 8개 카테고리 accordion (v0.11.9)
+│                              (입국/앱/결제/통신/공항→호텔/지하철·택시/짐/현지 팁)
 ├── phrases.html              중국어 회화 — 6개 카테고리 25문장, 듣기(MP3) · 복사 · 크게 보기 (v0.10 · 음성 v0.11)
 ├── host-orgs.html             Field Visits 목록 (내비게이션에는 없음 · 카드 → Schedule 소개 카드)
 ├── css/
@@ -428,12 +446,12 @@ Shanghai Guide에는 적용하지 않습니다.
 | --- | --- | --- |
 | Day별 일정 | `js/data-trip.js` → `ITINERARY[].items[]` / `summary` | 시간대(오전/오후/저녁)만 · 시각 금지 |
 | 집합 시간·장소 | Private Portal (Apps Script) | v0.9부터 공개 데이터에 두지 않음 |
-| 호텔 정보 | `js/data-trip.js` → `PLACES[]`의 `category: "hotel"` 항목 (지금은 `hplus-hotel`) | `status`를 `confirmed`로, `real`/`realLabel`/`sampleLabel` 제거 |
+| 호텔 정보 | `js/data-trip.js` → `HOTEL_INFO` (v0.11.9 · `PLACES`의 `stay-hotel`과 `PREP.hotel`이 함께 사용) | 방 배정 · 체크인 시각은 넣지 않음 (MY TRIP) |
 | 방문기관 정보 | `js/data-trip.js` → `ORGS[]` | 소개·주소·지도 검색어(`mapKeyword`)·공식 링크·출처 |
 | Shanghai Guide 장소·식당·매장·기념품 | `js/data-guide.js` → `GUIDE_SPOTS[]`/`GUIDE_SOUVENIRS[]` | `guide.html`이 이 데이터를 그대로 읽으므로 별도 HTML 수정 불필요 |
 | 미검증 Guide 장소가 확인되면 | `js/data-guide.js` → `GUIDE_RESEARCH_NOTES`/`_EXTENDED`에서 `GUIDE_SPOTS[]`로 이동 | 이동 전까지는 화면에 노출하지 않음 |
 | 장소의 중국어명·주소 | 해당 파일의 각 장소 객체의 `name_zh`/`address`(Guide) 또는 `address_zh`(Schedule) | |
-| Prep 체크리스트/앱/결제/통신/팁 문구 | `js/data-trip.js` → `PREP` | |
+| Prep 체크리스트/입국/앱/결제/통신/공항 이동/팁 문구 | `js/data-trip.js` → `PREP` (`hotel` · `entry` · `airport` · `packing` 포함) | 체크리스트 id는 저장 키이므로 바꾸지 말 것 |
 | Private Participant Portal 연결 URL | `js/config.js` → `APP_CONFIG.participantPortalUrl` | 현재 실제 `/exec` URL이 설정되어 있음. 재배포로 URL이 바뀌면 이 한 줄만 교체하면 MY TRIP이 나가는 모든 지점(nav/Home CTA/Schedule 링크)에 자동 반영됨 |
 | **실제** 참가자/방 배정/룸메이트/택시팀/정산/개인 4자리 코드 | ❌ GitHub 아님 → **Private Google Sheet + Apps Script** | GitHub 코드는 전혀 건드리지 않음. 이 저장소에는 이런 데이터를 담는 파일 자체가 없음 |
 

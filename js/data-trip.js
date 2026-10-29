@@ -14,7 +14,7 @@
  *                 KAIST BIM Field Trip에 실제로 확정된 것이 아님을 뜻합니다.
  *
  * real / realLabel / sampleLabel (v0.4 신설)
- *   real: true 인 항목은 "실제로 존재하는" 장소/기관입니다 (H+ Hotel, 방문기관 5곳 등).
+ *   real: true 인 항목은 "실제로 존재하는" 장소/기관입니다 (숙소, 방문기관 등).
  *   realLabel  = "REAL HOTEL" / "REAL ORGANIZATION" 처럼 실존한다는 라벨
  *   sampleLabel= "SAMPLE ACCOMMODATION" / "SAMPLE VISIT" 처럼 이번 트립에서는
  *                아직 SAMPLE(미확정)라는 라벨
@@ -39,9 +39,11 @@
  *
  * ⚠️ v0.9 공식 일정 반영 안내
  * ITINERARY · ORGS는 2026.12.27~31 학교 공식 일정표 기준(공개용)입니다.
- * 공개 저장소이므로 구체적인 시각, 호텔명·주소, 참가자 개인정보는 넣지 않습니다.
- * PLACES의 H+ Hotel 등 나머지 항목은 기존 SAMPLE 데이터이며 SCHEDULE/HOME에는
- * 표시되지 않습니다. 실제 숙소·시간·집합 정보는 Private Participant Portal에서만 다룹니다.
+ * 공개 저장소이므로 구체적인 시각, 방 배정, 참가자 개인정보는 넣지 않습니다.
+ * v0.11.9 — 숙소는 여정기획팀 OT 자료로 공개된 호텔 이름·주소만 HOTEL_INFO 한 곳에 두고
+ * PLACES(SCHEDULE 숙소 카드)와 PREP(입국신고서 · 공항 이동)이 함께 씁니다.
+ * PLACES의 공항 등 나머지 항목은 기존 SAMPLE 데이터이며 화면에 표시되지 않습니다.
+ * 시간 · 집합 장소 · 방 배정은 Private Participant Portal(MY TRIP)에서만 다룹니다.
  */
 
 // ===== 여행 기본 정보 =====
@@ -52,11 +54,23 @@ const TRIP_CONFIG = {
   version: "v0.6.3 · Portal Link Hotfix",
   startDate: "2026-12-27",
   endDate: "2026-12-31",
-  note: "여행 기간(2026.12.27~12.31)과 방문기관 일정은 공식 일정표 기준입니다. 공개 페이지에는 구체적인 시각과 숙소 정보를 표시하지 않습니다.",
+  note: "여행 기간(2026.12.27~12.31)과 방문기관 일정은 공식 일정표 기준입니다. 공개 페이지에는 구체적인 시각과 방 배정 정보를 표시하지 않습니다.",
   totalParticipants: 24,
   studentCount: 18,
   professorCount: 5,
   staffCount: 1,
+};
+
+// ===== 숙소 (v0.11.9 — 단일 기준값) =====
+// 여정기획팀 OT 자료(2026.10) 기준. 호텔이 바뀌면 이 객체만 고치면 SCHEDULE · PREP에 함께 반영됩니다.
+// 방 번호 · 룸메이트 · 체크인 시각 등 개인/운영 정보는 넣지 않습니다.
+const HOTEL_INFO = {
+  name_ko: "Field Trip 숙소",
+  name_en: "Supreme Tower Hotel SNIEC Shanghai Lujiazui",
+  name_zh: "陆家嘴明城酒店(上海新国际博览中心店)",
+  address_zh: "上海市浦东新区龙阳路1668号",
+  address_en: "No. 1668 Longyang Road, Pudong New Area, Shanghai, 200135, China",
+  area: "상하이 푸둥신구 · 龙阳路站(룽양루역)에서 약 1.1km",
 };
 
 // ===== Places: 숙소 / 공항 / 방문기관 위치 / 관광·체험(SEE) / 쇼핑 매장 =====
@@ -68,22 +82,25 @@ const TRIP_CONFIG = {
 // map.status: "unverified"(현지 서비스 검증 전) | "verified"
 // real / realLabel / sampleLabel: v0.4 SAMPLE MODE 이중 라벨 (파일 상단 설명 참고)
 const PLACES = [
-  // ---------- STAY (호텔) — v0.4: 실존 호텔을 SAMPLE 숙소로 사용 ----------
+  // ---------- STAY (호텔) — v0.11.9: SAMPLE(H+ Hotel) → 실제 숙소(HOTEL_INFO) ----------
   {
-    id: "hplus-hotel",
+    id: "stay-hotel",
     category: "hotel",
-    status: "sample",
-    real: true,
-    realLabel: "REAL HOTEL",
-    sampleLabel: "SAMPLE ACCOMMODATION",
-    name_ko: "H+ Hotel (상하이) · SAMPLE 숙소",
-    name_en: "H+ Hotel Shanghai (real hotel, used as SAMPLE only)",
-    name_zh: "",
-    address_zh: "",
-    zhVerify: true,
-    area: "상하이 (정확한 지점 · 주소는 SAMPLE 단계에서 확인하지 않았습니다)",
-    note: "H+ Hotel은 실존하는 호텔이지만, KAIST BIM Field Trip의 실제 확정 숙소가 아닙니다. Room Assignment/Hotel Check-in 기능을 검증하기 위한 SAMPLE 데이터입니다.",
-    map: { status: "unverified", google: "", amap: "", baidu: "" },
+    status: "confirmed",
+    name_ko: HOTEL_INFO.name_ko,
+    name_en: HOTEL_INFO.name_en,
+    name_zh: HOTEL_INFO.name_zh,
+    address_zh: HOTEL_INFO.address_zh,
+    address_en: HOTEL_INFO.address_en,
+    area: HOTEL_INFO.area,
+    note: "공항에서 오는 방법은 PREP 06 공항 → 호텔을 참고하세요. 체크인 시간 · 방 배정은 MY TRIP에서 확인합니다.",
+    // 高德 검색 링크(API 키 · 좌표 없이 이름+주소 검색). Guide · Schedule 방문기관과 같은 방식입니다.
+    map: {
+      status: "verified",
+      google: "",
+      amap: "https://uri.amap.com/search?" + new URLSearchParams({ keyword: HOTEL_INFO.name_zh + " " + HOTEL_INFO.address_zh, city: "310000", view: "map", src: "bimfieldtrip", callnative: "1" }).toString(),
+      baidu: "",
+    },
   },
 
   // ---------- AIRPORTS (v0.4 신설 — 이동 SAMPLE 데이터용) ----------
@@ -774,7 +791,7 @@ const SAMPLE_DINNERS = [];
 // v0.9 — 학교 공식 일정표 기준. 공개 페이지이므로 다음 원칙을 지킵니다.
 //   - 구체적인 시각(방문·항공·집합·체크인·버스·식사·이동 소요시간)은 넣지 않습니다.
 //     slot에는 "오전" / "오후" / "저녁" 같은 대략적인 시간대만 씁니다.
-//   - 호텔명·주소·체크인 시간은 넣지 않습니다(숙소 정보는 Private Portal에서만).
+//   - ITINERARY에는 호텔명·주소·체크인 시간을 넣지 않습니다(숙소 이름·주소는 HOTEL_INFO, 체크인·방 배정은 Private Portal).
 //   - 미확정 액티비티(단체석식, 선택/단체 Activity 등)는 넣지 않습니다.
 //   - 같은 시간대의 방문처는 공식 일정표 순서대로 나열합니다.
 // items[]: { slot: "오전"|"오후"|"저녁"|null, title, type, org_id? }
@@ -856,6 +873,10 @@ const ITINERARY = [
 //   "checkBeforeDeparture" | "reference"
 // ⚠️ 아래 앱/서비스/팁은 사용자가 직접 제공한 내용만 사용했습니다 — 새로운 앱이나
 // 서비스를 임의로 조사해 추가하지 않았습니다. Disney 관련 내용은 포함하지 않습니다.
+// v0.11.9 — 여정기획팀 OT 자료(2026.10) 2~6쪽 내용 중 기존 PREP에 없던 것만 보강했습니다.
+//   정책·수수료·요금은 공식 출처(아래 각 항목의 source / 주석)로 2026-10-29에 다시 확인했고,
+//   확인하지 못한 값(소요시간 · 택시 요금 등)은 "약/대략"과 기준을 함께 적었습니다.
+//   체크리스트는 기존 id를 그대로 두고 새 id만 추가했습니다(저장된 체크 상태 유지).
 const PREP_STATUS_LABEL = {
   // v0.10 — 참가자가 한국인이므로 라벨을 한국어로 표시합니다(키·CSS 클래스는 그대로).
   essential: "필수",
@@ -869,44 +890,97 @@ const PREP_STATUS_LABEL = {
 const PREP = {
   beforeYouFly: {
     intro: "출국 전에 꼭 완료하세요.",
+    // ⚠️ id는 이 브라우저의 저장 키입니다. 기존 id를 바꾸거나 지우면 참가자의 체크 상태가 사라지므로
+    //    문구(label)·순서만 고치고, 새 항목은 새 id로 추가하세요.
     items: [
-      { id: "app-download", label: "필요한 앱 다운로드 (Alipay · WeChat · Amap)", status: "essential" },
+      { id: "arrival-card", label: "입국신고서 온라인 작성 + 완료 화면(QR) 캡처 — 02", status: "checkBeforeDeparture" },        // v0.11.9 신규
+      { id: "hotel-address-saved", label: "호텔 중국어 이름·주소 휴대폰에 저장 — 06", status: "essential" },                  // v0.11.9 신규
+      { id: "app-download", label: "필요한 앱 다운로드 · 로그인 (Alipay · WeChat · Amap)", status: "essential" },
       { id: "alipay-passport", label: "Alipay 여권 인증", status: "essential" },
-      { id: "alipay-card", label: "해외결제 카드 등록", status: "essential" },
+      { id: "alipay-card", label: "해외결제 카드 등록 (Alipay · WeChat Pay) — 04", status: "essential" },
       { id: "wechat-setup", label: "WeChat 준비", status: "essential" },
       { id: "amap-install", label: "Amap 설치", status: "essential" },
-      { id: "connectivity-plan", label: "통신 방법 준비 (로밍 · eSIM · VPN)", status: "essential" },
+      { id: "transport-ready", label: "Alipay에서 지하철 QR · DiDi 호출 메뉴 위치 확인 — 07", status: "checkBeforeDeparture" }, // v0.11.9 신규
+      { id: "connectivity-plan", label: "통신 방법 준비 (로밍 · eSIM) — 05", status: "essential" },
       { id: "power-bank-pack", label: "보조배터리 준비", status: "optional" },
+      { id: "adapter-pack", label: "멀티 어댑터 · 휴대용 티슈 챙기기 — 08", status: "optional" },                            // v0.11.9 신규
     ],
   },
 
+  // ---------- v0.11.9 신규: 숙소 (입국신고서 · 택시/DiDi 목적지 입력용) ----------
+  // 여정기획팀 OT 자료 기준. 방 배정·참가자 정보는 넣지 않습니다(호텔 이름·주소만 공개).
+  hotel: HOTEL_INFO, // v0.11.9 — 파일 위쪽 HOTEL_INFO 하나만 관리 (SCHEDULE 숙소 카드와 같은 값)
+
+  // ---------- v0.11.9 신규: 입국 준비 (무비자 · 입국신고서) ----------
+  entry: {
+    visaFree: {
+      title: "무비자 입국 (한국 일반여권)",
+      status: "checkBeforeDeparture",
+      points: [
+        "중국의 일방적 무비자 정책은 <strong>2026년 12월 31일 24시까지</strong> 연장되어 있습니다(2025년 11월 발표).",
+        "한국 <strong>일반여권</strong> 소지자는 비즈니스 · 관광 · 친지 방문 · 교류 · 경유 목적으로 <strong>최대 30일</strong>까지 비자 없이 체류할 수 있습니다.",
+        "이번 일정(12.27~12.31)은 현재 발표된 적용 기간 안에 있습니다. 2027년 이후 연장 여부는 아직 발표되지 않았으니, 일정이 바뀌면 다시 확인하세요.",
+        "관용·외교 여권 등 다른 여권이거나 조건에 맞지 않으면 사전에 비자가 필요합니다.",
+      ],
+      // 출처: 중국비자신청서비스센터 공지(외교부 발표 전문) · 2026-10-29 확인
+      source: { label: "중국비자신청서비스센터 공지", url: "https://bio.visaforchina.cn/BRN4_ZH/tongzhigonggao/552376593302032425.html" },
+      checked: "2026-10-29",
+    },
+    arrivalCard: {
+      title: "입국신고서 온라인 작성",
+      status: "checkBeforeDeparture",
+      url: "https://s.nia.gov.cn/ArrivalCardFillingPC/",
+      urlLabel: "공식 작성 페이지 (국가이민관리국)",
+      lead: "중국 국가이민관리국(NIA)이 2025년 11월 20일부터 운영하는 공식 온라인 입국신고입니다. <strong>작성은 무료</strong>이며, 돈을 받는 사이트는 공식 사이트가 아닙니다.",
+      channels: "공식 웹페이지(위 링크) · 「移民局12367」 앱 · WeChat 또는 Alipay 안의 공식 미니프로그램 중 편한 곳에서 작성할 수 있습니다.",
+      steps: [
+        "항공권이 확정된 뒤, 출국 전에 공식 페이지(또는 WeChat·Alipay 미니프로그램)에 들어갑니다.",
+        "여권 정보와 <strong>본인 항공권의 항공편명</strong>을 입력합니다(항공편은 사람마다 다를 수 있으니 각자 항공권 기준).",
+        "중국 내 체류지에는 아래 <strong>숙소 영문 이름 · 영문 주소</strong>를 복사해 넣습니다.",
+        "제출 후 나오는 완료 화면(QR 코드)을 캡처해 두세요. 다시 열어보기 번거로울 수 있어 미리 저장해 두면 편합니다.",
+      ],
+      mandatory: "사전 온라인 작성은 <strong>의무가 아닙니다</strong>. 미리 못 했더라도 입국심사 구역에서 종이 신고서를 쓰거나 현장 QR·기기로 작성할 수 있습니다. 미리 해 두면 도착 후 시간이 줄어듭니다.",
+      // 출처: 베이징시 외사판공실 안내(2025-11-24 · 2025-12-31), 주인도네시아 중국대사관 공지(2025-12-01) · 2026-10-29 확인
+      source: { label: "베이징시 외사판공실 안내 (무료 · 사칭 사이트 주의)", url: "https://wb.beijing.gov.cn/home/index/wsjx/202512/t20251231_4382655.html" },
+      checked: "2026-10-29",
+    },
+  },
+
+  // v0.11.9 — icon: 공식 앱 아이콘(App Store 개발사 등록 이미지, 128px webp). 출처는 assets/prep/apps/SOURCES.md.
+  //   파일이 없거나 로드에 실패하면 카드에는 앱 이름 첫 글자만 표시됩니다.
   essentialApps: [
     {
-      id: "alipay", name: "Alipay", name_zh: "支付宝", status: "essential",
-      purpose: ["결제", "교통 관련 기능", "Taxi / Didi 등 현지 이동 과정에서 활용"],
+      id: "alipay", icon: "assets/prep/apps/alipay.webp", name: "Alipay", name_zh: "支付宝", status: "essential",
+      // v0.11.9 — Alipay 안에서 쓰는 기능을 구분해 적었습니다(별도 앱 설치가 꼭 필요하지 않음).
+      purpose: ["결제 (가게 QR 스캔 · 결제 코드)", "지하철 탑승 QR — Alipay 안 교통 메뉴", "DiDi 택시 호출 — Alipay 안에서 바로 사용 (07 참고)"],
     },
     {
-      id: "wechat", name: "WeChat", name_zh: "微信", status: "essential",
-      purpose: ["메신저", "결제", "식당 QR 주문 등"],
+      id: "wechat", icon: "assets/prep/apps/wechat.webp", name: "WeChat", name_zh: "微信", status: "essential",
+      purpose: ["메신저", "결제 (WeChat Pay)", "식당 QR 주문 등"],
     },
     {
-      id: "amap", name: "Amap", name_zh: "高德地图", status: "essential",
-      purpose: ["중국 현지 길찾기", "장소 검색"],
+      id: "amap", icon: "assets/prep/apps/amap.webp", name: "Amap", name_zh: "高德地图", status: "essential",
+      purpose: ["중국 현지 길찾기 · 지하철 경로", "장소 검색 (구글 지도보다 현지 정보가 정확한 편)"],
     },
   ],
-  essentialAppsNote: "출국 전 가능한 범위에서 앱 다운로드 → 여권 인증 → 카드 등록까지 미리 완료해 두는 것을 권장합니다.",
+  essentialAppsNote: "출국 전 가능한 범위에서 앱 다운로드 → 로그인 · 여권 인증 → 카드 등록까지 미리 완료해 두는 것을 권장합니다. 문자 인증이 필요할 수 있어 한국에서 해 두는 편이 수월합니다.",
 
   optionalApps: [
     {
-      id: "xiaohongshu", name: "Xiaohongshu", name_zh: "小红书", status: "optional",
+      id: "xiaohongshu", icon: "assets/prep/apps/xiaohongshu.webp", name: "Xiaohongshu", name_zh: "小红书", status: "optional",
       purpose: ["핫플", "카페", "장소 검색 참고"],
     },
+    // v0.11.9 — OT 자료의 DiDi 추가. Alipay 안의 DiDi로 충분하면 따로 설치하지 않아도 됩니다.
     {
-      id: "meituan", name: "Meituan", name_zh: "美团", status: "optional",
+      id: "didi", icon: "assets/prep/apps/didi.webp", name: "DiDi", name_zh: "滴滴出行", status: "optional",
+      purpose: ["택시 · 차량 호출 단독 앱", "Alipay 안 DiDi로 충분하면 설치 불필요"],
+    },
+    {
+      id: "meituan", icon: "assets/prep/apps/meituan.webp", name: "Meituan", name_zh: "美团", status: "optional",
       purpose: ["배달음식", "현지 생활 서비스 참고"],
     },
     {
-      id: "dianping", name: "Dianping", name_zh: "大众点评", status: "optional",
+      id: "dianping", icon: "assets/prep/apps/dianping.webp", name: "Dianping", name_zh: "大众点评", status: "optional",
       purpose: ["식당 정보", "예약권", "할인권 참고"],
     },
   ],
@@ -914,7 +988,33 @@ const PREP = {
   payment: {
     primary: {
       name: "Alipay", status: "essential",
-      note: "출국 전 여권 인증 · 해외결제 카드 등록을 미리 확인하세요.",
+      note: "출국 전 여권 인증 · 해외결제 카드 등록을 미리 확인하세요. WeChat Pay에도 카드를 등록해 두면 한쪽이 안 될 때 대신 쓸 수 있습니다.",
+    },
+    // v0.11.9 — 카드 등록 경로(OT 자료 3쪽 화면 기준, 앱 언어·버전에 따라 이름이 조금 다를 수 있음)
+    cardSetup: [
+      {
+        app: "Alipay",
+        steps: ["오른쪽 아래 「Account / 마이」", "「Bank Cards / 은행카드」", "카드 추가 → 카드 정보 입력 · 본인 인증"],
+      },
+      {
+        app: "WeChat Pay",
+        steps: ["오른쪽 아래 「Me / 나」", "「Services / 결제 및 서비스」 → 「Wallet / 지갑」", "「Bank Cards」 → 카드 추가 · 본인 인증"],
+      },
+    ],
+    cardCheck: "등록이 끝나면 결제 코드(Pay / 收付款) 화면이 열리는지 확인해 두세요. 카드사 해외결제 차단 · 해외 온라인 결제 설정이 꺼져 있으면 등록이나 결제가 거절될 수 있습니다.",
+    // v0.11.9 — 해외카드 수수료. 근거: WeChat Pay 안내(베이징시 영문 포털 2026-03-26 게재), 第一财经(2023-07)
+    //   Alipay도 같은 방식으로 안내돼 왔지만 Alipay 공식 문서는 이번에 직접 확인하지 못해 "앱 표시 확인"으로 안내합니다.
+    fee: {
+      title: "해외카드 결제 수수료",
+      status: "checkBeforeDeparture",
+      points: [
+        "1회 결제 <strong>200위안 이하</strong>: 수수료 없음",
+        "1회 결제 <strong>200위안 초과</strong>: 결제 금액의 약 <strong>3%</strong>",
+        "WeChat Pay는 처음 카드를 연결한 사용자에게 일정 기간 수수료를 면제해 주는 행사를 하기도 합니다(조건 · 기간은 바뀔 수 있음).",
+      ],
+      note: "결제 전 확인 화면에 수수료(Service fee) 금액이 표시되니, 최종 금액을 보고 결제하세요. 기준 · 행사는 바뀔 수 있습니다.",
+      source: { label: "WeChat Pay 해외카드 수수료 안내 (베이징시)", url: "https://english.beijing.gov.cn/travellinginbeijing/essentials/inboundtourismfacilitationmeasures/202603/t20260326_4566766.html" },
+      checked: "2026-10-29",
     },
     backup: {
       label: "BACKUP · CHECK BEFORE DEPARTURE",
@@ -938,8 +1038,17 @@ const PREP = {
   },
 
   connectivity: {
-    note: "중국에서 필요한 서비스 사용을 위해 로밍 / eSIM / VPN 기능 지원 여부를 출국 전에 확인하세요.",
-    options: ["로밍 (Roaming)", "eSIM", "VPN 지원 여부"],
+    // v0.11.9 — VPN을 권장 수단처럼 보이지 않도록 문구만 조정(아래 points의 VPN 항목 참고)
+    note: "중국에서 필요한 서비스를 쓰려면 출국 전에 로밍 또는 eSIM을 준비하고, 쓰려는 서비스가 되는지 확인하세요.",
+    options: ["로밍 (Roaming)", "여행용 eSIM"],
+    // v0.11.9 — OT 자료 2쪽 보강. eSIM이 항상 해외 서비스 제한을 피해 가는 것처럼 쓰지 않습니다.
+    points: [
+      { title: "현지 망에서는 일부 해외 서비스가 제한됩니다", body: "호텔 · 카페 Wi-Fi나 중국 현지 유심으로 접속하면 카카오톡 · 구글 · 유튜브 등 일부 해외 서비스가 열리지 않을 수 있습니다. WeChat · Alipay · Amap 같은 중국 앱은 그대로 쓸 수 있습니다." },
+      { title: "한국 통신사 로밍", body: "데이터가 한국 통신사를 거쳐 연결되는 방식이라 보통 한국에서처럼 카카오톡 등을 쓸 수 있습니다. 요금 · 데이터 용량은 가입한 통신사 로밍 요금제를 확인하세요." },
+      { title: "여행용 eSIM", body: "상품마다 연결 방식이 다릅니다. 홍콩 등 해외를 거쳐 연결하는 상품은 해외 서비스가 되는 경우가 많지만, 중국 현지 망으로 바로 연결하는 상품은 제한될 수 있습니다. 구매 전 상품 설명에서 \"카카오톡 · 구글 사용 가능\" 여부와 내 휴대폰의 eSIM 지원 여부를 확인하세요." },
+      { title: "VPN", body: "중국에서는 정부 승인을 받지 않은 VPN 이용을 규정상 허용하지 않고, 연결도 자주 불안정합니다. 해외 서비스가 꼭 필요하다면 로밍이나 해외 경유형 eSIM을 우선 준비하세요." },
+      { title: "출국 전에 끝내 두기", body: "eSIM 설치(QR 스캔)에는 인터넷이 필요하고, 앱 로그인 · 카드 인증은 한국 번호로 문자를 받아야 할 수 있습니다. 중국 도착 후에는 앱 설치 · 인증이 어려울 수 있으니 한국에서 설정과 사용법 확인까지 마쳐 두세요." },
+    ],
     reference: {
       label: "TRAVELER RECOMMENDATION",
       title: "eSIM (참고용)",
@@ -956,25 +1065,133 @@ const PREP = {
     status: "checkBeforeDeparture",
   },
 
+  // v0.11.9 — 기존 3개 카드(id 그대로)에 OT 자료 5쪽의 Alipay 사용 단계(steps)와 주의(caution)를 붙였습니다.
+  //   메뉴 이름은 앱 언어 · 버전에 따라 조금 다를 수 있습니다.
   gettingAround: [
-    { id: "taxi-didi", title: "택시 / DiDi", note: "길에서 임의로 택시를 잡기보다는 앱 호출 Taxi / Didi 활용을 권장합니다.", status: "travelerTip" },
-    { id: "subway", title: "지하철 (Subway)", note: "상하이 내 이동 시 선택 가능한 수단입니다.", status: "travelerTip" },
+    {
+      id: "subway", title: "지하철 — Alipay QR로 타기", status: "essential",
+      note: "요금은 거리제입니다(6km까지 3위안, 이후 10km마다 1위안).",
+      steps: [
+        "Alipay 홈에서 「Transport / 교통」을 누릅니다.",
+        "「公交地铁 · Metro」에서 상하이(上海) 지하철 승차 QR을 엽니다. 처음 한 번은 약관 동의 · 활성화가 필요합니다.",
+        "개찰구 스캐너에 QR을 대고 들어갑니다. 나갈 때도 다시 스캔합니다(요금은 하차 시 결제).",
+      ],
+      caution: "역에 들어갈 때 가방 · 소지품 X-ray 보안검색이 있습니다. QR이 안 되면 Visa · Mastercard 등 해외 컨택리스(터치) 카드를 개찰구에 대거나 역 자판기에서 1회권을 살 수 있습니다.",
+    },
+    {
+      id: "taxi-didi", title: "택시 — Alipay 안 DiDi로 부르기", status: "essential",
+      note: "길에서 임의로 택시를 잡기보다는 앱 호출 Taxi / Didi 활용을 권장합니다.",
+      steps: [
+        "Alipay 홈 「Transport / 교통」(또는 검색창에 DiDi)에서 「DiDi Travel / 滴滴出行」을 엽니다.",
+        "출발지(현재 위치)를 확인하고 목적지에 중국어 이름 · 주소를 붙여넣습니다.",
+        "차량 종류 · 등급을 고르고 예상 요금을 확인한 뒤 호출합니다.",
+        "배정된 차량 번호(번호판)와 승차 위치를 확인하고 타세요. 요금은 Alipay로 자동 결제됩니다.",
+      ],
+      caution: "기사가 중국어로 전화 · 메시지를 할 수 있습니다. 앱 메시지의 번역 기능이나 중국어 회화 탭을 활용하세요.",
+    },
     { id: "city-tour-bus", title: "시티투어 버스", note: "관광 목적 이동 시 선택지 중 하나입니다.", status: "travelerTip" },
   ],
   gettingAroundNote: "특정 교통수단 하나가 항상 최선이라고 단정할 수 없어, 상황에 맞게 선택할 수 있도록 안내합니다.",
 
+  // ---------- v0.11.9 신규: 공항 → 호텔 (OT 자료 4쪽) ----------
+  // 요금: 지하철 거리제(상하이시 영문 포털, 2026-06 갱신) · 자기부상열차 50위안/당일 항공권 40위안(澎湃新闻 2024-04, 운영사 안내 인용)
+  // 소요시간 · 택시 요금은 공식 고정값이 없어 OT 자료 값을 "약"으로 표시합니다(교통 상황에 따라 변동).
+  airport: {
+    note: "공식 일정에 단체 이동이 있는지, 집합 시간은 언제인지는 MY TRIP에서 확인하세요. 아래는 각자 이동할 때 참고하는 안내입니다.",
+    basis: "요금 · 시간은 2026년 10월 기준 대략적인 값입니다. 출발 전 Amap 경로 검색이나 DiDi 예상 요금으로 다시 확인하세요.",
+    lastMile: "龙阳路站(룽양루역)에서 호텔까지는 약 1.1km입니다. 짐이 많으면 역 앞에서 택시 · DiDi(단거리), 가벼우면 도보(약 15분)로 이동하세요.",
+    ehailing: "DiDi로 불렀다면 공항에서 「网约车 · E-Hailing」 표지판을 따라 지정 승차장으로 가세요. 「出租车 · Taxi」 표지판은 일반 택시 줄입니다.",
+    airports: [
+      {
+        code: "PVG", name: "푸둥 국제공항", name_zh: "浦东国际机场",
+        options: [
+          {
+            title: "자기부상열차(Maglev) + 택시", tag: "가장 빠름",
+            route: "공항 磁浮(Maglev) 역 → 龙阳路站(Longyang Rd) → 택시 · 도보로 호텔",
+            time: "열차 약 8분 · 호텔까지 약 40분",
+            cost: "편도 50위안 (당일 항공권 · 예약 화면을 매표소에 보여주면 40위안) + 마지막 구간 택시비",
+            pros: "빠르고 차가 막히지 않음",
+            cons: "공항 · 龙阳路 두 역만 운행 · 밤 늦게는 운행이 끝나니 늦게 도착하면 시간표 확인",
+          },
+          {
+            title: "지하철 2호선", tag: "가장 저렴",
+            route: "浦东国际机场站에서 2호선 → 龙阳路站 하차 → 택시 · 도보로 호텔",
+            time: "호텔까지 약 1시간 10분",
+            cost: "약 6~7위안 (거리제) + 마지막 구간",
+            pros: "요금이 가장 저렴함",
+            cons: "시간이 오래 걸림 · 열차에 따라 广兰路(광란로)역에서 같은 노선 열차로 갈아타야 할 수 있어 안내 방송 확인",
+          },
+          {
+            title: "택시 / DiDi", tag: "짐 많을 때",
+            route: "공항 → 호텔 바로 이동",
+            time: "약 30~40분 (교통 상황에 따라 변동)",
+            cost: "약 120위안 내외 (시간대 · 차종에 따라 변동)",
+            pros: "갈아타지 않고 문 앞까지 · 짐이 많거나 늦은 밤에 편함",
+            cons: "출퇴근 시간 정체 · 요금 변동",
+          },
+        ],
+      },
+      {
+        code: "SHA", name: "훙차오 국제공항", name_zh: "虹桥国际机场",
+        options: [
+          {
+            title: "지하철 (T2 도착)", tag: "저렴",
+            route: "虹桥2号航站楼站에서 2호선 → 龙阳路站 하차 → 택시 · 도보로 호텔",
+            time: "호텔까지 약 1시간 20분",
+            cost: "약 6~7위안 (거리제) + 마지막 구간",
+            pros: "한 번에 가서 갈아탈 필요 없음",
+            cons: "역 수가 많아 시간이 오래 걸림",
+          },
+          {
+            title: "지하철 (T1 도착)", tag: "저렴",
+            route: "虹桥1号航站楼站에서 10호선 → 南京东路站(난징둥루)에서 2호선 환승 → 龙阳路站 하차 → 택시 · 도보로 호텔",
+            time: "호텔까지 약 1시간 20분",
+            cost: "약 6~7위안 (거리제) + 마지막 구간",
+            pros: "요금이 저렴함",
+            cons: "환승 1회 · 南京东路站은 혼잡할 수 있음",
+          },
+          {
+            title: "택시 / DiDi", tag: "짐 많을 때",
+            route: "공항 → 호텔 바로 이동",
+            time: "약 45분 (교통 상황에 따라 변동)",
+            cost: "약 120위안 내외 (시간대 · 차종에 따라 변동)",
+            pros: "갈아타지 않고 문 앞까지",
+            cons: "시내를 가로질러 정체 영향이 큼",
+          },
+        ],
+      },
+    ],
+  },
+
+  // ---------- v0.11.9 신규: 짐 (OT 자료 6쪽 1·2번) ----------
+  packing: [
+    { id: "multi-adapter", title: "멀티 어댑터", note: "중국은 한국과 같은 220V라 휴대폰 충전기는 대부분 그대로 쓸 수 있지만, 콘센트 모양이 달라 한국 플러그가 맞지 않는 곳이 있습니다. 멀티 어댑터를 챙기세요.", status: "essential" },
+    { id: "tissue", title: "휴대용 티슈", note: "공중화장실에 휴지가 없거나, 식당에서 휴지를 따로 계산하는 경우가 있습니다. 휴대용 티슈를 챙기세요.", status: "travelerTip" },
+  ],
+
   emergencyCash: {
-    title: "비상용 현금",
-    note: "휴대폰 문제 · 배터리 문제 · 통신 오류 · 결제 오류 등을 대비해 소액의 현금을 비상용으로 준비할 수 있습니다.",
-    example: "여행자 예시 · 약 500 CNY",
+    title: "비상용 현금 · 해외결제 카드",
+    // v0.11.9 — OT 자료(100~200위안 권장)를 함께 표시. 기존 여행자 예시(약 500 CNY)는 그대로 둡니다.
+    note: "휴대폰 문제 · 배터리 문제 · 통신 오류 · 결제 오류 등을 대비해 소액의 현금과 해외결제가 되는 실물 카드를 함께 준비하세요.",
+    example: "여정기획팀 권장 · 100~200위안 / 여행자 예시 · 약 500 CNY",
     status: "travelerTip",
   },
 
+  // v0.11.9 — 09 현지 방문 팁: 카드 높이가 제각각이던 것을 주제별 묶음(목록형)으로 표시합니다. 내용은 그대로입니다.
+  localTipGroups: [
+    { id: "safety", title: "안전 · 소지품" },
+    { id: "food", title: "식당 · 음료" },
+    { id: "culture", title: "화장실 · 문화" },
+  ],
   localTips: [
-    { id: "green-hat", title: "초록색 모자는 피하기", note: "중국 문화에서 초록색 모자는 특정 부정적 의미와 연결될 수 있어, 굳이 착용하지 않는 것을 추천하는 여행 팁입니다.", status: "travelerTip" },
-    { id: "cold-drinks", title: "차가운 음료 주문", note: "차가운 음료를 원할 경우 차갑게 요청하거나 얼음을 별도로 요청해야 하는 상황이 있을 수 있습니다.", status: "travelerTip" },
-    { id: "restaurant-extra-charges", title: "식당 추가 요금", note: "일부 식당에서는 식기 · 포장된 휴지 · 물티슈가 별도 비용으로 계산될 수 있으니, 사용 전 또는 계산 시 영수증을 확인하세요. 모든 식당에 적용되는 규칙은 아닙니다.", status: "travelerTip" },
+    { id: "green-hat", group: "culture", title: "초록색 모자는 피하기", note: "중국 문화에서 초록색 모자는 특정 부정적 의미와 연결될 수 있어, 굳이 착용하지 않는 것을 추천하는 여행 팁입니다.", status: "travelerTip" },
+    { id: "cold-drinks", group: "food", title: "차가운 음료 주문", note: "차가운 음료를 원할 경우 차갑게 요청하거나 얼음을 별도로 요청해야 하는 상황이 있을 수 있습니다.", status: "travelerTip" },
+    { id: "restaurant-extra-charges", group: "food", title: "식당 추가 요금", note: "일부 식당에서는 식기 · 포장된 휴지 · 물티슈가 별도 비용으로 계산될 수 있으니, 사용 전 또는 계산 시 영수증을 확인하세요. 모든 식당에 적용되는 규칙은 아닙니다.", status: "travelerTip" },
     // v0.10 — 근거: 《中华人民共和国道路交通安全法》 제51조 (gov.cn 공보). 벌금·단속 내용은 넣지 않습니다.
-    { id: "taxi-seatbelt", title: "택시 뒷좌석도 안전벨트", note: "택시에서는 뒷좌석에 앉더라도 안전벨트를 착용하세요. 중국 도로교통안전법은 차량 주행 시 운전자와 탑승자 모두 안전벨트를 착용하도록 규정합니다. 차량 출발 전 안전벨트 착용 여부를 확인하는 것이 좋습니다.", status: "essential" },
+    { id: "taxi-seatbelt", group: "safety", title: "택시 뒷좌석도 안전벨트", note: "택시에서는 뒷좌석에 앉더라도 안전벨트를 착용하세요. 중국 도로교통안전법은 차량 주행 시 운전자와 탑승자 모두 안전벨트를 착용하도록 규정합니다. 차량 출발 전 안전벨트 착용 여부를 확인하는 것이 좋습니다.", status: "essential" },
+    // v0.11.9 — OT 자료 6쪽 4~6번
+    { id: "scooters", group: "safety", title: "전동 스쿠터 · 오토바이 주의", note: "전동 스쿠터 · 오토바이 · 자전거가 매우 많고 소리 없이 다가옵니다. 보행 중 주변을 살피고, 신호가 초록불이어도 횡단보도에서 회전 차량 · 스쿠터를 확인한 뒤 건너세요.", status: "essential" },
+    { id: "valuables", group: "safety", title: "여권 · 휴대폰 관리", note: "여권 · 지갑 · 휴대폰은 잃어버리면 일정 전체에 영향을 줍니다. 결제와 길찾기를 모두 휴대폰으로 하니 특히 휴대폰을 잘 챙기세요.", status: "essential" },
+    { id: "restrooms", group: "culture", title: "화장실", note: "가능하면 관광지 · 백화점 · 쇼핑몰 · 호텔 화장실을 이용하세요. 일부 공중화장실은 쪼그려 앉는 변기(화변기)이거나 휴지가 없을 수 있습니다.", status: "travelerTip" },
   ],
 };
