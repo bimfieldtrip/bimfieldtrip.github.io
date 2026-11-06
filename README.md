@@ -10,7 +10,7 @@ KAIST BIM Shanghai Field Trip(2026.12.27~12.31)을 위한 **공개 여행 안내
 - **`js/data-trip.js`:** `HOTEL_INFO`와 `PLACES`의 실제 숙소 항목(`stay-hotel`)을 삭제하고, 안내 문구 `STAY_NOTICE` 하나만 둡니다. `PREP.hotel` → `PREP.stayNotice`. 입국신고서 단계 문구, 체크리스트 `hotel-address-saved` 문구(id는 저장 키라 그대로)를 MY TRIP 확인으로 바꿨습니다.
 - **PREP 02 입국 준비:** 숙소 영문명 · 주소 카드 → MY TRIP 안내 카드. 입국신고서 작성 방법 · 무비자 안내는 그대로입니다.
 - **PREP 06 공항 → 숙소:** 숙소 중국어명 · 주소 · 高德 링크, 하차역 · 마지막 구간, 숙소까지의 소요 · 요금을 삭제했습니다. PVG · SHA 교통수단(Maglev · 지하철 · 택시/DiDi)의 일반 안내와 `网约车 · E-Hailing` 승차장 안내는 유지합니다.
-- **SCHEDULE 03 STAY:** 실제 숙소 카드 → MY TRIP 안내 카드(로그인 버튼 + PREP 06 일반 안내 링크).
+- **SCHEDULE:** 실제 숙소 카드를 삭제했습니다. SCHEDULE은 01 DAY BY DAY · 02 FIELD VISITS로 구성되며 숙소 섹션은 없습니다(숙소 정보는 MY TRIP).
 - **참고:** 이 수정 이전 커밋에는 과거 숙소 정보가 남아 있습니다. 기록 재작성 여부는 저장소 관리자가 따로 결정합니다.
 - 수정 파일: `js/data-trip.js` · `prep.html` · `itinerary.html` · `README.md`.
 
@@ -28,7 +28,7 @@ KAIST BIM Shanghai Field Trip(2026.12.27~12.31)을 위한 **공개 여행 안내
 - **공개 정보만:** 숙소 · 참가자 · 항공편 · 방 배정 · 집합 시간은 넣지 않습니다(숙소는 v0.11.10에서 제거). OT PDF 원본은 저장소에 올리지 않았습니다.
 - **03 필수 앱 아이콘:** 앱 카드 7개(Alipay · WeChat · Amap · Xiaohongshu · DiDi · Meituan · Dianping)에 App Store 공식 아이콘을 40px로 표시합니다(`assets/prep/apps/*.webp`, 출처 `assets/prep/apps/SOURCES.md`). 파일이 없으면 이름 첫 글자 칸으로 대체됩니다. 받는 방법: `tools/download_prep_app_icons.sh`.
 - **09 현지 방문 팁:** 이름을 바꾸고(현지 여행 팁 → 현지 방문 팁) 카드 7개를 "안전 · 소지품 / 식당 · 음료 / 화장실 · 문화" 묶음 목록으로 정리했습니다(PC 2열 · 모바일 1열, 높이 강제 없음, 내용 그대로).
-- **숙소:** v0.11.9에서 추가했던 실제 숙소 카드 · 데이터는 v0.11.10에서 삭제했습니다. SCHEDULE 맨 아래 **03 STAY**는 MY TRIP 안내 카드입니다. 공식 일정 · 방문 기업 카드는 그대로입니다.
+- **숙소:** v0.11.9에서 추가했던 실제 숙소 카드 · 데이터는 v0.11.10에서 삭제했습니다. SCHEDULE에는 숙소 섹션이 없고(01 DAY BY DAY · 02 FIELD VISITS), 공식 일정 · 방문 기업 카드는 그대로입니다.
 - 새 그리드(통신 · 결제 등록 · 공항 경로 · 이동 · 짐)에서 PC 2·3열 카드가 12px 어긋나던 여백을 정리했습니다(v0.11.5와 같은 원인).
 - 수정 파일: `prep.html` · `itinerary.html` · `js/data-trip.js` · `css/style.css`(끝부분 PREP 블록 추가) · `README.md` · `tools/download_prep_app_icons.sh` · `assets/prep/apps/*`. HOME · GUIDE · 중국어 회화 · MY TRIP(`js/config.js`) · Apps Script는 건드리지 않았습니다.
 
@@ -456,7 +456,7 @@ Shanghai Guide에는 적용하지 않습니다.
 | --- | --- | --- |
 | Day별 일정 | `js/data-trip.js` → `ITINERARY[].items[]` / `summary` | 시간대(오전/오후/저녁)만 · 시각 금지 |
 | 집합 시간·장소 | Private Portal (Apps Script) | v0.9부터 공개 데이터에 두지 않음 |
-| 숙소 안내 문구 | `js/data-trip.js` → `STAY_NOTICE` (SCHEDULE 03 STAY · `PREP.stayNotice`) | 실제 숙소 이름 · 주소 · 지도 · 전화번호 · 경로는 넣지 않음 (MY TRIP) |
+| 숙소 안내 문구 | `js/data-trip.js` → `STAY_NOTICE` (`PREP.stayNotice` — PREP 02 · 06 안내 카드) | 실제 숙소 이름 · 주소 · 지도 · 전화번호 · 경로는 넣지 않음 (MY TRIP) |
 | 방문기관 정보 | `js/data-trip.js` → `ORGS[]` | 소개·주소·지도 검색어(`mapKeyword`)·공식 링크·출처 |
 | Shanghai Guide 장소·식당·매장·기념품 | `js/data-guide.js` → `GUIDE_SPOTS[]`/`GUIDE_SOUVENIRS[]` | `guide.html`이 이 데이터를 그대로 읽으므로 별도 HTML 수정 불필요 |
 | 미검증 Guide 장소가 확인되면 | `js/data-guide.js` → `GUIDE_RESEARCH_NOTES`/`_EXTENDED`에서 `GUIDE_SPOTS[]`로 이동 | 이동 전까지는 화면에 노출하지 않음 |

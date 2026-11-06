@@ -39,10 +39,6 @@
   <div class="manifest-title" id="field-visits"><span class="manifest-title__num">02</span>FIELD VISITS<span class="manifest-title__line"></span></div>
   <p class="text-faint mono" style="margin:0 0 10px; font-size:.76rem;">방문 순서대로 정리했습니다. 카드를 눌러 소개·주소·지도를 펼쳐 보세요.</p>
   <div id="orgs-root"></div>
-
-  <!-- v0.11.9 — 숙소 · v0.11.10: 실제 숙소 정보는 공개하지 않고 MY TRIP 안내 카드만 표시 (js/data-trip.js STAY_NOTICE). -->
-  <div class="manifest-title" id="stay"><span class="manifest-title__num">03</span>STAY<span class="manifest-title__line"></span></div>
-  <div id="stay-root"></div>
 </main>
 
 <footer class="site-footer">SHANGHAI FIELD TRIP HUB · v0.11.10 · OFFICIAL SCHEDULE</footer>
@@ -139,22 +135,6 @@
     `;
   }
 
-  // v0.11.10 — 숙소 카드. 실제 숙소 이름 · 주소 · 지도는 공개하지 않고 MY TRIP 안내만 보여줍니다.
-  function renderStay() {
-    const root = document.getElementById("stay-root");
-    if (!root) return;
-    root.innerHTML = `
-      <div class="card stay-card">
-        <div style="font-weight:800; color:var(--navy-900); margin-bottom:6px;">Field Trip 숙소</div>
-        <p class="text-muted" style="font-size:.88rem; margin:0;">${STAY_NOTICE}</p>
-        <div class="btn-row" style="margin-top:12px;">
-          <a class="btn btn--sm btn--primary" href="#" onclick="goToPrivatePortal(event)"><span>MY TRIP 로그인</span></a>
-          <a class="btn btn--sm" href="prep.html#prep-airport">공항 교통수단 일반 안내 ${icon("chevron")}</a>
-        </div>
-        <p class="text-faint" style="font-size:.8rem; margin:12px 0 0;">체크인 시간 · 방 배정도 MY TRIP에서 확인합니다.</p>
-      </div>`;
-  }
-
   function renderOrgs() {
     document.getElementById("orgs-root").innerHTML = ORGS.map(orgCardHtml).join("");
   }
@@ -172,7 +152,6 @@
   document.addEventListener("DOMContentLoaded", () => {
     renderItinerary();
     renderOrgs();
-    renderStay();
     openOrgFromHash();
   });
   window.addEventListener("hashchange", openOrgFromHash);
