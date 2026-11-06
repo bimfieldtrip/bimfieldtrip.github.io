@@ -40,10 +40,10 @@
  * ⚠️ v0.9 공식 일정 반영 안내
  * ITINERARY · ORGS는 2026.12.27~31 학교 공식 일정표 기준(공개용)입니다.
  * 공개 저장소이므로 구체적인 시각, 방 배정, 참가자 개인정보는 넣지 않습니다.
- * v0.11.9 — 숙소는 여정기획팀 OT 자료로 공개된 호텔 이름·주소만 HOTEL_INFO 한 곳에 두고
- * PLACES(SCHEDULE 숙소 카드)와 PREP(입국신고서 · 공항 이동)이 함께 씁니다.
+ * v0.11.10 — 실제 숙소의 이름 · 중국어명 · 주소 · 지도 링크 · 전화번호 · 숙소까지의 상세 경로는
+ * 공개 저장소에 넣지 않습니다. SCHEDULE · PREP은 STAY_NOTICE(MY TRIP 안내 문구)만 씁니다.
  * PLACES의 공항 등 나머지 항목은 기존 SAMPLE 데이터이며 화면에 표시되지 않습니다.
- * 시간 · 집합 장소 · 방 배정은 Private Participant Portal(MY TRIP)에서만 다룹니다.
+ * 숙소 · 시간 · 집합 장소 · 방 배정은 Private Participant Portal(MY TRIP)에서만 다룹니다.
  */
 
 // ===== 여행 기본 정보 =====
@@ -61,17 +61,10 @@ const TRIP_CONFIG = {
   staffCount: 1,
 };
 
-// ===== 숙소 (v0.11.9 — 단일 기준값) =====
-// 여정기획팀 OT 자료(2026.10) 기준. 호텔이 바뀌면 이 객체만 고치면 SCHEDULE · PREP에 함께 반영됩니다.
-// 방 번호 · 룸메이트 · 체크인 시각 등 개인/운영 정보는 넣지 않습니다.
-const HOTEL_INFO = {
-  name_ko: "Field Trip 숙소",
-  name_en: "Supreme Tower Hotel SNIEC Shanghai Lujiazui",
-  name_zh: "陆家嘴明城酒店(上海新国际博览中心店)",
-  address_zh: "上海市浦东新区龙阳路1668号",
-  address_en: "No. 1668 Longyang Road, Pudong New Area, Shanghai, 200135, China",
-  area: "상하이 푸둥신구 · 龙阳路站(룽양루역)에서 약 1.1km",
-};
+// ===== 숙소 (v0.11.10 — 공개 저장소에는 안내 문구만) =====
+// 개인정보 보호 · 참가자 안전을 위해 실제 숙소 정보(이름 · 중국어명 · 주소 · 지도 링크 · 전화번호 ·
+// 숙소까지의 상세 경로)는 이 파일을 포함한 공개 저장소 어디에도 넣지 않습니다. MY TRIP 로그인 후에만 안내합니다.
+const STAY_NOTICE = "숙소 이름과 주소, 공항에서 숙소까지의 이동 방법은 MY TRIP 로그인 후 확인해 주세요.";
 
 // ===== Places: 숙소 / 공항 / 방문기관 위치 / 관광·체험(SEE) / 쇼핑 매장 =====
 // category: "hotel" | "airport" | "org" | "see" | "shop"
@@ -82,26 +75,7 @@ const HOTEL_INFO = {
 // map.status: "unverified"(현지 서비스 검증 전) | "verified"
 // real / realLabel / sampleLabel: v0.4 SAMPLE MODE 이중 라벨 (파일 상단 설명 참고)
 const PLACES = [
-  // ---------- STAY (호텔) — v0.11.9: SAMPLE(H+ Hotel) → 실제 숙소(HOTEL_INFO) ----------
-  {
-    id: "stay-hotel",
-    category: "hotel",
-    status: "confirmed",
-    name_ko: HOTEL_INFO.name_ko,
-    name_en: HOTEL_INFO.name_en,
-    name_zh: HOTEL_INFO.name_zh,
-    address_zh: HOTEL_INFO.address_zh,
-    address_en: HOTEL_INFO.address_en,
-    area: HOTEL_INFO.area,
-    note: "공항에서 오는 방법은 PREP 06 공항 → 호텔을 참고하세요. 체크인 시간 · 방 배정은 MY TRIP에서 확인합니다.",
-    // 高德 검색 링크(API 키 · 좌표 없이 이름+주소 검색). Guide · Schedule 방문기관과 같은 방식입니다.
-    map: {
-      status: "verified",
-      google: "",
-      amap: "https://uri.amap.com/search?" + new URLSearchParams({ keyword: HOTEL_INFO.name_zh + " " + HOTEL_INFO.address_zh, city: "310000", view: "map", src: "bimfieldtrip", callnative: "1" }).toString(),
-      baidu: "",
-    },
-  },
+  // ---------- STAY (호텔) — v0.11.10: 실제 숙소 항목은 공개 데이터에서 제거 (SCHEDULE 03 STAY는 MY TRIP 안내 카드) ----------
 
   // ---------- AIRPORTS (v0.4 신설 — 이동 SAMPLE 데이터용) ----------
   {
@@ -791,7 +765,7 @@ const SAMPLE_DINNERS = [];
 // v0.9 — 학교 공식 일정표 기준. 공개 페이지이므로 다음 원칙을 지킵니다.
 //   - 구체적인 시각(방문·항공·집합·체크인·버스·식사·이동 소요시간)은 넣지 않습니다.
 //     slot에는 "오전" / "오후" / "저녁" 같은 대략적인 시간대만 씁니다.
-//   - ITINERARY에는 호텔명·주소·체크인 시간을 넣지 않습니다(숙소 이름·주소는 HOTEL_INFO, 체크인·방 배정은 Private Portal).
+//   - ITINERARY에는 호텔명·주소·체크인 시간을 넣지 않습니다(숙소 정보 · 체크인 · 방 배정은 Private Portal).
 //   - 미확정 액티비티(단체석식, 선택/단체 Activity 등)는 넣지 않습니다.
 //   - 같은 시간대의 방문처는 공식 일정표 순서대로 나열합니다.
 // items[]: { slot: "오전"|"오후"|"저녁"|null, title, type, org_id? }
@@ -894,7 +868,7 @@ const PREP = {
     //    문구(label)·순서만 고치고, 새 항목은 새 id로 추가하세요.
     items: [
       { id: "arrival-card", label: "입국신고서 온라인 작성 + 완료 화면(QR) 캡처 — 02", status: "checkBeforeDeparture" },        // v0.11.9 신규
-      { id: "hotel-address-saved", label: "호텔 중국어 이름·주소 휴대폰에 저장 — 06", status: "essential" },                  // v0.11.9 신규
+      { id: "hotel-address-saved", label: "MY TRIP에서 숙소 이름·주소 확인 후 휴대폰에 저장 — 06", status: "essential" },      // v0.11.9 신규 · v0.11.10 문구 수정(id 유지)
       { id: "app-download", label: "필요한 앱 다운로드 · 로그인 (Alipay · WeChat · Amap)", status: "essential" },
       { id: "alipay-passport", label: "Alipay 여권 인증", status: "essential" },
       { id: "alipay-card", label: "해외결제 카드 등록 (Alipay · WeChat Pay) — 04", status: "essential" },
@@ -907,9 +881,8 @@ const PREP = {
     ],
   },
 
-  // ---------- v0.11.9 신규: 숙소 (입국신고서 · 택시/DiDi 목적지 입력용) ----------
-  // 여정기획팀 OT 자료 기준. 방 배정·참가자 정보는 넣지 않습니다(호텔 이름·주소만 공개).
-  hotel: HOTEL_INFO, // v0.11.9 — 파일 위쪽 HOTEL_INFO 하나만 관리 (SCHEDULE 숙소 카드와 같은 값)
+  // ---------- v0.11.10: 숙소 — 실제 숙소 정보는 공개하지 않고 MY TRIP 안내 문구만 둡니다 ----------
+  stayNotice: STAY_NOTICE,
 
   // ---------- v0.11.9 신규: 입국 준비 (무비자 · 입국신고서) ----------
   entry: {
@@ -936,7 +909,7 @@ const PREP = {
       steps: [
         "항공권이 확정된 뒤, 출국 전에 공식 페이지(또는 WeChat·Alipay 미니프로그램)에 들어갑니다.",
         "여권 정보와 <strong>본인 항공권의 항공편명</strong>을 입력합니다(항공편은 사람마다 다를 수 있으니 각자 항공권 기준).",
-        "중국 내 체류지에는 아래 <strong>숙소 영문 이름 · 영문 주소</strong>를 복사해 넣습니다.",
+        "중국 내 체류지(숙소)에는 <strong>숙소 영문 이름 · 영문 주소</strong>를 입력합니다. 숙소 정보는 MY TRIP 로그인 후 확인해 주세요.",
         "제출 후 나오는 완료 화면(QR 코드)을 캡처해 두세요. 다시 열어보기 번거로울 수 있어 미리 저장해 두면 편합니다.",
       ],
       mandatory: "사전 온라인 작성은 <strong>의무가 아닙니다</strong>. 미리 못 했더라도 입국심사 구역에서 종이 신고서를 쓰거나 현장 QR·기기로 작성할 수 있습니다. 미리 해 두면 도착 후 시간이 줄어듭니다.",
@@ -1093,39 +1066,38 @@ const PREP = {
   ],
   gettingAroundNote: "특정 교통수단 하나가 항상 최선이라고 단정할 수 없어, 상황에 맞게 선택할 수 있도록 안내합니다.",
 
-  // ---------- v0.11.9 신규: 공항 → 호텔 (OT 자료 4쪽) ----------
+  // ---------- v0.11.9 신규 · v0.11.10 일반 안내로 변경: 공항 → 숙소 ----------
+  // 실제 숙소를 특정할 수 있는 목적지 · 하차역 · 마지막 구간 · 숙소까지의 소요시간/요금은 넣지 않습니다(MY TRIP에서만).
   // 요금: 지하철 거리제(상하이시 영문 포털, 2026-06 갱신) · 자기부상열차 50위안/당일 항공권 40위안(澎湃新闻 2024-04, 운영사 안내 인용)
-  // 소요시간 · 택시 요금은 공식 고정값이 없어 OT 자료 값을 "약"으로 표시합니다(교통 상황에 따라 변동).
   airport: {
-    note: "공식 일정에 단체 이동이 있는지, 집합 시간은 언제인지는 MY TRIP에서 확인하세요. 아래는 각자 이동할 때 참고하는 안내입니다.",
-    basis: "요금 · 시간은 2026년 10월 기준 대략적인 값입니다. 출발 전 Amap 경로 검색이나 DiDi 예상 요금으로 다시 확인하세요.",
-    lastMile: "龙阳路站(룽양루역)에서 호텔까지는 약 1.1km입니다. 짐이 많으면 역 앞에서 택시 · DiDi(단거리), 가벼우면 도보(약 15분)로 이동하세요.",
+    note: "공식 일정에 단체 이동이 있는지, 집합 시간은 언제인지는 MY TRIP에서 확인하세요. 아래는 공항에서 쓸 수 있는 교통수단의 일반 안내입니다.",
+    basis: "요금 · 시간은 2026년 10월 기준 대략적인 값입니다. 목적지까지의 실제 경로 · 소요 · 요금은 출발 전 Amap 경로 검색이나 DiDi 예상 요금으로 확인하세요.",
     ehailing: "DiDi로 불렀다면 공항에서 「网约车 · E-Hailing」 표지판을 따라 지정 승차장으로 가세요. 「出租车 · Taxi」 표지판은 일반 택시 줄입니다.",
     airports: [
       {
         code: "PVG", name: "푸둥 국제공항", name_zh: "浦东国际机场",
         options: [
           {
-            title: "자기부상열차(Maglev) + 택시", tag: "가장 빠름",
-            route: "공항 磁浮(Maglev) 역 → 龙阳路站(Longyang Rd) → 택시 · 도보로 호텔",
-            time: "열차 약 8분 · 호텔까지 약 40분",
-            cost: "편도 50위안 (당일 항공권 · 예약 화면을 매표소에 보여주면 40위안) + 마지막 구간 택시비",
+            title: "자기부상열차(Maglev)", tag: "가장 빠름",
+            route: "공항 磁浮(Maglev) 역 → 시내 쪽 종점(龙阳路站) → 지하철 환승 또는 택시 · DiDi로 목적지",
+            time: "열차 구간 약 8분 (이후 구간은 목적지에 따라 다름)",
+            cost: "편도 50위안 (당일 항공권 · 예약 화면을 매표소에 보여주면 40위안) + 이후 구간 요금",
             pros: "빠르고 차가 막히지 않음",
-            cons: "공항 · 龙阳路 두 역만 운행 · 밤 늦게는 운행이 끝나니 늦게 도착하면 시간표 확인",
+            cons: "공항과 시내 쪽 종점 두 역만 운행 · 밤 늦게는 운행이 끝나니 늦게 도착하면 시간표 확인",
           },
           {
-            title: "지하철 2호선", tag: "가장 저렴",
-            route: "浦东国际机场站에서 2호선 → 龙阳路站 하차 → 택시 · 도보로 호텔",
-            time: "호텔까지 약 1시간 10분",
-            cost: "약 6~7위안 (거리제) + 마지막 구간",
+            title: "지하철", tag: "가장 저렴",
+            route: "浦东国际机场站에서 2호선 탑승 → 목적지 근처 역에서 하차 (환승은 Amap 경로 검색으로 확인)",
+            time: "목적지에 따라 다름 (시내까지 1시간 이상 걸릴 수 있음)",
+            cost: "거리제 — 목적지까지 거리에 따라 달라짐",
             pros: "요금이 가장 저렴함",
             cons: "시간이 오래 걸림 · 열차에 따라 广兰路(광란로)역에서 같은 노선 열차로 갈아타야 할 수 있어 안내 방송 확인",
           },
           {
             title: "택시 / DiDi", tag: "짐 많을 때",
-            route: "공항 → 호텔 바로 이동",
-            time: "약 30~40분 (교통 상황에 따라 변동)",
-            cost: "약 120위안 내외 (시간대 · 차종에 따라 변동)",
+            route: "공항 → 목적지 바로 이동",
+            time: "교통 상황 · 목적지에 따라 다름",
+            cost: "미터 요금 (거리 · 시간대 · 차종에 따라 변동) — DiDi 예상 요금으로 확인",
             pros: "갈아타지 않고 문 앞까지 · 짐이 많거나 늦은 밤에 편함",
             cons: "출퇴근 시간 정체 · 요금 변동",
           },
@@ -1136,27 +1108,27 @@ const PREP = {
         options: [
           {
             title: "지하철 (T2 도착)", tag: "저렴",
-            route: "虹桥2号航站楼站에서 2호선 → 龙阳路站 하차 → 택시 · 도보로 호텔",
-            time: "호텔까지 약 1시간 20분",
-            cost: "약 6~7위안 (거리제) + 마지막 구간",
-            pros: "한 번에 가서 갈아탈 필요 없음",
-            cons: "역 수가 많아 시간이 오래 걸림",
+            route: "虹桥2号航站楼站에서 지하철 탑승 (2호선 등) → 목적지 근처 역에서 하차 (환승은 Amap 경로 검색으로 확인)",
+            time: "목적지에 따라 다름",
+            cost: "거리제 — 목적지까지 거리에 따라 달라짐",
+            pros: "공항 터미널과 역이 바로 연결됨",
+            cons: "목적지가 멀면 역 수가 많아 시간이 오래 걸림",
           },
           {
             title: "지하철 (T1 도착)", tag: "저렴",
-            route: "虹桥1号航站楼站에서 10호선 → 南京东路站(난징둥루)에서 2호선 환승 → 龙阳路站 하차 → 택시 · 도보로 호텔",
-            time: "호텔까지 약 1시간 20분",
-            cost: "약 6~7위안 (거리제) + 마지막 구간",
+            route: "虹桥1号航站楼站에서 10호선 탑승 → 필요하면 환승 → 목적지 근처 역에서 하차 (Amap 경로 검색으로 확인)",
+            time: "목적지에 따라 다름",
+            cost: "거리제 — 목적지까지 거리에 따라 달라짐",
             pros: "요금이 저렴함",
-            cons: "환승 1회 · 南京东路站은 혼잡할 수 있음",
+            cons: "환승이 필요할 수 있음 · 시내 환승역은 혼잡할 수 있음",
           },
           {
             title: "택시 / DiDi", tag: "짐 많을 때",
-            route: "공항 → 호텔 바로 이동",
-            time: "약 45분 (교통 상황에 따라 변동)",
-            cost: "약 120위안 내외 (시간대 · 차종에 따라 변동)",
+            route: "공항 → 목적지 바로 이동",
+            time: "교통 상황 · 목적지에 따라 다름",
+            cost: "미터 요금 (거리 · 시간대 · 차종에 따라 변동) — DiDi 예상 요금으로 확인",
             pros: "갈아타지 않고 문 앞까지",
-            cons: "시내를 가로질러 정체 영향이 큼",
+            cons: "시내를 가로지르면 정체 영향이 큼",
           },
         ],
       },

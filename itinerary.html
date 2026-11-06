@@ -29,7 +29,7 @@
   <div class="page-head">
     <div class="kicker">SCHEDULE</div>
     <h1>Schedule</h1>
-    <p class="page-head__desc">2026.12.27 ~ 12.31 공식 일정입니다. 공개 페이지에는 날짜별 방문 순서와 오전·오후·저녁 시간대만 표시합니다. 숙소 이름·주소는 아래 03 STAY에 있고, 정확한 시간·집합 장소·방 배정은 로그인 후 <a href="#" onclick="goToPrivatePortal(event)">My Trip</a>(Private Participant Portal)에서 확인하세요.</p>
+    <p class="page-head__desc">2026.12.27 ~ 12.31 공식 일정입니다. 공개 페이지에는 날짜별 방문 순서와 오전·오후·저녁 시간대만 표시합니다. 숙소 이름·주소, 정확한 시간·집합 장소·방 배정은 로그인 후 <a href="#" onclick="goToPrivatePortal(event)">My Trip</a>(Private Participant Portal)에서 확인하세요.</p>
   </div>
 
   <div class="manifest-title"><span class="manifest-title__num">01</span>DAY BY DAY<span class="manifest-title__line"></span></div>
@@ -40,12 +40,12 @@
   <p class="text-faint mono" style="margin:0 0 10px; font-size:.76rem;">방문 순서대로 정리했습니다. 카드를 눌러 소개·주소·지도를 펼쳐 보세요.</p>
   <div id="orgs-root"></div>
 
-  <!-- v0.11.9 — 숙소 (js/data-trip.js HOTEL_INFO → PLACES "stay-hotel"). 방 배정 · 체크인 시각은 MY TRIP에서만. -->
+  <!-- v0.11.9 — 숙소 · v0.11.10: 실제 숙소 정보는 공개하지 않고 MY TRIP 안내 카드만 표시 (js/data-trip.js STAY_NOTICE). -->
   <div class="manifest-title" id="stay"><span class="manifest-title__num">03</span>STAY<span class="manifest-title__line"></span></div>
   <div id="stay-root"></div>
 </main>
 
-<footer class="site-footer">SHANGHAI FIELD TRIP HUB · v0.11.9 · OFFICIAL SCHEDULE</footer>
+<footer class="site-footer">SHANGHAI FIELD TRIP HUB · v0.11.10 · OFFICIAL SCHEDULE</footer>
 <nav class="bottom-nav" data-bottom-nav aria-label="주요 메뉴 (모바일)"></nav>
 
 <script src="js/config.js"></script>
@@ -139,28 +139,19 @@
     `;
   }
 
-  // v0.11.9 — 숙소 카드. PLACES의 hotel 항목(=HOTEL_INFO)을 그대로 씁니다(PREP과 같은 값).
+  // v0.11.10 — 숙소 카드. 실제 숙소 이름 · 주소 · 지도는 공개하지 않고 MY TRIP 안내만 보여줍니다.
   function renderStay() {
     const root = document.getElementById("stay-root");
-    const h = PLACES.find((p) => p.category === "hotel");
-    if (!root || !h) return;
+    if (!root) return;
     root.innerHTML = `
       <div class="card stay-card">
-        <div class="day-card__header">
-          <div>
-            <div style="font-weight:800; color:var(--navy-900);">${h.name_en}</div>
-            <div class="text-faint" style="font-size:.82rem;">${h.name_ko} · ${h.area}</div>
-          </div>
-          ${statusBadge(h.status)}
-        </div>
-        ${zhBlockOrNotice(h)}
-        <p class="text-muted" style="font-size:.84rem; margin:10px 0 0; overflow-wrap:anywhere;">${h.address_en}</p>
+        <div style="font-weight:800; color:var(--navy-900); margin-bottom:6px;">Field Trip 숙소</div>
+        <p class="text-muted" style="font-size:.88rem; margin:0;">${STAY_NOTICE}</p>
         <div class="btn-row" style="margin-top:12px;">
-          <button class="btn btn--sm" type="button" data-copy="${escapeAttr(h.address_en)}">${icon("copy")}<span>영문 주소 복사</span></button>
-          ${mapButtonsHtml(h)}
-          <a class="btn btn--sm" href="prep.html#prep-airport">공항 → 호텔 가는 법 ${icon("chevron")}</a>
+          <a class="btn btn--sm btn--primary" href="#" onclick="goToPrivatePortal(event)"><span>MY TRIP 로그인</span></a>
+          <a class="btn btn--sm" href="prep.html#prep-airport">공항 교통수단 일반 안내 ${icon("chevron")}</a>
         </div>
-        <p class="text-faint" style="font-size:.8rem; margin:12px 0 0;">${h.note}</p>
+        <p class="text-faint" style="font-size:.8rem; margin:12px 0 0;">체크인 시간 · 방 배정도 MY TRIP에서 확인합니다.</p>
       </div>`;
   }
 

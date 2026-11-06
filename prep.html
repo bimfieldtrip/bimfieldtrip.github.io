@@ -56,7 +56,7 @@
   <div class="manifest-title" style="margin-top:0;"><span class="manifest-title__num">01</span>출국 전 체크리스트<span class="manifest-title__line"></span></div>
   <div class="card" id="checklist-root"></div>
 
-  <!-- v0.11.9 신규 — 무비자 · 입국신고서 · 숙소 영문 정보 -->
+  <!-- v0.11.9 신규 — 무비자 · 입국신고서 (v0.11.10: 숙소 정보는 MY TRIP 안내로 대체) -->
   <details class="details-box details-box--category" id="prep-entry">
     <summary><span class="manifest-title__num">02</span>입국 준비<span class="manifest-title__line"></span></summary>
     <div class="details-box__body">
@@ -101,9 +101,9 @@
     </div>
   </details>
 
-  <!-- v0.11.9 신규 — 공항 → 호텔 (PVG / SHA) -->
+  <!-- v0.11.9 신규 — 공항 → 숙소 (PVG / SHA) · v0.11.10: 실제 숙소 목적지 · 상세 경로 제거, 일반 교통 안내만 -->
   <details class="details-box details-box--category" id="prep-airport">
-    <summary><span class="manifest-title__num">06</span>공항 → 호텔<span class="manifest-title__line"></span></summary>
+    <summary><span class="manifest-title__num">06</span>공항 → 숙소<span class="manifest-title__line"></span></summary>
     <div class="details-box__body">
       <div id="airport-root"></div>
     </div>
@@ -135,7 +135,7 @@
   </details>
 </main>
 
-<footer class="site-footer">SHANGHAI FIELD TRIP HUB · v0.11.9 · PREP</footer>
+<footer class="site-footer">SHANGHAI FIELD TRIP HUB · v0.11.10 · PREP</footer>
 <nav class="bottom-nav" data-bottom-nav aria-label="주요 메뉴 (모바일)"></nav>
 
 <script src="js/config.js"></script>
@@ -320,9 +320,25 @@
     return "https://uri.amap.com/search?" + params.toString();
   }
 
+  // v0.11.10 — 실제 숙소 정보 대신 MY TRIP 안내 카드 (02 입국 준비 · 06 공항 → 숙소 공통)
+  function prepStayNoticeHtml(id, title, extra) {
+    return `
+      <div class="card" style="margin-top:12px;" id="${id}">
+        <div class="prep-card__head" style="display:flex; justify-content:space-between; align-items:center; gap:8px; margin-bottom:8px;">
+          <div style="font-weight:800;">${title}</div>
+          ${prepStatusBadge("essential")}
+        </div>
+        <p class="text-muted" style="font-size:.88rem; margin-bottom:10px;">${PREP.stayNotice}</p>
+        <div class="btn-row">
+          <a class="btn btn--sm btn--primary" href="#" onclick="goToPrivatePortal(event)"><span>MY TRIP 로그인</span></a>
+        </div>
+        ${extra ? `<p class="text-faint" style="font-size:.8rem; margin:10px 0 0;">${extra}</p>` : ""}
+      </div>`;
+  }
+
   // 02 입국 준비
   function renderEntry() {
-    const e = PREP.entry, h = PREP.hotel, ac = e.arrivalCard, vf = e.visaFree;
+    const e = PREP.entry, ac = e.arrivalCard, vf = e.visaFree;
     document.getElementById("entry-root").innerHTML = `
       <div class="card">
         <div class="prep-card__head" style="display:flex; justify-content:space-between; align-items:center; gap:8px; margin-bottom:8px;">
@@ -349,22 +365,7 @@
         ${prepSourceHtml(ac.source, ac.checked)}
       </div>
 
-      <div class="card" style="margin-top:12px;" id="prep-hotel-en">
-        <div class="prep-card__head" style="display:flex; justify-content:space-between; align-items:center; gap:8px; margin-bottom:8px;">
-          <div style="font-weight:800;">입국신고서에 쓰는 숙소 정보 (영문)</div>
-          ${prepStatusBadge("essential")}
-        </div>
-        <div class="zh-block">
-          <div class="zh-block__label">HOTEL · ENGLISH</div>
-          <div class="prep-hotel__en">${h.name_en}</div>
-          <div class="zh-block__addr">${h.address_en}</div>
-        </div>
-        <div class="btn-row" style="margin-top:10px;">
-          ${prepCopyBtn(h.name_en, "HOTEL NAME")}
-          ${prepCopyBtn(h.address_en, "ADDRESS")}
-        </div>
-        <p class="text-faint" style="font-size:.8rem; margin:10px 0 0;">항공편 정보는 각자 본인 항공권 기준으로 입력하세요. 택시 · DiDi에 넣는 중국어 이름 · 주소는 06 공항 → 호텔에 있습니다.</p>
-      </div>
+      ${prepStayNoticeHtml("prep-hotel-en", "입국신고서에 쓰는 숙소 정보", "항공편 정보는 각자 본인 항공권 기준으로 입력하세요.")}
     `;
   }
 
@@ -401,7 +402,7 @@
       </div>`).join("");
   }
 
-  // 06 공항 → 호텔
+  // 06 공항 → 숙소 (v0.11.10: 일반 교통 안내만)
   function airportOptionHtml(o, i) {
     return `
       <div class="card prep-route">
@@ -419,37 +420,16 @@
       </div>`;
   }
   function renderAirport() {
-    const a = PREP.airport, h = PREP.hotel;
+    const a = PREP.airport;
     document.getElementById("airport-root").innerHTML = `
       <div class="notice notice--private" style="margin-top:0;">${a.note}</div>
-      <div class="card" id="prep-hotel-zh">
-        <div class="prep-card__head" style="display:flex; justify-content:space-between; align-items:center; gap:8px; margin-bottom:8px;">
-          <div style="font-weight:800;">목적지 · 택시 · DiDi에 붙여넣기</div>
-          ${prepStatusBadge("essential")}
-        </div>
-        <div class="zh-block">
-          <div class="zh-block__label">HOTEL · 中文</div>
-          <div class="zh-block__text" lang="zh-CN">${h.name_zh}</div>
-          <div class="zh-block__addr" lang="zh-CN">${h.address_zh}</div>
-          <div class="zh-block__addr">${h.name_en}</div>
-        </div>
-        <div class="btn-row" style="margin-top:10px;">
-          ${prepCopyBtn(h.name_zh, "NAME")}
-          ${prepCopyBtn(h.address_zh, "ADDRESS")}
-          <a class="copy-btn copy-btn--sm" href="${prepAttr(prepAmapUrl(h.name_zh + " " + h.address_zh))}" target="_blank" rel="noopener noreferrer">${icon("pin")}<span>高德 ↗</span></a>
-        </div>
-        <p class="text-faint" style="font-size:.8rem; margin:10px 0 0;">기사에게 화면을 보여주거나 앱 목적지에 붙여넣으세요. 휴대폰 메모 · 캡처로도 저장해 두면 통신이 안 될 때 편합니다.</p>
-      </div>
+      ${prepStayNoticeHtml("prep-hotel-zh", "숙소 목적지 · 이동 경로", "택시 · DiDi 목적지로 넣을 숙소 중국어 이름 · 주소도 MY TRIP에서 확인해 휴대폰 메모 · 캡처로 저장해 두세요.")}
       <p class="prep-caution" style="margin:12px 2px;">${a.ehailing}</p>
       ${a.airports.map((ap, idx) => `
         <details class="details-box" style="margin-top:12px;" ${idx === 0 ? "open" : ""}>
           <summary>${ap.code} · ${ap.name} <span lang="zh-CN" class="text-faint" style="font-weight:600;">${ap.name_zh}</span></summary>
           <div class="grid grid--3" style="margin-top:12px;">${ap.options.map(airportOptionHtml).join("")}</div>
         </details>`).join("")}
-      <div class="card" style="margin-top:12px;">
-        <div style="font-weight:800; margin-bottom:6px;">龙阳路站 → 호텔 (마지막 구간)</div>
-        <p class="text-muted" style="margin-bottom:0; font-size:.88rem;">${a.lastMile}</p>
-      </div>
       <p class="prep-src">${a.basis} 요금 근거: <a href="https://english.shanghai.gov.cn/en-TravelYourWay/20251010/6f1beb560360472b8edaffd6187f4988.html" target="_blank" rel="noopener noreferrer">상하이시 지하철 안내 ↗</a> · 자기부상열차 요금은 운영사 안내(2024) 기준</p>
     `;
   }
