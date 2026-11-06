@@ -867,17 +867,17 @@ const PREP = {
     // ⚠️ id는 이 브라우저의 저장 키입니다. 기존 id를 바꾸거나 지우면 참가자의 체크 상태가 사라지므로
     //    문구(label)·순서만 고치고, 새 항목은 새 id로 추가하세요.
     items: [
-      { id: "arrival-card", label: "입국신고서 온라인 작성 + 완료 화면(QR) 캡처 — 02", status: "checkBeforeDeparture" },        // v0.11.9 신규
-      { id: "hotel-address-saved", label: "MY TRIP에서 숙소 이름·주소 확인 후 휴대폰에 저장 — 06", status: "essential" },      // v0.11.9 신규 · v0.11.10 문구 수정(id 유지)
+      { id: "arrival-card", label: "입국신고서 온라인 작성 + 완료 화면(QR) 캡처", status: "checkBeforeDeparture" },        // v0.11.9 신규
+      { id: "hotel-address-saved", label: "MY TRIP에서 숙소 이름·주소 확인 후 휴대폰에 저장", status: "essential" },      // v0.11.9 신규 · v0.11.10 문구 수정(id 유지)
       { id: "app-download", label: "필요한 앱 다운로드 · 로그인 (Alipay · WeChat · Amap)", status: "essential" },
       { id: "alipay-passport", label: "Alipay 여권 인증", status: "essential" },
-      { id: "alipay-card", label: "해외결제 카드 등록 (Alipay · WeChat Pay) — 04", status: "essential" },
+      { id: "alipay-card", label: "해외결제 카드 등록 (Alipay · WeChat Pay)", status: "essential" },
       { id: "wechat-setup", label: "WeChat 준비", status: "essential" },
       { id: "amap-install", label: "Amap 설치", status: "essential" },
-      { id: "transport-ready", label: "Alipay에서 지하철 QR · DiDi 호출 메뉴 위치 확인 — 07", status: "checkBeforeDeparture" }, // v0.11.9 신규
-      { id: "connectivity-plan", label: "통신 방법 준비 (로밍 · eSIM) — 05", status: "essential" },
+      { id: "transport-ready", label: "Alipay에서 지하철 QR · DiDi 호출 메뉴 위치 확인", status: "checkBeforeDeparture" }, // v0.11.9 신규
+      { id: "connectivity-plan", label: "통신 방법 준비 (로밍 · eSIM)", status: "essential" },
       { id: "power-bank-pack", label: "보조배터리 준비", status: "optional" },
-      { id: "adapter-pack", label: "멀티 어댑터 · 휴대용 티슈 챙기기 — 08", status: "optional" },                            // v0.11.9 신규
+      { id: "adapter-pack", label: "멀티 어댑터 · 휴대용 티슈 챙기기", status: "optional" },                            // v0.11.9 신규
     ],
   },
 
